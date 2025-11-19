@@ -1,0 +1,191 @@
+{
+  "game": {
+    "title": "Open TD",
+    "version": "1.0.0",
+    "startGold": 200,
+    "startLives": 20,
+    "autoWaveDelay": 5000
+  },
+  "multiplayer": {
+    "enabled": true,
+    "serverPort": 3001,
+    "maxPlayers": 4,
+    "enemyScaling": {
+      "countPerPlayer": 0.5,
+      "healthPerPlayer": 0.3
+    },
+    "resourceSharing": {
+      "gold": "shared",
+      "lives": "shared"
+    },
+    "roomSettings": {
+      "maxRooms": 100,
+      "roomCodeLength": 6,
+      "autoStartDelay": 3000
+    }
+  },
+  "towers": {
+    "basic": {
+      "name": "Basis-Turm",
+      "cost": 50,
+      "damage": 20,
+      "range": 150,
+      "fireRate": 1000,
+      "type": "basic"
+    },
+    "fast": {
+      "name": "Schnell-Turm",
+      "cost": 75,
+      "damage": 10,
+      "range": 120,
+      "fireRate": 500,
+      "type": "fast"
+    },
+    "strong": {
+      "name": "Stark-Turm",
+      "cost": 100,
+      "damage": 40,
+      "range": 180,
+      "fireRate": 1500,
+      "type": "strong"
+    },
+    "frost": {
+      "name": "Frost-Turm",
+      "cost": 80,
+      "damage": 5,
+      "range": 140,
+      "fireRate": 800,
+      "type": "frost",
+      "slowEffect": 0.5,
+      "slowDuration": 2000,
+      "requiresResearch": true
+    }
+  },
+  "towerUpgrades": {
+    "level2": {
+      "damageMultiplier": 2.0,
+      "fireRateMultiplier": 0.8,
+      "costMultiplier": 1.0
+    },
+    "level3": {
+      "damageMultiplier": 3.0,
+      "fireRateMultiplier": 0.67,
+      "costMultiplier": 2.0
+    },
+    "sellRefundPercent": 0.9
+  },
+  "enemies": {
+    "normal": {
+      "baseHealth": 50,
+      "speedMultiplier": 1.0,
+      "baseGold": 10,
+      "goldPerWave": 2,
+      "xpReward": 3,
+      "color": "0xff0000",
+      "size": 15
+    },
+    "fast": {
+      "baseHealth": 30,
+      "speedMultiplier": 1.10,
+      "baseGold": 8,
+      "goldPerWave": 1,
+      "xpReward": 2,
+      "color": "0x00ff00",
+      "size": 12
+    },
+    "tank": {
+      "baseHealth": 100,
+      "speedMultiplier": 0.6,
+      "baseGold": 20,
+      "goldPerWave": 4,
+      "xpReward": 5,
+      "color": "0x8800ff",
+      "size": 20
+    },
+    "boss": {
+      "baseHealth": 200,
+      "speedMultiplier": 0.6,
+      "baseGold": 100,
+      "goldPerWave": 20,
+      "baseXp": 20,
+      "xpPerWave": 5
+    },
+    "baseSpeed": 0.00012,
+    "healthScaling": {
+      "waveInterval": 10,
+      "waveMultiplier": 1.015,
+      "levelMultiplier": 1.10
+    }
+  },
+  "waves": {
+    "bossInterval": 8,
+    "difficulty": {
+      "easy": {
+        "baseEnemies": 3,
+        "enemyMultiplier": 2
+      },
+      "normal": {
+        "baseEnemies": 5,
+        "enemyMultiplier": 3
+      },
+      "hard": {
+        "baseEnemies": 7,
+        "enemyMultiplier": 4
+      }
+    },
+    "spawnDelay": {
+      "base": 1500,
+      "reduction": 50,
+      "minimum": 500
+    },
+    "bossSpawnDelay": 3000,
+    "waveCompleteBonus": {
+      "baseGold": 50,
+      "goldPerWave": 10,
+      "baseXp": 20,
+      "xpPerWave": 5,
+      "xpMultiplier": 2
+    }
+  },
+  "research": {
+    "xpPerLevel": 100,
+    "unlocks": {
+      "basic_tower_upgrade": {
+        "level": 1,
+        "name": "Basis-Turm Upgrade",
+        "description": "Ermöglicht es, Türme zu verbessern",
+        "cost": 0
+      },
+      "frost_tower": {
+        "level": 3,
+        "name": "Frost-Turm",
+        "description": "Schaltet den Frost-Turm frei, der Gegner verlangsamt",
+        "cost": 150
+      },
+      "damage_upgrade_1": {
+        "level": 4,
+        "name": "Schaden I",
+        "description": "+10% Schaden für alle Türme",
+        "cost": 200
+      },
+      "range_upgrade_1": {
+        "level": 4,
+        "name": "Reichweite I",
+        "description": "+10% Reichweite für alle Türme",
+        "cost": 200
+      }
+    }
+  },
+  "ui": {
+    "colors": {
+      "background": "0x2d5016",
+      "path": "0x8b7355",
+      "gold": "#ffff00",
+      "health": "#ff0000"
+    },
+    "positions": {
+      "towerButtonY": 80,
+      "upgradeButtonY": 160
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": ["relative", "${cwd}"],
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "Local:.*http://localhost:[0-9]+"
+        }
+      },
+      "label": "npm: dev",
+      "detail": "vite"
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc"],
+      "label": "npm: build",
+      "detail": "tsc && vite build"
+    },
+    {
+      "type": "npm",
+      "script": "preview",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "Local:.*http://localhost:[0-9]+"
+        }
+      },
+      "label": "npm: preview",
+      "detail": "vite preview"
+    },
+    {
+      "label": "Build and Preview",
+      "dependsOn": ["npm: build", "npm: preview"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-Command", "pnpm server"],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting Open TD Multiplayer Server",
+          "endsPattern": "Game Server running on port"
+        }
+      },
+      "label": "pnpm: server",
+      "detail": "Start multiplayer server"
+    },
+    {
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-Command", "pnpm server:dev"],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting Open TD Multiplayer Server",
+          "endsPattern": "Game Server running on port"
+        }
+      },
+      "label": "pnpm: server:dev",
+      "detail": "Start multiplayer server with auto-reload"
+    },
+    {
+      "label": "Start Dev Server and Multiplayer Server",
+      "dependsOn": ["npm: dev", "pnpm: server"],
+      "problemMatcher": []
+    }
+  ]
+}
