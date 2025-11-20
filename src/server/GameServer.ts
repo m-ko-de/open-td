@@ -140,7 +140,9 @@ export class GameServer {
     socket.data.playerName = playerName;
 
     console.log(`🏠 Room created: ${roomCode} by ${playerName}`);
-    callback({ success: true, code: roomCode });
+    if (callback) {
+      callback({ success: true, code: roomCode });
+    }
     
     socket.emit('room:joined', {
       code: roomCode,
@@ -153,17 +155,17 @@ export class GameServer {
     const room = this.rooms.get(roomCode);
 
     if (!room) {
-      callback({ success: false, error: 'Room not found.' });
+      if (callback) callback({ success: false, error: 'Room not found.' });
       return;
     }
 
     if (room.gameStarted) {
-      callback({ success: false, error: 'Game already started.' });
+      if (callback) callback({ success: false, error: 'Game already started.' });
       return;
     }
 
     if (room.players.size >= this.config.multiplayer.maxPlayers) {
-      callback({ success: false, error: 'Room is full.' });
+      if (callback) callback({ success: false, error: 'Room is full.' });
       return;
     }
 
@@ -178,7 +180,7 @@ export class GameServer {
     socket.data.playerName = playerName;
 
     console.log(`👥 ${playerName} joined room: ${roomCode}`);
-    callback({ success: true });
+    if (callback) callback({ success: true });
 
     // Notify all players in room
     const playerList = Array.from(room.players.values()).map(p => p.toPlayerData());
