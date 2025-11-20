@@ -5,6 +5,7 @@ This directory contains unit and integration tests for the Open TD multiplayer s
 ## Test Framework
 
 We use **Vitest** as our test framework because:
+
 - ✅ Native ESM support
 - ✅ TypeScript out-of-the-box
 - ✅ Fast execution (Vite-powered)
@@ -31,26 +32,30 @@ pnpm test:coverage
 
 ### Unit Tests
 
-**PlayerSession.test.ts**
+#### **PlayerSession.test.ts**
+
 - Player initialization
 - Ready status management
 - Player data serialization
 
-**ServerGameState.test.ts**
+#### **ServerGameState.test.ts**
+
 - Game state initialization
 - Tower placement, upgrade, and selling
 - Resource management (gold, XP, lives)
 - Wave management
 - Enemy spawning and death
 
-**wordLists.test.ts**
+#### **wordLists.test.ts**
+
 - Room code generation
 - Code format validation
 - Uniqueness testing
 
 ### Integration Tests
 
-**GameServer.integration.test.ts**
+#### **GameServer.integration.test.ts**
+
 - Socket.io client connections
 - Room creation and joining
 - Player ready status synchronization
@@ -59,10 +64,12 @@ pnpm test:coverage
 ## Test Coverage
 
 Run `pnpm test:coverage` to generate a coverage report. The report will be available in:
+
 - Terminal: Text summary
 - HTML: `coverage/index.html`
 
 Coverage excludes:
+
 - `node_modules/`
 - `dist/`
 - Test files themselves
@@ -99,10 +106,12 @@ describe('MyFeature', () => {
 ## CI/CD Integration
 
 Tests run automatically on:
+
 - Every push to `main` or `develop`
 - Every pull request
 
 The CI pipeline:
+
 1. Installs dependencies
 2. Runs TypeScript type checking
 3. Runs all tests
@@ -112,6 +121,7 @@ The CI pipeline:
 ## Debugging Tests
 
 To debug tests in VS Code:
+
 1. Set breakpoints in your test files
 2. Run the test in debug mode via the Test Explorer
 3. Or add a `debugger` statement and run `pnpm test`

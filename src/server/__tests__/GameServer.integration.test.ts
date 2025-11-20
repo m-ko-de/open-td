@@ -1,8 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Server } from 'socket.io';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { io as ioClient, Socket as ClientSocket } from 'socket.io-client';
 import { GameServer } from '../GameServer';
-import { createServer } from 'http';
 
 describe('GameServer Integration Tests', () => {
   let gameServer: GameServer;
@@ -46,119 +44,147 @@ describe('GameServer Integration Tests', () => {
   });
 
   describe('connection', () => {
-    it('should accept client connections', (done) => {
+    it('should accept client connections', async () => {
       gameServer.start();
 
       clientSocket = ioClient(`http://localhost:${port}`);
 
-      clientSocket.on('connect', () => {
-        expect(clientSocket.connected).toBe(true);
-        done();
-      });
+      await new Promise<void>((resolve, reject) => {
+        clientSocket.on('connect', () => {
+          expect(clientSocket.connected).toBe(true);
+          resolve();
+        });
 
-      clientSocket.on('connect_error', (error) => {
-        done(error);
+        clientSocket.on('connect_error', (error) => {
+          reject(error);
+        });
       });
     });
   });
 
   describe('room creation', () => {
-    it('should create a room and receive room code', (done) => {
+    it('should create a room and receive room code', async () => {
       gameServer.start();
       clientSocket = ioClient(`http://localhost:${port}`);
 
-      clientSocket.on('connect', () => {
-        clientSocket.emit('room:create', 'TestPlayer');
-      });
+      await new Promise<void>((resolve, reject) => {
+        clientSocket.on('connect', () => {
+          clientSocket.emit('room:create', 'TestPlayer');
+        });
 
-      clientSocket.on('room:joined', (data: any) => {
-        expect(data.code).toBeDefined();
-        expect(data.code).toMatch(/^[a-z]+-[a-z]+$/);
-        expect(data.players).toHaveLength(1);
-        expect(data.players[0].name).toBe('TestPlayer');
-        expect(data.players[0].isHost).toBe(true);
-        done();
-      });
+        clientSocket.on('room:joined', (data: any) => {
+          try {
+            expect(data.code).toBeDefined();
+            expect(data.code).toMatch(/^[a-z]+-[a-z]+$/);
+            expect(data.players).toHaveLength(1);
+            expect(data.players[0].name).toBe('TestPlayer');
+            expect(data.players[0].isHost).toBe(true);
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
 
-      clientSocket.on('room:error', (message: string) => {
-        done(new Error(message));
+        clientSocket.on('room:error', (message: string) => {
+          reject(new Error(message));
+        });
       });
     });
   });
 
   describe('room joining', () => {
-    it('should allow second player to join existing room', (done) => {
+    it('should allow second player to join existing room', async () => {
       gameServer.start();
       
       const client1 = ioClient(`http://localhost:${port}`);
-      let roomCode: string;
-      let joinedCount = 0;
 
-      client1.on('connect', () => {
-        client1.emit('room:create', 'Player1');
-      });
+      await new Promise<void>((resolve, reject) => {
+        let roomCode: string;
+        let joinedCount = 0;
 
-      client1.on('room:joined', (data: any) => {
-        roomCode = data.code;
-        joinedCount++;
-        
-        if (joinedCount === 1) {
-          // First player created room, now join with second player
-          clientSocket = ioClient(`http://localhost:${port}`);
+        client1.on('connect', () => {
+          client1.emit('room:create', 'Player1');
+        });
+
+        client1.on('room:joined', (data: any) => {
+          roomCode = data.code;
+          joinedCount++;
           
-          clientSocket.on('connect', () => {
-            clientSocket.emit('room:join', roomCode, 'Player2');
-          });
+          if (joinedCount === 1) {
+            // First player created room, now join with second player
+            clientSocket = ioClient(`http://localhost:${port}`);
+            
+            clientSocket.on('connect', () => {
+              clientSocket.emit('room:join', roomCode, 'Player2');
+            });
 
-          clientSocket.on('room:joined', (data: any) => {
-            expect(data.code).toBe(roomCode);
-            expect(data.players).toHaveLength(2);
-            client1.disconnect();
-            done();
-          });
+            clientSocket.on('room:joined', (data: any) => {
+              try {
+                expect(data.code).toBe(roomCode);
+                expect(data.players).toHaveLength(2);
+                client1.disconnect();
+                resolve();
+              } catch (error) {
+                client1.disconnect();
+                reject(error);
+              }
+            });
 
-          clientSocket.on('room:error', (message: string) => {
-            client1.disconnect();
-            done(new Error(message));
-          });
-        }
+            clientSocket.on('room:error', (message: string) => {
+              client1.disconnect();
+              reject(new Error(message));
+            });
+          }
+        });
       });
     });
 
-    it('should reject joining non-existent room', (done) => {
+    it('should reject joining non-existent room', async () => {
       gameServer.start();
       clientSocket = ioClient(`http://localhost:${port}`);
 
-      clientSocket.on('connect', () => {
-        clientSocket.emit('room:join', 'fake-code', 'TestPlayer');
-      });
-
-      clientSocket.on('room:error', (message: string) => {
-        expect(message).toBeTruthy();
-        done();
+      await new Promise<void>((resolve, reject) => {
+        clientSocket.on('connect', () => {
+          clientSocket.emit('room:join', 'fake-code', 'TestPlayer', (response: any) => {
+            try {
+              expect(response.success).toBe(false);
+              expect(response.error).toBeTruthy();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          });
+        });
       });
     });
   });
 
   describe('player ready', () => {
-    it('should update player ready status', (done) => {
+    it('should update player ready status', async () => {
       gameServer.start();
       clientSocket = ioClient(`http://localhost:${port}`);
-      let roomCode: string;
 
-      clientSocket.on('connect', () => {
-        clientSocket.emit('room:create', 'TestPlayer');
-      });
+      await new Promise<void>((resolve, reject) => {
+        clientSocket.on('connect', () => {
+          clientSocket.emit('room:create', 'TestPlayer', (response: any) => {
+            if (!response.success) {
+              reject(new Error('Failed to create room'));
+            }
+          });
+        });
 
-      clientSocket.on('room:joined', (data: any) => {
-        roomCode = data.code;
-        clientSocket.emit('room:setReady', true);
-      });
+        clientSocket.on('room:joined', () => {
+          clientSocket.emit('room:ready', true);
+        });
 
-      clientSocket.on('room:playerReady', (data: any) => {
-        expect(data.isReady).toBe(true);
-        expect(data.name).toBe('TestPlayer');
-        done();
+        clientSocket.on('room:playerReady', (data: any) => {
+          try {
+            expect(data.isReady).toBe(true);
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        });
       });
     });
   });

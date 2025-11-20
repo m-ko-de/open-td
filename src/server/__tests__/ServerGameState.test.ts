@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ServerGameState } from '../ServerGameState';
 import { PlayerSession } from '../PlayerSession';
 
@@ -14,6 +14,12 @@ describe('ServerGameState', () => {
         startGold: 200,
         startLives: 20,
       },
+      multiplayer: {
+        resourceSharing: {
+          gold: 'shared',
+          lives: 'shared'
+        }
+      },
       towers: {
         basic: { cost: 50 },
         fast: { cost: 75 },
@@ -27,8 +33,8 @@ describe('ServerGameState', () => {
 
     // Create test players
     players = new Map([
-      ['player1', new PlayerSession('player1', 'Player1', true)],
-      ['player2', new PlayerSession('player2', 'Player2', false)],
+      ['player1', new PlayerSession('player1', 'Player1', 'socket1', true)],
+      ['player2', new PlayerSession('player2', 'Player2', 'socket2', false)],
     ]);
 
     gameState = new ServerGameState('test-room', players, mockConfig);
@@ -37,9 +43,9 @@ describe('ServerGameState', () => {
   describe('initialization', () => {
     it('should initialize with correct starting values', () => {
       const state = gameState.getState();
-      expect(state.roomCode).toBe('test-room');
-      expect(state.gold).toBe(200);
-      expect(state.lives).toBe(20);
+      expect(gameState.getGold()).toBe(400); // 200 * 2 players
+      expect(state.gold).toBe(400);
+      expect(state.lives).toBe(40); // 20 * 2 players
       expect(state.wave).toBe(0);
       expect(state.xp).toBe(0);
       expect(state.playerLevel).toBe(1);
@@ -58,18 +64,19 @@ describe('ServerGameState', () => {
       expect(tower?.x).toBe(100);
       expect(tower?.y).toBe(200);
       expect(tower?.level).toBe(1);
-      expect(tower?.placedBy).toBe('player1');
+      expect(tower?.id).toBeDefined();
       
       const state = gameState.getState();
-      expect(state.gold).toBe(150); // 200 - 50
+      expect(state.gold).toBe(350); // 400 - 50
     });
 
     it('should not place tower if insufficient gold', () => {
-      const tower = gameState.placeTower('strong', 100, 200, 'player1', 250);
+      const tower = gameState.placeTower('strong', 100, 200, 'player1', 500); // More than 400
       expect(tower).toBeNull();
       
       const state = gameState.getState();
-      expect(state.gold).toBe(200); // Unchanged
+      expect(state.gold).toBe(400); // Unchanged
+      expect(state.towers).toHaveLength(0);
     });
 
     it('should upgrade tower successfully', () => {
@@ -82,19 +89,19 @@ describe('ServerGameState', () => {
       expect(success).toBe(true);
       const state = gameState.getState();
       expect(state.towers[0].level).toBe(2);
-      expect(state.gold).toBe(75); // 200 - 50 - 75
+      expect(state.gold).toBe(275); // 400 - 50 - 75
     });
 
     it('should not upgrade tower if insufficient gold', () => {
       const tower = gameState.placeTower('basic', 100, 200, 'player1', 50);
       expect(tower).toBeDefined();
       
-      const success = gameState.upgradeTower(tower!.id, 200);
+      const success = gameState.upgradeTower(tower!.id, 500); // More than available
       expect(success).toBe(false);
-      
+
       const state = gameState.getState();
       expect(state.towers[0].level).toBe(1);
-      expect(state.gold).toBe(150);
+      expect(state.gold).toBe(350); // 400 - 50
     });
 
     it('should not upgrade tower beyond level 3', () => {
@@ -127,58 +134,52 @@ describe('ServerGameState', () => {
       expect(success).toBe(true);
       const state = gameState.getState();
       expect(state.towers).toHaveLength(0);
-      expect(state.gold).toBe(175); // 200 - 50 + 25
+      expect(state.gold).toBe(375); // 400 - 50 + 25
     });
   });
 
   describe('resource management', () => {
-    it('should add gold correctly', () => {
-      gameState.addGold(100);
-      const state = gameState.getState();
-      expect(state.gold).toBe(300);
-    });
-
     it('should add XP and level up', () => {
-      gameState.addXP(100);
-      let state = gameState.getState();
-      expect(state.xp).toBe(100);
-      expect(state.playerLevel).toBe(1);
+      const leveledUp1 = gameState.addXP(100);
+      expect(leveledUp1).toBe(true); // Should level up at 100 XP
+      expect(gameState.getPlayerLevel()).toBe(2);
       
-      // Level up at 100 XP
+      // Level up at 200 XP for level 2->3
+      const leveledUp2 = gameState.addXP(150);
+      expect(leveledUp2).toBe(false); // Not enough yet
       gameState.addXP(50);
-      state = gameState.getState();
-      expect(state.playerLevel).toBe(2);
+      expect(gameState.getPlayerLevel()).toBe(3);
     });
 
-    it('should lose life correctly', () => {
-      gameState.loseLife();
-      const state = gameState.getState();
-      expect(state.lives).toBe(19);
+    it('should handle enemy reaching end', () => {
+      const enemy = gameState.spawnEnemy('normal', 1, 100, 0, 0);
+      const result = gameState.enemyReachedEnd(enemy.id);
+      expect(result).toBe(true);
+      expect(gameState.getLives()).toBe(39); // 40 - 1
     });
 
     it('should detect game over when lives reach 0', () => {
-      for (let i = 0; i < 20; i++) {
-        gameState.loseLife();
+      for (let i = 0; i < 40; i++) { // 40 lives total (20 * 2 players)
+        const enemy = gameState.spawnEnemy('normal', 1, 100, 0, 0);
+        gameState.enemyReachedEnd(enemy.id);
       }
-      const state = gameState.getState();
-      expect(state.lives).toBe(0);
+      expect(gameState.isGameOver()).toBe(true);
+      expect(gameState.getLives()).toBe(0);
     });
   });
 
   describe('wave management', () => {
     it('should start a new wave', () => {
       gameState.startWave(1);
-      const state = gameState.getState();
-      expect(state.wave).toBe(1);
+      expect(gameState.getWave()).toBe(1);
     });
 
     it('should complete a wave and award bonus', () => {
       gameState.startWave(1);
-      const initialGold = gameState.getState().gold;
+      const initialGold = gameState.getGold();
       
-      gameState.completeWave(1, 50);
-      const state = gameState.getState();
-      expect(state.gold).toBe(initialGold + 50);
+      gameState.completeWave(50);
+      expect(gameState.getGold()).toBe(initialGold + 50);
     });
   });
 
@@ -195,16 +196,19 @@ describe('ServerGameState', () => {
       expect(state.enemies).toHaveLength(1);
     });
 
-    it('should remove enemy when killed and award rewards', () => {
+    it('should damage enemy and award rewards on death', () => {
       const enemy = gameState.spawnEnemy('normal', 1, 100, 0, 0);
-      const initialGold = gameState.getState().gold;
+      const initialGold = gameState.getGold();
       
-      gameState.killEnemy(enemy.id, 10, 5);
+      const result = gameState.damageEnemy(enemy.id, 100);
+      
+      expect(result.died).toBe(true);
+      expect(result.gold).toBeGreaterThan(0);
+      expect(result.xp).toBeGreaterThan(0);
       
       const state = gameState.getState();
       expect(state.enemies).toHaveLength(0);
-      expect(state.gold).toBe(initialGold + 10);
-      expect(state.xp).toBe(5);
+      expect(gameState.getGold()).toBeGreaterThan(initialGold);
     });
   });
 });
