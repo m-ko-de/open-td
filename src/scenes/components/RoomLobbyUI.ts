@@ -15,6 +15,7 @@ export class RoomLobbyUI {
     onStart: () => void,
     onLeave: () => void
   ): { playerListText: Phaser.GameObjects.Text; readyButton: Phaser.GameObjects.Text } {
+    
     // Room info box
     const infoBoxY = 130;
     const infoBox = this.scene.add.graphics();
