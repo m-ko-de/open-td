@@ -8,7 +8,7 @@ Der Multiplayer-Ordner enthält Klassen, die automatisch Spiel-Entitäten zwisch
 
 ## Architektur
 
-```
+```adr
 Phaser Scene
     ↓
 MultiplayerCoordinator
@@ -51,14 +51,14 @@ export class GameScene extends Phaser.Scene {
 
 Synchronisiert Tower-Platzierung, Upgrades und Verkäufe.
 
-### Features
+### Tower Features
 
 - **Platzierung**: Lokale Tower-Erstellung → Server-Validierung → Broadcast an alle Spieler
 - **Upgrades**: Tower-Level-Erhöhung synchronisieren
 - **Verkauf**: Tower entfernen und Gold zurückgeben
 - **Remote Towers**: Türme von anderen Spielern anzeigen
 
-### Server Events
+### Tower Server Events
 
 - `towerPlaced` - Neuer Tower wurde platziert
 - `towerUpgraded` - Tower wurde upgraded
@@ -68,14 +68,14 @@ Synchronisiert Tower-Platzierung, Upgrades und Verkäufe.
 
 Synchronisiert Gegner-Spawning, Bewegung und Tod.
 
-### Features
+### Enemy Features
 
 - **Spawning**: Server kontrolliert wann und welche Gegner spawnen
 - **Position**: Gegner-Positionen werden regelmäßig synchronisiert
 - **Health**: Schadens-Events vom Server empfangen
 - **Tod**: Gegner-Entfernung synchronisieren
 
-### Server Events
+### Enemy Server Events
 
 - `enemySpawned` - Neuer Gegner gespawnt
 - `enemyUpdate` - Gegner-Position/Health Update
@@ -85,14 +85,14 @@ Synchronisiert Gegner-Spawning, Bewegung und Tod.
 
 Synchronisiert Wellen-Fortschritt zwischen Spielern.
 
-### Features
+### Wave Features
 
 - **Wave Start**: Host startet Welle, alle Clients synchronisieren
 - **Wave Status**: Aktueller Wellen-Stand und verbleibende Gegner
 - **Wave Complete**: Wellen-Abschluss und Belohnungen
 - **Auto-Start**: Automatischer Wellen-Start im Multiplayer (optional)
 
-### Server Events
+### Wave Server Events
 
 - `waveStarted` - Neue Welle gestartet
 - `waveUpdate` - Wellen-Status aktualisiert
@@ -102,14 +102,14 @@ Synchronisiert Wellen-Fortschritt zwischen Spielern.
 
 Synchronisiert globalen Spielzustand (Ressourcen, Leben, Game Over).
 
-### Features
+### GameState Features
 
 - **Ressourcen**: Gold und Leben zwischen Spielern synchronisieren
 - **Resource Sharing**: Unterstützt shared/individual Modi
 - **Game Over**: Spiel-Ende-Bedingungen synchronisieren
 - **Full State Updates**: Periodische vollständige Zustandssynchronisation
 
-### Server Events
+### GameState Server Events
 
 - `gameStateUpdate` - Vollständiger State-Update
 - `resourceUpdate` - Gold/Leben Update
@@ -120,6 +120,7 @@ Synchronisiert globalen Spielzustand (Ressourcen, Leben, Game Over).
 Der Server kann Ressourcen auf zwei Arten verwalten:
 
 ### Shared Mode (Standard)
+
 ```typescript
 multiplayer: {
   resourceSharing: {
@@ -128,11 +129,13 @@ multiplayer: {
   }
 }
 ```
+
 - Alle Spieler teilen Gold und Leben
 - Tower-Kosten werden vom gemeinsamen Pool abgezogen
 - Gegner-Tod gibt allen Spielern Gold
 
 ### Individual Mode
+
 ```typescript
 multiplayer: {
   resourceSharing: {
@@ -141,13 +144,14 @@ multiplayer: {
   }
 }
 ```
+
 - Jeder Spieler hat eigene Ressourcen
 - Nur der Spieler, der den Tower platziert, zahlt
 - Nur der Spieler, dessen Tower tötet, bekommt Gold
 
 ## Event-Flow Beispiel: Tower platzieren
 
-```
+```adr
 1. Spieler A klickt auf Map
 2. GameScene → TowerSync.placeTower(x, y)
 3. TowerSync → NetworkManager.placeTower(x, y)
@@ -180,6 +184,7 @@ Clients müssen auf Server-Bestätigung warten bevor sie Änderungen anzeigen.
 ### Netzwerk-Traffic
 
 Typischer Traffic für 2 Spieler:
+
 - Idle: ~1 KB/s (Heartbeat)
 - Aktive Welle: ~5-10 KB/s (Position Updates)
 - Tower-Aktionen: ~0.5 KB pro Aktion
@@ -217,6 +222,7 @@ console.log('💰 Resources updated:', gold, lives);
 ### Netzwerk-Monitor
 
 Browser DevTools → Network → WS (WebSocket):
+
 - Ausgehende Events (Client → Server)
 - Eingehende Events (Server → Client)
 - Event-Timing und -Größe

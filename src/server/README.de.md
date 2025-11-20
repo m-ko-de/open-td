@@ -13,12 +13,14 @@ Der Server verwaltet Multiplayer-Räume, synchronisiert den Spielzustand zwische
 Zentraler Socket.io-Server, der alle Multiplayer-Verbindungen verwaltet.
 
 **Hauptfunktionen**:
+
 - Raum-Verwaltung (erstellen, beitreten, verlassen)
 - Spieler-Authentifizierung und Session-Management
 - Event-Routing zwischen Clients
 - Spiel-Synchronisation (Türme, Gegner, Wellen)
 
 **Wichtige Events**:
+
 - `createRoom` - Neuen Multiplayer-Raum erstellen
 - `joinRoom` - Bestehendem Raum beitreten
 - `setReady` - Bereitschaft signalisieren
@@ -31,6 +33,7 @@ Zentraler Socket.io-Server, der alle Multiplayer-Verbindungen verwaltet.
 Verwaltet Daten und Status eines einzelnen Spielers.
 
 **Eigenschaften**:
+
 - `id` - Eindeutige Socket-ID
 - `name` - Spielername
 - `isReady` - Bereitschaftsstatus
@@ -41,6 +44,7 @@ Verwaltet Daten und Status eines einzelnen Spielers.
 Autoritative Spielzustand-Verwaltung auf Server-Seite.
 
 **Verantwortlichkeiten**:
+
 - Spiel-Ressourcen (Gold, Leben) verwalten
 - Tower-Platzierung validieren und verwalten
 - Gegner-Spawning und -Bewegung
@@ -49,6 +53,7 @@ Autoritative Spielzustand-Verwaltung auf Server-Seite.
 - Multiplayer-Ressourcenteilung (shared/individual)
 
 **Konfiguration**:
+
 ```typescript
 {
   initialGold: number,
@@ -69,6 +74,7 @@ Autoritative Spielzustand-Verwaltung auf Server-Seite.
 TypeScript-Typen für Server-Client-Kommunikation.
 
 **Wichtige Interfaces**:
+
 - `PlayerData` - Spieler-Informationen
 - `RoomData` - Raum-Status und Spieler-Liste
 - `TowerData` - Tower-Eigenschaften
@@ -82,6 +88,7 @@ TypeScript-Typen für Server-Client-Kommunikation.
 Generierung von lesbaren Raum-Codes im Format `wort-wort`.
 
 **Funktion**:
+
 ```typescript
 generateWordRoomCode(): string
 // Beispiel: "katze-baum", "haus-mond"
@@ -89,7 +96,7 @@ generateWordRoomCode(): string
 
 ## Architektur
 
-```
+```adr
 Client 1 ──┐
            │
 Client 2 ──┼──> GameServer ──> ServerGameState
@@ -113,9 +120,10 @@ Client N ──┘                   Validierung
 
 ## Tests
 
-Siehe [__tests__/README.md](./__tests__/README.md) für detaillierte Informationen zu den Server-Tests.
+Siehe [**tests**/README.md](./__tests__/README.md) für detaillierte Informationen zu den Server-Tests.
 
 **Test-Abdeckung**:
+
 - Unit-Tests: `PlayerSession`, `ServerGameState`, `wordLists`
 - Integration-Tests: Socket.io-Verbindungen, Raum-Management, Spiel-Synchronisation
 

@@ -33,21 +33,21 @@ Ein Open-Source Tower Defense Spiel, entwickelt mit Phaser 3 und Capacitor für 
 
 1. pnpm installieren (falls noch nicht vorhanden):
 
-```bash
-npm install -g pnpm
-```
+      ```bash
+      npm install -g pnpm
+      ```
 
 2. Repository klonen und Dependencies installieren:
 
-```bash
-pnpm install
-```
+      ```bash
+      pnpm install
+      ```
 
 3. Entwicklungsserver starten:
 
-```bash
-pnpm dev
-```
+      ```bash
+      pnpm dev
+      ```
 
 Das Spiel öffnet sich automatisch im Browser unter `http://localhost:3000`.
 
@@ -140,6 +140,7 @@ open-td/
 ### Warum pnpm?
 
 Dieses Projekt nutzt [pnpm](https://pnpm.io/) als Package Manager:
+
 - ⚡ **Schneller**: Bis zu 3x schnellere Installation
 - 💾 **Speichereffizient**: Globaler Shared Store reduziert Disk Space
 - 🔒 **Sicher**: Strikte Dependency Resolution verhindert Phantom Dependencies

@@ -13,6 +13,7 @@ Der Game-Ordner enthält alle Manager-Klassen und UI-Komponenten, die die Kern-G
 Verwaltet Tower-Platzierung, Upgrades und Kampflogik.
 
 **Verantwortlichkeiten**:
+
 - Tower-Sprites erstellen und positionieren
 - Tower-Upgrade-System (Level, Damage, Range, Fire Rate)
 - Targeting-System (nächster Gegner in Reichweite)
@@ -20,6 +21,7 @@ Verwaltet Tower-Platzierung, Upgrades und Kampflogik.
 - Tower-Verkauf und Rückerstattung
 
 **Verwendung**:
+
 ```typescript
 towerManager.placeTower('basic', 100, 200);
 towerManager.upgradeTower(tower);
@@ -27,6 +29,7 @@ towerManager.sellTower(tower);
 ```
 
 **Tower-Typen**:
+
 - `basic` - Ausgeglichen (50 Gold)
 - `fast` - Hohe Fire Rate (75 Gold)
 - `strong` - Hoher Schaden (100 Gold)
@@ -36,6 +39,7 @@ towerManager.sellTower(tower);
 Kontrolliert Gegner-Wellen und Spawning.
 
 **Verantwortlichkeiten**:
+
 - Wellen-Konfiguration (Anzahl, Typ, Health, Speed)
 - Gegner-Spawning mit Delays
 - Wave-Progression (zunehmende Schwierigkeit)
@@ -43,12 +47,14 @@ Kontrolliert Gegner-Wellen und Spawning.
 - Wave-Complete-Detection
 
 **Verwendung**:
+
 ```typescript
 waveManager.startWave();
 waveManager.isWaveActive(); // true/false
 ```
 
 **Wellen-Skalierung**:
+
 ```typescript
 // Jede Welle:
 enemyCount = 5 + (waveNumber * 2)
@@ -62,6 +68,7 @@ goldReward = 10 + (waveNumber * 5)
 Verwaltet Level-Daten, Pfade und Map-Konfiguration.
 
 **Verantwortlichkeiten**:
+
 - Level-Definitionen laden
 - Pfad-Koordinaten bereitstellen
 - Map-Bounds definieren
@@ -69,6 +76,7 @@ Verwaltet Level-Daten, Pfade und Map-Konfiguration.
 - Platzierungs-Validierung (Kollision mit Pfad)
 
 **Level-Struktur**:
+
 ```typescript
 {
   id: 1,
@@ -85,12 +93,14 @@ Verwaltet Level-Daten, Pfade und Map-Konfiguration.
 Implementiert Forschungs-/Upgrade-System.
 
 **Verantwortlichkeiten**:
+
 - Forschungs-Baum verwalten
 - Freischalten von Upgrades
 - Kosten-Validierung
 - Permanente Buffs anwenden
 
 **Research-Typen**:
+
 ```typescript
 interface Research {
   id: string;
@@ -102,6 +112,7 @@ interface Research {
 ```
 
 **Beispiel-Researches**:
+
 - `damage_boost` - +10% Schaden für alle Türme
 - `fire_rate_boost` - +15% Feuerrate
 - `range_boost` - +20% Reichweite
@@ -111,12 +122,14 @@ interface Research {
 Koordiniert alle UI-Komponenten und HUD-Elemente.
 
 **Verantwortlichkeiten**:
+
 - UI-Container erstellen und positionieren
 - UI-Komponenten initialisieren
 - UI-Updates koordinieren
 - Event-Handling zwischen UI und Game-Logic
 
 **Sub-Komponenten**:
+
 - `StatsDisplay` - Ressourcen, Welle, Leben
 - `TowerButtonPanel` - Tower-Auswahl
 - `TowerActionButtons` - Upgrade/Verkauf
@@ -130,6 +143,7 @@ Koordiniert alle UI-Komponenten und HUD-Elemente.
 Zeigt Spiel-Statistiken im HUD.
 
 **Anzeige**:
+
 - 💰 Gold
 - ❤️ Leben
 - 🌊 Aktuelle Welle
@@ -140,6 +154,7 @@ Zeigt Spiel-Statistiken im HUD.
 Tower-Auswahl-Leiste am unteren Bildschirmrand.
 
 **Features**:
+
 - Tower-Typ-Buttons mit Icons
 - Kosten-Anzeige
 - Hover-Tooltips
@@ -151,6 +166,7 @@ Tower-Auswahl-Leiste am unteren Bildschirmrand.
 Upgrade- und Verkauf-Buttons für selektierte Türme.
 
 **Features**:
+
 - Erscheint bei Tower-Selektion
 - Zeigt Upgrade-Kosten und neue Stats
 - Verkaufs-Wert berechnen (70% Rückerstattung)
@@ -161,6 +177,7 @@ Upgrade- und Verkauf-Buttons für selektierte Türme.
 Spiel-Kontroll-Buttons (Pause, Menu, etc.).
 
 **Buttons**:
+
 - ⏸️ Pause - Spiel pausieren/fortsetzen
 - 🏠 Menu - Zum Hauptmenü
 - 🔊 Sound - Ton an/aus
@@ -169,11 +186,13 @@ Spiel-Kontroll-Buttons (Pause, Menu, etc.).
 ### ResearchButton & ResearchOverlay
 
 **ResearchButton** (`ui/ResearchButton.ts`):
+
 - Öffnet Forschungsmenü
 - Badge für verfügbare Researches
 - Animationen für neue Upgrades
 
 **ResearchOverlay** (`ui/ResearchOverlay.ts`):
+
 - Modal-Overlay für Forschungs-Baum
 - Grid-Layout der Researches
 - Unlock-Buttons mit Kosten
@@ -183,7 +202,7 @@ Spiel-Kontroll-Buttons (Pause, Menu, etc.).
 
 Die Game-Manager sind **nicht direkt** mit dem Netzwerk verbunden. Stattdessen:
 
-```
+```adr
 NetworkManager ──> MultiplayerCoordinator ──> TowerSync
                                           └──> WaveSync
                                           └──> EnemySync
@@ -197,7 +216,8 @@ WaveSync ──> WaveManager (lokale Visualisierung)
 ## Event-Flow Beispiel: Tower platzieren
 
 ### Single Player
-```
+
+```adr
 1. Spieler klickt → GameScene.handleClick()
 2. GameScene → TowerManager.placeTower()
 3. TowerManager erstellt Tower-Sprite
@@ -205,7 +225,8 @@ WaveSync ──> WaveManager (lokale Visualisierung)
 ```
 
 ### Multiplayer
-```
+
+```adr
 1. Spieler klickt → GameScene.handleClick()
 2. GameScene → NetworkManager.placeTower()
 3. NetworkManager → Server
@@ -217,6 +238,7 @@ WaveSync ──> WaveManager (lokale Visualisierung)
 ## Performance-Optimierungen
 
 ### Object Pooling
+
 ```typescript
 // Projektile werden recycled, nicht ständig neu erstellt
 projectilePool.get();
@@ -224,6 +246,7 @@ projectilePool.release(projectile);
 ```
 
 ### Update-Optimierung
+
 ```typescript
 // Nur sichtbare Entities updaten
 if (enemy.visible && Phaser.Geom.Intersects.RectangleToRectangle(
@@ -235,6 +258,7 @@ if (enemy.visible && Phaser.Geom.Intersects.RectangleToRectangle(
 ```
 
 ### Batch-Rendering
+
 ```typescript
 // Sprites in Layern gruppieren
 this.add.layer([tower1, tower2, tower3]);
@@ -250,6 +274,7 @@ this.add.layer([tower1, tower2, tower3]);
 ## Testing
 
 Game-Manager werden **nicht direkt getestet**, weil:
+
 - ❌ Zu eng mit Phaser gekoppelt (Scene, GameObjects, Physics)
 - ❌ Primär Visualisierungs-Code, keine Business-Logik
 - ❌ Logik ist bereits server-seitig getestet

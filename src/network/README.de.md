@@ -19,11 +19,13 @@ const network = NetworkManager.getInstance();
 ### Verbindung
 
 **Verbindung aufbauen**:
+
 ```typescript
 await network.connect('http://localhost:3001');
 ```
 
 **Verbindungsstatus prüfen**:
+
 ```typescript
 if (network.isConnected()) {
   // Socket ist verbunden
@@ -31,6 +33,7 @@ if (network.isConnected()) {
 ```
 
 **Verbindung trennen**:
+
 ```typescript
 network.disconnect();
 ```
@@ -38,6 +41,7 @@ network.disconnect();
 ### Event System
 
 **Event-Handler registrieren**:
+
 ```typescript
 network.on('roomUpdate', (data) => {
   console.log('Room updated:', data);
@@ -49,11 +53,13 @@ network.on('gameStateUpdate', (state) => {
 ```
 
 **Event-Handler entfernen**:
+
 ```typescript
 network.off('roomUpdate', handler);
 ```
 
 **Events manuell auslösen**:
+
 ```typescript
 network.trigger('customEvent', data);
 ```
@@ -61,6 +67,7 @@ network.trigger('customEvent', data);
 ### Raum-Verwaltung
 
 **Raum erstellen**:
+
 ```typescript
 const result = await network.createRoom('MeinName');
 if (result.success) {
@@ -69,6 +76,7 @@ if (result.success) {
 ```
 
 **Raum beitreten**:
+
 ```typescript
 const result = await network.joinRoom('katze-baum', 'MeinName');
 if (result.success) {
@@ -77,16 +85,19 @@ if (result.success) {
 ```
 
 **Raum verlassen**:
+
 ```typescript
 network.leaveRoom();
 ```
 
 **Bereitschaft setzen**:
+
 ```typescript
 network.setReady(true);
 ```
 
 **Spiel starten** (nur Host):
+
 ```typescript
 const result = await network.startGame();
 if (result.success) {
@@ -97,26 +108,31 @@ if (result.success) {
 ### Spiel-Aktionen
 
 **Turm platzieren**:
+
 ```typescript
 network.placeTower('basic', 100, 200);
 ```
 
 **Turm upgraden**:
+
 ```typescript
 network.upgradeTower('tower-123');
 ```
 
 **Turm verkaufen**:
+
 ```typescript
 network.sellTower('tower-123');
 ```
 
 **Welle starten**:
+
 ```typescript
 network.startWave();
 ```
 
 **Forschung freischalten**:
+
 ```typescript
 network.unlockResearch('fast-fire');
 ```
@@ -217,7 +233,7 @@ Der NetworkManager logged wichtige Events:
 
 ## Architektur
 
-```
+```adr
 Phaser Scene
     ↓
 NetworkManager (Singleton)
@@ -233,9 +249,10 @@ GameServer
 
 Der NetworkManager ist vollständig getestet mit 26 Tests.
 
-Siehe [__tests__/NetworkManager.test.ts](./__tests__/NetworkManager.test.ts).
+Siehe [**tests**/NetworkManager.test.ts](./__tests__/NetworkManager.test.ts).
 
 **Test-Abdeckung**:
+
 - Singleton Pattern
 - Connection Management
 - Event System (on/off/trigger)
