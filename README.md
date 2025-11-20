@@ -1,59 +1,67 @@
 # Open TD - Tower Defense Game
 
-Ein Open-Source Tower Defense Spiel, entwickelt mit Phaser 3 und Capacitor für Web und Mobile Plattformen.
+An open-source Tower Defense game built with Phaser 3 and Capacitor for web and mobile platforms.
+
+## 📚 Documentation
+
+- **[Server](src/server/README.md)** - Multiplayer server with Socket.io, GameServer, ServerGameState
+- **[Network](src/network/README.md)** - NetworkManager singleton for client-server communication
+- **[Multiplayer](src/multiplayer/README.md)** - Sync layer between client and server
+- **[Game](src/game/README.md)** - Game managers (Tower, Wave, Level, Research) and UI components
+- **[Tests](src/server/__tests__/README.md)** - Test documentation and testing strategy
 
 ## 🎮 Features
 
-- **Tower Defense Gameplay**: Platziere strategisch Türme, um Gegnerwellen abzuwehren
-- **Verschiedene Turmtypen**:
-  - Basis-Turm: Ausgeglichene Werte (50 Gold)
-  - Schnell-Turm: Hohe Feuerrate (75 Gold)
-  - Stark-Turm: Hoher Schaden (100 Gold)
-- **Progressive Schwierigkeit**: Gegner werden mit jeder Welle stärker
-- **Mobile-Ready**: Optimiert für Touch-Steuerung auf Smartphones und Tablets
-- **Cross-Platform**: Läuft im Browser und als native App auf iOS/Android
+- **Tower Defense Gameplay**: Strategically place towers to defend against enemy waves
+- **Multiple Tower Types**:
+  - Basic Tower: Balanced stats (50 Gold)
+  - Fast Tower: High fire rate (75 Gold)
+  - Strong Tower: High damage (100 Gold)
+- **Progressive Difficulty**: Enemies become stronger with each wave
+- **Mobile-Ready**: Optimized for touch controls on smartphones and tablets
+- **Cross-Platform**: Runs in browser and as native app on iOS/Android
 
-## 🚀 Schnellstart
+## 🚀 Quick Start
 
-### Voraussetzungen
+### Prerequisites
 
-- Node.js (v18 oder höher)
-- pnpm (schneller Package Manager)
-- Für mobile Entwicklung: Xcode (iOS) oder Android Studio (Android)
+- Node.js (v18 or higher)
+- pnpm (fast package manager)
+- For mobile development: Xcode (iOS) or Android Studio (Android)
 
 ### Installation
 
-1. pnpm installieren (falls noch nicht vorhanden):
+1. Install pnpm (if not already installed):
 
-```bash
-npm install -g pnpm
-```
+      ```bash
+      npm install -g pnpm
+      ```
 
-2. Repository klonen und Dependencies installieren:
+2. Clone repository and install dependencies:
 
-```bash
-pnpm install
-```
+      ```bash
+      pnpm install
+      ```
 
-3. Entwicklungsserver starten:
+3. Start development server:
 
-```bash
-pnpm dev
-```
+      ```bash
+      pnpm dev
+      ```
 
-Das Spiel öffnet sich automatisch im Browser unter `http://localhost:3000`.
+The game will automatically open in your browser at `http://localhost:3000`.
 
-### Build für Produktion
+### Production Build
 
 ```bash
 pnpm build
 ```
 
-Der Build-Output befindet sich im `dist/` Verzeichnis.
+Build output will be in the `dist/` directory.
 
 ## 📱 Mobile Deployment
 
-### Capacitor initialisieren
+### Initialize Capacitor
 
 ```bash
 pnpm cap:init
@@ -62,57 +70,57 @@ pnpm cap:init
 ### iOS Build
 
 ```bash
-# iOS Plattform hinzufügen
+# Add iOS platform
 pnpm cap:add:ios
 
-# Build erstellen und synchronisieren
+# Create build and sync
 pnpm build:mobile
 
-# Xcode öffnen
+# Open Xcode
 pnpm cap:open:ios
 ```
 
 ### Android Build
 
 ```bash
-# Android Plattform hinzufügen
+# Add Android platform
 pnpm cap:add:android
 
-# Build erstellen und synchronisieren
+# Create build and sync
 pnpm build:mobile
 
-# Android Studio öffnen
+# Open Android Studio
 pnpm cap:open:android
 ```
 
-## 🎯 Spielanleitung
+## 🎯 How to Play
 
-1. **Türme platzieren**: Wähle einen Turmtyp aus der unteren Leiste und klicke auf eine freie Stelle
-2. **Gold verdienen**: Vernichte Gegner, um Gold zu erhalten
-3. **Strategisch denken**: Platziere Türme so, dass sie möglichst lange auf Gegner schießen können
-4. **Überleben**: Schütze deinen Endpunkt - wenn zu viele Gegner durchkommen, ist das Spiel vorbei!
+1. **Place Towers**: Select a tower type from the bottom bar and click on an empty spot
+2. **Earn Gold**: Destroy enemies to earn gold
+3. **Think Strategically**: Place towers where they can shoot enemies for as long as possible
+4. **Survive**: Protect your endpoint - if too many enemies get through, the game is over!
 
-## 🏗️ Projektstruktur
+## 🏗️ Project Structure
 
 ```text
 open-td/
 ├── src/
 │   ├── main.ts              # Phaser Game Configuration
-│   ├── scenes/              # Game Szenen
+│   ├── scenes/              # Game Scenes
 │   │   ├── PreloaderScene.ts  # Asset Loader
-│   │   ├── MainMenuScene.ts   # Hauptmenü
-│   │   └── GameScene.ts       # Haupt-Spielszene
-│   └── entities/            # Spielentitäten
-│       ├── Tower.ts           # Turm-Klasse
-│       ├── Enemy.ts           # Gegner-Klasse
-│       └── Projectile.ts      # Projektil-Klasse
+│   │   ├── MainMenuScene.ts   # Main Menu
+│   │   └── GameScene.ts       # Main Game Scene
+│   └── entities/            # Game Entities
+│       ├── Tower.ts           # Tower Class
+│       ├── Enemy.ts           # Enemy Class
+│       └── Projectile.ts      # Projectile Class
 ├── index.html               # HTML Entry Point
-├── capacitor.config.json    # Capacitor Konfiguration
+├── capacitor.config.json    # Capacitor Configuration
 ├── vite.config.ts           # Vite Build Configuration
 └── package.json
 ```
 
-## 🛠️ Technologie-Stack
+## 🛠️ Technology Stack
 
 - **Game Engine**: [Phaser 3](https://phaser.io/) - HTML5 Game Framework
 - **Build Tool**: [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
@@ -123,32 +131,33 @@ open-td/
 
 ### PNPM Scripts
 
-- `pnpm dev` - Entwicklungsserver starten
-- `pnpm build` - Production Build erstellen
-- `pnpm preview` - Production Build lokal testen
-- `pnpm cap:sync` - Capacitor synchronisieren
-- `pnpm build:mobile` - Build und Sync für Mobile
+- `pnpm dev` - Start development server
+- `pnpm build` - Create production build
+- `pnpm preview` - Preview production build locally
+- `pnpm cap:sync` - Sync Capacitor
+- `pnpm build:mobile` - Build and sync for mobile
 
-### Warum pnpm?
+### Why pnpm?
 
-Dieses Projekt nutzt [pnpm](https://pnpm.io/) als Package Manager:
-- ⚡ **Schneller**: Bis zu 3x schnellere Installation
-- 💾 **Speichereffizient**: Globaler Shared Store reduziert Disk Space
-- 🔒 **Sicher**: Strikte Dependency Resolution verhindert Phantom Dependencies
+This project uses [pnpm](https://pnpm.io/) as package manager:
 
-### Weiterentwicklung
+- ⚡ **Faster**: Up to 3x faster installation
+- 💾 **Space Efficient**: Global shared store reduces disk space
+- 🔒 **Secure**: Strict dependency resolution prevents phantom dependencies
 
-Das Projekt bietet eine solide Grundlage für Tower Defense Entwicklung:
+### Further Development
 
-- Füge neue Turmtypen in `src/entities/Tower.ts` hinzu
-- Erstelle neue Gegnertypen in `src/entities/Enemy.ts`
-- Erweitere das Gameplay in `src/scenes/GameScene.ts`
-- Füge Assets (Bilder, Sounds) hinzu und lade sie in `PreloaderScene.ts`
+The project provides a solid foundation for tower defense development:
 
-## 📄 Lizenz
+- Add new tower types in `src/entities/Tower.ts`
+- Create new enemy types in `src/entities/Enemy.ts`
+- Extend gameplay in `src/scenes/GameScene.ts`
+- Add assets (images, sounds) and load them in `PreloaderScene.ts`
 
-MIT License - siehe [LICENSE](LICENSE) Datei für Details.
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
-Beiträge sind willkommen! Fühl dich frei, Issues zu erstellen oder Pull Requests einzureichen.
+Contributions are welcome! Feel free to create issues or submit pull requests.
