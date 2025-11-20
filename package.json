@@ -9,6 +9,10 @@
     "preview": "vite preview",
     "server": "tsx src/server/index.ts",
     "server:dev": "tsx watch src/server/index.ts",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "cap:init": "cap init",
     "cap:add:ios": "cap add ios",
     "cap:add:android": "cap add android",
@@ -28,9 +32,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.10.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
     "tsx": "^4.20.6",
     "typescript": "^5.3.3",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vitest": "^1.0.0"
   },
   "dependencies": {
     "@capacitor/android": "^5.5.1",

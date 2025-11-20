@@ -47,6 +47,12 @@ jobs:
     - name: TypeScript type check
       run: pnpm tsc --noEmit
 
+    - name: Run tests
+      run: pnpm test:run
+
+    - name: Run tests with coverage
+      run: pnpm test:coverage
+
     - name: Build project
       run: pnpm run build
 
