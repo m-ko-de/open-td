@@ -34,11 +34,12 @@ export class TowerButtonPanel {
       { type: 'basic', label: config.towers.basic.name, cost: config.towers.basic.cost },
       { type: 'fast', label: config.towers.fast.name, cost: config.towers.fast.cost },
       { type: 'strong', label: config.towers.strong.name, cost: config.towers.strong.cost },
-      { type: 'frost', label: config.towers.frost.name, cost: config.towers.frost.cost, requiresResearch: config.towers.frost.requiresResearch },
+      { type: 'frost', label: config.towers.frost.name, cost: config.towers.frost.cost, requiresResearch: config.towers.frost.requiresResearch, researchId: 'frost_tower' },
+      { type: 'fire', label: config.towers.fire.name, cost: config.towers.fire.cost, requiresResearch: config.towers.fire.requiresResearch, researchId: 'fire_tower' },
     ];
 
     towers.forEach((tower, index) => {
-      if (tower.requiresResearch && !this.researchManager.isResearched('frost_tower')) {
+      if (tower.requiresResearch && tower.researchId && !this.researchManager.isResearched(tower.researchId)) {
         return;
       }
 

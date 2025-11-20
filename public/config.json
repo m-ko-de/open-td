@@ -59,6 +59,17 @@
       "slowEffect": 0.5,
       "slowDuration": 2000,
       "requiresResearch": true
+    },
+    "fire": {
+      "name": "Feuer-Turm",
+      "cost": 90,
+      "damage": 0,
+      "range": 130,
+      "fireRate": 1200,
+      "type": "fire",
+      "burnDamagePerSecond": 8,
+      "burnDuration": 5000,
+      "requiresResearch": true
     }
   },
   "towerUpgrades": {

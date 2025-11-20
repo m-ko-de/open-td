@@ -34,6 +34,8 @@ export interface GameConfig {
       type: string;
       slowEffect?: number;
       slowDuration?: number;
+      burnDamagePerSecond?: number;
+      burnDuration?: number;
       requiresResearch?: boolean;
     };
   };

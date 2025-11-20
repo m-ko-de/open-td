@@ -291,6 +291,27 @@ export class Enemy {
       }
     }
 
+    // Update burn effect
+    const self = this as any;
+    if (self.burnEffect) {
+      const stillBurning = self.burnEffect.update();
+      if (!stillBurning) {
+        // Burn effect expired
+        self.burnEffect = null;
+        if (self.burnIndicator) {
+          self.burnIndicator.destroy();
+          self.burnIndicator = null;
+        }
+      } else {
+        // Update burn indicator position
+        if (self.burnIndicator) {
+          self.burnIndicator.clear();
+          self.burnIndicator.fillStyle(0xff6600, 0.6);
+          self.burnIndicator.fillCircle(this.sprite.x, this.sprite.y, 12);
+        }
+      }
+    }
+
     this.follower.t += this.speed * delta;
 
     if (this.follower.t >= 1) {
@@ -378,5 +399,13 @@ export class Enemy {
   destroy(): void {
     this.sprite.destroy();
     this.healthBar.destroy();
+    
+    // Clean up burn indicator if present
+    const self = this as any;
+    if (self.burnIndicator) {
+      self.burnIndicator.destroy();
+      self.burnIndicator = null;
+    }
+    self.burnEffect = null;
   }
 }

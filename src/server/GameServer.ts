@@ -39,8 +39,9 @@ export class GameServer {
 
   public start(): void {
     const port = this.config.multiplayer.serverPort;
-    this.httpServer.listen(port, () => {
+    this.httpServer.listen(port, '0.0.0.0', () => {
       console.log(`🎮 Game Server running on port ${port}`);
+      console.log(`📡 Listening on 0.0.0.0:${port} (IPv4 + IPv6)`);
       console.log(`📊 Max players per room: ${this.config.multiplayer.maxPlayers}`);
       console.log(`🏰 Max rooms: ${this.config.multiplayer.roomSettings.maxRooms}`);
     });
@@ -322,23 +323,50 @@ export class GameServer {
 
   private handleUpgradeTower(socket: Socket, towerId: string): void {
     const roomCode = socket.data.roomId;
-    if (!roomCode) return;
+    const playerId = socket.data.playerId;
+
+    console.log(`📥 Received tower upgrade request: towerId=${towerId}, player=${playerId}`);
+
+    if (!roomCode) {
+      console.log('❌ Missing roomCode');
+      return;
+    }
 
     const gameState = this.gameStates.get(roomCode);
-    if (!gameState) return;
+    if (!gameState) {
+      console.log('❌ Game state not found for room:', roomCode);
+      return;
+    }
 
     // Get tower and calculate upgrade cost
     const state = gameState.getState();
     const tower = state.towers.find(t => t.id === towerId);
-    if (!tower) return;
+    if (!tower) {
+      console.log('❌ Tower not found with ID:', towerId);
+      console.log('Available towers:', state.towers.map(t => ({ id: t.id, type: t.type, level: t.level })));
+      return;
+    }
+
+    console.log(`🔍 Found tower: type=${tower.type}, level=${tower.level}, x=${tower.x}, y=${tower.y}`);
+
+    if (tower.level >= 3) {
+      console.log('❌ Tower already at max level');
+      return;
+    }
 
     const upgradeConfig = tower.level === 1 ? this.config.towerUpgrades.level2 : this.config.towerUpgrades.level3;
     const towerConfig = this.config.towers[tower.type];
     const upgradeCost = Math.round(towerConfig.cost * upgradeConfig.costMultiplier);
 
+    console.log(`💰 Upgrade cost: ${upgradeCost}, current gold: ${state.gold}`);
+
     if (gameState.upgradeTower(towerId, upgradeCost)) {
-      this.io.to(roomCode).emit('game:towerUpgraded', towerId, tower.level + 1);
+      const newLevel = tower.level + 1;
+      console.log(`✅ Tower upgraded successfully to level ${newLevel}`);
+      this.io.to(roomCode).emit('game:towerUpgraded', towerId, newLevel);
       this.io.to(roomCode).emit('game:stateUpdate', gameState.getState());
+    } else {
+      console.log('❌ Tower upgrade failed (insufficient gold or invalid state)');
     }
   }
 

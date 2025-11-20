@@ -43,6 +43,17 @@ export class ResearchManager {
       researched: false,
     });
 
+    // Fire Tower research - unlocks at level 4
+    this.researches.set('fire_tower', {
+      id: 'fire_tower',
+      name: 'Feuer-Turm',
+      description: 'Schaltet den Feuer-Turm frei, der Gegner verbrennt (8 Schaden/Sek für 5 Sek)',
+      goldCost: 350,
+      xpRequired: 0, // No XP requirement, only level requirement (level 4)
+      unlocked: false,
+      researched: false,
+    });
+
     // Future researches can be added here
     this.researches.set('tower_damage_1', {
       id: 'tower_damage_1',
@@ -107,8 +118,14 @@ export class ResearchManager {
       }
     }
     
-    // Unlock general upgrades at level 4
+    // Unlock fire tower at level 4
     if (this.level >= 4) {
+      const fireTower = this.researches.get('fire_tower');
+      if (fireTower && !fireTower.unlocked) {
+        fireTower.unlocked = true;
+        newlyUnlocked.push(fireTower.name);
+      }
+      
       const damageUpgrade = this.researches.get('tower_damage_1');
       if (damageUpgrade && !damageUpgrade.unlocked) {
         damageUpgrade.unlocked = true;

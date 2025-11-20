@@ -154,7 +154,7 @@ export class TowerManager {
     return this.selectedType;
   }
 
-  addTowerFromServer(x: number, y: number, type: string, level: number): void {
+  addTowerFromServer(x: number, y: number, type: string, level: number, id?: string): void {
     // Add a tower that was placed via multiplayer server
     // Get the correct cost from config so upgrade costs calculate properly
     const config = ConfigManager.getInstance().getConfig();
@@ -162,6 +162,9 @@ export class TowerManager {
     const cost = towerConfig ? towerConfig.cost : 0;
     
     const tower = new Tower(this.scene, x, y, type, cost);
+    if (id) {
+      tower.id = id; // Set server-assigned ID
+    }
     // Upgrade tower to correct level
     for (let i = 1; i < level; i++) {
       tower.upgrade(); // Server already handled cost
@@ -224,6 +227,31 @@ export class TowerManager {
 
   getSelectedTower(): Tower | null {
     return this.selectedTower;
+  }
+
+  upgradeTowerById(towerId: string, level: number): void {
+    const tower = this.towers.find(t => t.id === towerId);
+    if (tower) {
+      console.log(`🔧 Upgrading tower ${towerId} to level ${level}`);
+      // Upgrade tower to the specified level
+      while (tower.getUpgradeLevel() < level && tower.canUpgrade()) {
+        tower.upgrade();
+      }
+    } else {
+      console.error(`❌ Tower ${towerId} not found for upgrade`);
+      console.log('Available towers:', this.towers.map(t => ({ id: t.id, x: t.x, y: t.y })));
+    }
+  }
+
+  sellTowerById(towerId: string): void {
+    const tower = this.towers.find(t => t.id === towerId);
+    if (tower) {
+      const index = this.towers.indexOf(tower);
+      if (index > -1) {
+        this.towers.splice(index, 1);
+      }
+      tower.destroy();
+    }
   }
 
   cleanup(): void {

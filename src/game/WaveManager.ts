@@ -144,6 +144,10 @@ export class WaveManager {
     this.waveComplete = false;
   }
 
+  markWaveComplete(): void {
+    this.waveComplete = true;
+  }
+
   private getEnemyTypeForWave(wave: number, _index: number, _totalEnemies: number): EnemyType {
     // Keine fast enemies, bis Spieler Level 3 erreicht hat (Frost-Tower kann erforscht werden)
     const canSpawnFast = this.playerLevel >= 3;

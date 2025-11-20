@@ -87,7 +87,7 @@ export class GameUI {
         this.updateGold(this.gold);
       },
       (researchId) => {
-        if (researchId === 'frost_tower') {
+        if (researchId === 'frost_tower' || researchId === 'fire_tower') {
           this.towerButtons.recreate();
         }
       }

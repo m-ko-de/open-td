@@ -3,6 +3,7 @@ import { Projectile } from './Projectile';
 import { ConfigManager } from '../config/ConfigManager';
 
 export class Tower {
+  public id?: string; // Server-assigned ID for multiplayer
   private sprite!: Phaser.GameObjects.Graphics;
   private scene: Phaser.Scene;
   private range: number;
@@ -12,6 +13,9 @@ export class Tower {
   private rangeCircle: Phaser.GameObjects.Graphics;
   private showRange: boolean = false;
   private isFrost: boolean = false;
+  private isFire: boolean = false;
+  private burnDamagePerSecond: number = 0;
+  private burnDuration: number = 0;
   public x: number;
   public y: number;
   private baseDamage: number;
@@ -42,12 +46,21 @@ export class Tower {
     this.baseDamage = config.damage;
     this.baseFireRate = config.fireRate;
     this.isFrost = config.type === 'frost';
+    this.isFire = config.type === 'fire';
+    
+    // Fire tower specific properties
+    if (this.isFire) {
+      this.burnDamagePerSecond = config.burnDamagePerSecond || 8;
+      this.burnDuration = config.burnDuration || 5000;
+    }
 
     // Create sprite based on type
     if (type === 'fast') {
       this.createMGSprite();
     } else if (type === 'frost') {
       this.createSprite(0x00ddff);
+    } else if (type === 'fire') {
+      this.createSprite(0xff6600);
     } else if (type === 'strong') {
       this.createSprite(0xff00ff);
     } else {
@@ -251,6 +264,24 @@ export class Tower {
   }
 
   private fire(target: Enemy, projectiles: Projectile[]): void {
+    // Fire tower applies burn effect directly without projectiles
+    if (this.isFire) {
+      this.applyBurnEffect(target);
+      // Visual feedback
+      const flame = this.scene.add.graphics();
+      flame.fillStyle(0xff6600, 0.8);
+      flame.fillCircle(target.x, target.y, 15);
+      this.scene.tweens.add({
+        targets: flame,
+        alpha: 0,
+        scale: 1.5,
+        duration: 300,
+        onComplete: () => flame.destroy()
+      });
+      return;
+    }
+    
+    // Regular projectile attack for other towers
     const projectile = new Projectile(
       this.scene,
       this.x,
@@ -262,6 +293,23 @@ export class Tower {
       2000 // 2 seconds
     );
     projectiles.push(projectile);
+  }
+  
+  private applyBurnEffect(enemy: Enemy): void {
+    // Check if enemy already has a burn effect from any tower
+    if (!(enemy as any).burnEffect) {
+      const BurnEffect = require('./BurnEffect').BurnEffect;
+      (enemy as any).burnEffect = new BurnEffect(enemy, this.burnDamagePerSecond, this.burnDuration);
+      
+      // Add visual burn indicator
+      if (!(enemy as any).burnIndicator) {
+        const burnIndicator = this.scene.add.graphics();
+        (enemy as any).burnIndicator = burnIndicator;
+      }
+    } else {
+      // Refresh existing burn effect
+      (enemy as any).burnEffect.refresh();
+    }
   }
 
   upgrade(): boolean {
