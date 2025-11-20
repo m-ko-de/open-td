@@ -40,22 +40,30 @@ describe('GameServer Integration Tests', () => {
       clientSocket.disconnect();
     }
     // Give time for cleanup
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 200));
   });
 
   describe('connection', () => {
     it('should accept client connections', async () => {
       gameServer.start();
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-      clientSocket = ioClient(`http://localhost:${port}`);
+      clientSocket = ioClient(`http://127.0.0.1:${port}`, {
+        transports: ['websocket'],
+        forceNew: true
+      });
 
       await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Connection timeout')), 5000);
+
         clientSocket.on('connect', () => {
+          clearTimeout(timeout);
           expect(clientSocket.connected).toBe(true);
           resolve();
         });
 
         clientSocket.on('connect_error', (error) => {
+          clearTimeout(timeout);
           reject(error);
         });
       });
@@ -65,7 +73,11 @@ describe('GameServer Integration Tests', () => {
   describe('room creation', () => {
     it('should create a room and receive room code', async () => {
       gameServer.start();
-      clientSocket = ioClient(`http://localhost:${port}`);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      clientSocket = ioClient(`http://127.0.0.1:${port}`, {
+        transports: ['websocket'],
+        forceNew: true
+      });
 
       await new Promise<void>((resolve, reject) => {
         clientSocket.on('connect', () => {
@@ -95,8 +107,12 @@ describe('GameServer Integration Tests', () => {
   describe('room joining', () => {
     it('should allow second player to join existing room', async () => {
       gameServer.start();
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      const client1 = ioClient(`http://localhost:${port}`);
+      const client1 = ioClient(`http://127.0.0.1:${port}`, {
+        transports: ['websocket'],
+        forceNew: true
+      });
 
       await new Promise<void>((resolve, reject) => {
         let roomCode: string;
@@ -112,7 +128,10 @@ describe('GameServer Integration Tests', () => {
           
           if (joinedCount === 1) {
             // First player created room, now join with second player
-            clientSocket = ioClient(`http://localhost:${port}`);
+            clientSocket = ioClient(`http://127.0.0.1:${port}`, {
+              transports: ['websocket'],
+              forceNew: true
+            });
             
             clientSocket.on('connect', () => {
               clientSocket.emit('room:join', roomCode, 'Player2');
@@ -141,7 +160,11 @@ describe('GameServer Integration Tests', () => {
 
     it('should reject joining non-existent room', async () => {
       gameServer.start();
-      clientSocket = ioClient(`http://localhost:${port}`);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      clientSocket = ioClient(`http://127.0.0.1:${port}`, {
+        transports: ['websocket'],
+        forceNew: true
+      });
 
       await new Promise<void>((resolve, reject) => {
         clientSocket.on('connect', () => {
@@ -162,7 +185,11 @@ describe('GameServer Integration Tests', () => {
   describe('player ready', () => {
     it('should update player ready status', async () => {
       gameServer.start();
-      clientSocket = ioClient(`http://localhost:${port}`);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      clientSocket = ioClient(`http://127.0.0.1:${port}`, {
+        transports: ['websocket'],
+        forceNew: true
+      });
 
       await new Promise<void>((resolve, reject) => {
         clientSocket.on('connect', () => {
