@@ -3,14 +3,14 @@ import { vi } from 'vitest';
 // Mock Phaser globally
 (global as any).Phaser = {
   Scene: class Scene {
-    constructor(config?: any) {}
-    init(data?: any) {}
+    constructor(_config?: any) {}
+    init(_data?: any) {}
     preload() {}
     create() {}
-    update(time?: number, delta?: number) {}
+    update(_time?: number, _delta?: number) {}
   },
   Game: class Game {
-    constructor(config: any) {}
+    constructor(_config: any) {}
   },
   Math: {
     Distance: {
