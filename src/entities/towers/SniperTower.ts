@@ -1,5 +1,5 @@
 import { BaseTower } from './BaseTower';
-import { Enemy } from '../enemies/Enemy';
+import { BaseEnemy } from '../enemies/BaseEnemy';
 import { ConfigManager } from '../../config/ConfigManager';
 
 /**
@@ -67,11 +67,11 @@ export class SniperTower extends BaseTower {
   /**
    * Sniper prioritizes strongest enemies (highest health)
    */
-  protected calculateTargetValue(enemy: Enemy): number {
+  protected calculateTargetValue(enemy: BaseEnemy): number {
     return enemy.getHealth();
   }
 
-  protected fireAtTarget(target: Enemy, _allEnemies: Enemy[]): void {
+  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): void {
     if (target.isDead()) return;
     
     // Instant damage with armor penetration

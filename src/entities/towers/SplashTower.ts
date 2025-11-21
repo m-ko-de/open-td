@@ -1,5 +1,5 @@
 import { BaseTower } from './BaseTower';
-import { Enemy } from '../enemies/Enemy';
+import { BaseEnemy } from '../enemies/BaseEnemy';
 import { Projectile } from '../projectiles/Projectile';
 import { ConfigManager } from '../../config/ConfigManager';
 
@@ -54,7 +54,7 @@ export class SplashTower extends BaseTower {
     this.sprite.y = this.y;
   }
 
-  protected fireAtTarget(target: Enemy, allEnemies: Enemy[]): void {
+  protected fireAtTarget(target: BaseEnemy, allEnemies: BaseEnemy[]): void {
     if (target.isDead()) return;
     
     // Create splash projectile

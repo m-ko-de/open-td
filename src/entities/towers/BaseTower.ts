@@ -1,4 +1,4 @@
-import { Enemy } from '../enemies/Enemy';
+import { BaseEnemy } from '../enemies/BaseEnemy';
 import { ConfigManager } from '../../config/ConfigManager';
 
 /**
@@ -98,13 +98,13 @@ export abstract class BaseTower {
   /**
    * Abstract method to fire at target - must be implemented by subclasses
    */
-  protected abstract fireAtTarget(target: Enemy, allEnemies: Enemy[]): void;
+  protected abstract fireAtTarget(target: BaseEnemy, allEnemies: BaseEnemy[]): void;
 
   /**
    * Find the best target within range
    */
-  protected findTarget(enemies: Enemy[]): Enemy | null {
-    let bestTarget: Enemy | null = null;
+  protected findTarget(enemies: BaseEnemy[]): BaseEnemy | null {
+    let bestTarget: BaseEnemy | null = null;
     let bestValue = -1;
 
     for (const enemy of enemies) {
@@ -127,7 +127,7 @@ export abstract class BaseTower {
   /**
    * Calculate target priority value (can be overridden by subclasses)
    */
-  protected calculateTargetValue(enemy: Enemy): number {
+  protected calculateTargetValue(enemy: BaseEnemy): number {
     // Default: target enemy with most progress
     return enemy.getProgress();
   }
@@ -135,7 +135,7 @@ export abstract class BaseTower {
   /**
    * Update tower logic
    */
-  update(time: number, enemies: Enemy[]): void {
+  update(time: number, enemies: BaseEnemy[]): void {
     if (time - this.lastFired < this.fireRate) {
       return;
     }

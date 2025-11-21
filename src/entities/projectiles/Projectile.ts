@@ -1,9 +1,9 @@
-import { Enemy } from '../enemies/Enemy';
+import { BaseEnemy } from '../enemies/BaseEnemy';
 
 export class Projectile {
   private sprite: Phaser.GameObjects.Graphics;
   private scene: Phaser.Scene;
-  private target: Enemy;
+  private target: BaseEnemy;
   private damage: number;
   private speed: number = 0.3;
   private x: number;
@@ -13,19 +13,19 @@ export class Projectile {
   private slowAmount: number = 0;
   private slowDuration: number = 0;
   private splashRadius: number = 0;
-  private allEnemies: Enemy[] = [];
+  private allEnemies: BaseEnemy[] = [];
 
   constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
-    target: Enemy,
+    target: BaseEnemy,
     damage: number,
     isFrost: boolean = false,
     slowAmount: number = 0,
     slowDuration: number = 0,
     splashRadius: number = 0,
-    allEnemies: Enemy[] = []
+    allEnemies: BaseEnemy[] = []
   ) {
     this.scene = scene;
     this.x = x;

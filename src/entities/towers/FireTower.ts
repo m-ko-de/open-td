@@ -1,5 +1,5 @@
 import { BaseTower } from './BaseTower';
-import { Enemy } from '../enemies/Enemy';
+import { BaseEnemy } from '../enemies/BaseEnemy';
 import { BurnEffect } from '../effects/BurnEffect';
 import { ConfigManager } from '../../config/ConfigManager';
 
@@ -63,7 +63,7 @@ export class FireTower extends BaseTower {
     this.sprite.y = this.y;
   }
 
-  protected fireAtTarget(target: Enemy, _allEnemies: Enemy[]): void {
+  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): void {
     if (target.isDead()) return;
     
     // Apply burn effect to target
@@ -83,7 +83,7 @@ export class FireTower extends BaseTower {
     });
   }
 
-  private applyBurn(enemy: Enemy): void {
+  private applyBurn(enemy: BaseEnemy): void {
     // Create burn effect on enemy - BurnEffect handles its own lifecycle
     new BurnEffect(enemy, this.burnDamagePerSecond, this.burnDuration);
   }

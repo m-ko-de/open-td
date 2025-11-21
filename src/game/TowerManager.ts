@@ -1,5 +1,5 @@
 import { BaseTower, TowerFactory } from '../entities/towers';
-import { Enemy } from '../entities/enemies';
+import { BaseEnemy } from '../entities/enemies';
 import { ConfigManager } from '../config/ConfigManager';
 
 export class TowerManager {
@@ -88,7 +88,7 @@ export class TowerManager {
     return { success: true, cost };
   }
 
-  update(time: number, enemies: Enemy[]): void {
+  update(time: number, enemies: BaseEnemy[]): void {
     // Update towers
     this.towers.forEach((tower) => {
       tower.update(time, enemies);
@@ -215,7 +215,7 @@ export class TowerManager {
     return { success: true, refund };
   }
 
-  getSelectedTower(): Tower | null {
+  getSelectedTower(): BaseTower | null {
     return this.selectedTower;
   }
 
@@ -247,8 +247,6 @@ export class TowerManager {
   cleanup(): void {
     this.towers.forEach(tower => tower.destroy());
     this.towers = [];
-    this.projectiles.forEach(projectile => projectile.destroy());
-    this.projectiles = [];
     this.clearPreview();
     this.selectedTower = null;
   }

@@ -1,11 +1,11 @@
-import { Enemy, EnemyType, BossEnemy } from '../entities/enemies';
+import { BaseEnemy, EnemyFactory, EnemyType, BossEnemy } from '../entities/enemies';
 import { OptionsScene } from '../scenes/OptionsScene';
 import { ConfigManager } from '../config/ConfigManager';
 
 export class WaveManager {
   private scene: Phaser.Scene;
   private path: Phaser.Curves.Path;
-  private enemies: Enemy[] = [];
+  private enemies: BaseEnemy[] = [];
   private wave: number = 0;
   private isSpawning: boolean = false;
   private waveComplete: boolean = false;
@@ -81,10 +81,20 @@ export class WaveManager {
         config.spawnDelay.base - this.wave * config.spawnDelay.reduction
       );
 
+      // Get wave composition from factory
+      const waveComposition = EnemyFactory.getWaveComposition(this.wave, enemyCount);
+
       for (let i = 0; i < enemyCount; i++) {
         this.scene.time.delayedCall(i * spawnDelay, () => {
-          const enemyType = this.getEnemyTypeForWave(this.wave, i, enemyCount);
-          const enemy = new Enemy(this.scene, this.path, this.wave, this.playerCount, enemyType, this.playerLevel);
+          const enemyType = waveComposition[i] || 'normal';
+          const enemy = EnemyFactory.createEnemy(
+            this.scene,
+            this.path,
+            enemyType,
+            this.wave,
+            this.playerCount,
+            this.playerLevel
+          );
           this.enemies.push(enemy);
         });
       }
@@ -96,11 +106,19 @@ export class WaveManager {
   }
 
   update(delta: number, onEnemyKilled: (gold: number, xp: number) => void, onEnemyReachedEnd: () => void, onWaveComplete?: (wave: number) => void): void {
+    const newEnemies: BaseEnemy[] = [];
+
     this.enemies = this.enemies.filter((enemy) => {
-      enemy.update(delta);
+      // Pass all enemies for special behaviors (e.g., healing aura)
+      enemy.update(delta, this.enemies);
       
       if (enemy.isDead()) {
         onEnemyKilled(enemy.getGoldReward(), enemy.getXPReward());
+        
+        // Check for special death behavior (e.g., splitting enemies)
+        const spawnedEnemies = enemy.takeDamage(0); // Get spawned enemies if any
+        newEnemies.push(...spawnedEnemies);
+        
         enemy.destroy();
         return false;
       }
@@ -114,6 +132,9 @@ export class WaveManager {
       return true;
     });
 
+    // Add newly spawned enemies (from splitting, etc.)
+    this.enemies.push(...newEnemies);
+
     // Check if wave is complete
     if (this.enemies.length === 0 && this.wave > 0 && !this.waveComplete && !this.isSpawning) {
       this.waveComplete = true;
@@ -123,7 +144,7 @@ export class WaveManager {
     }
   }
 
-  getEnemies(): Enemy[] {
+  getEnemies(): BaseEnemy[] {
     return this.enemies;
   }
 
@@ -147,50 +168,7 @@ export class WaveManager {
     this.waveComplete = true;
   }
 
-  private getEnemyTypeForWave(wave: number, _index: number, _totalEnemies: number): EnemyType {
-    // Keine fast enemies, bis Spieler Level 3 erreicht hat (Frost-Tower kann erforscht werden)
-    const canSpawnFast = this.playerLevel >= 3;
 
-    // Wave 1-2: Only normal enemies
-    if (wave <= 2) {
-      return 'normal';
-    }
-
-    // Wave 3-4: Erste Tanks erscheinen, aber noch keine fast
-    if (wave <= 4 && !canSpawnFast) {
-      const rand = Math.random();
-      if (rand < 0.3) return 'tank';
-      return 'normal';
-    }
-
-    // Ab Level 3 (Frost verfügbar): Fast enemies können spawnen
-    if (canSpawnFast) {
-      // Wave 3-5: Erste fast enemies
-      if (wave <= 5) {
-        const rand = Math.random();
-        if (rand < 0.25) return 'fast';
-        if (rand < 0.45) return 'tank';
-        return 'normal';
-      }
-
-      // Wave 6-8: Mehr fast enemies
-      if (wave <= 8) {
-        const rand = Math.random();
-        if (rand < 0.35) return 'fast';
-        if (rand < 0.6) return 'tank';
-        return 'normal';
-      }
-
-      // Wave 9+: Heavy mix mit vielen fast enemies
-      const rand = Math.random();
-      if (rand < 0.4) return 'fast';
-      if (rand < 0.7) return 'tank';
-      return 'normal';
-    }
-
-    // Fallback: nur normal und tank, wenn Level < 3
-    return Math.random() < 0.3 ? 'tank' : 'normal';
-  }
 
   cleanup(): void {
     this.enemies.forEach(enemy => enemy.destroy());

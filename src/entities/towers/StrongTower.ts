@@ -1,5 +1,5 @@
 import { BaseTower } from './BaseTower';
-import { Enemy } from '../enemies/Enemy';
+import { BaseEnemy } from '../enemies/BaseEnemy';
 import { Projectile } from '../projectiles/Projectile';
 
 /**
@@ -56,7 +56,7 @@ export class StrongTower extends BaseTower {
     this.sprite.y = this.y;
   }
 
-  protected fireAtTarget(target: Enemy, _allEnemies: Enemy[]): void {
+  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): void {
     new Projectile(this.scene, this.x, this.y, target, this.damage, false);
   }
 }
