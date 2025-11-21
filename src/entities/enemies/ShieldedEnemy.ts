@@ -83,7 +83,8 @@ export class ShieldedEnemy extends BaseEnemy {
     const currentTime = Date.now();
     if (this.shield < this.maxShield && currentTime - this.lastDamageTime > this.shieldRegenDelay) {
       // Regenerate 10% of max shield per second
-      this.shield = Math.min(this.maxShield, this.shield + (this.maxShield * 0.1 * delta));
+      // delta is in milliseconds, convert to seconds
+      this.shield = Math.min(this.maxShield, this.shield + (this.maxShield * 0.1 * (delta / 1000)));
     }
 
     this.updateShieldIndicator();
