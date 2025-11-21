@@ -36,6 +36,8 @@ export interface GameConfig {
       slowDuration?: number;
       burnDamagePerSecond?: number;
       burnDuration?: number;
+      splashRadius?: number;
+      armorPenetration?: number;
       requiresResearch?: boolean;
     };
   };

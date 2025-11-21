@@ -70,6 +70,24 @@
       "burnDamagePerSecond": 8,
       "burnDuration": 5000,
       "requiresResearch": true
+    },
+    "splash": {
+      "name": "Splash-Turm",
+      "cost": 125,
+      "damage": 15,
+      "range": 120,
+      "fireRate": 1200,
+      "type": "splash",
+      "splashRadius": 50
+    },
+    "sniper": {
+      "name": "Sniper-Turm",
+      "cost": 150,
+      "damage": 80,
+      "range": 250,
+      "fireRate": 3000,
+      "type": "sniper",
+      "armorPenetration": 0.5
     }
   },
   "towerUpgrades": {
