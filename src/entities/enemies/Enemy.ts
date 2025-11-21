@@ -1,6 +1,6 @@
 export type EnemyType = 'normal' | 'fast' | 'tank';
 
-import { ConfigManager } from '../config/ConfigManager';
+import { ConfigManager } from '../../config/ConfigManager';
 
 export class Enemy {
   protected sprite: Phaser.GameObjects.Graphics;
@@ -366,6 +366,10 @@ export class Enemy {
 
   getGoldReward(): number {
     return this.goldReward;
+  }
+
+  getHealth(): number {
+    return this.health;
   }
 
   getXPReward(): number {

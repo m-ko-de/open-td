@@ -1,8 +1,12 @@
+import { MapRegistry } from '../game/MapRegistry';
+
 export class PreloaderScene extends Phaser.Scene {
   private particles!: Phaser.GameObjects.Graphics[];
+  private mapRegistry: MapRegistry;
   
   constructor() {
     super({ key: 'PreloaderScene' });
+    this.mapRegistry = MapRegistry.getInstance();
   }
 
   preload(): void {
@@ -151,7 +155,12 @@ export class PreloaderScene extends Phaser.Scene {
     });
   }
 
-  create(): void {
+  async create(): Promise<void> {
+    // Load all maps
+    console.log('Loading maps...');
+    await this.mapRegistry.loadAllMaps();
+    console.log(`Loaded ${this.mapRegistry.getMapCount()} maps`);
+
     // If no assets were loaded, the preload completes immediately
     // So we need to manually trigger progress updates
     if (this.load.totalToLoad === 0) {

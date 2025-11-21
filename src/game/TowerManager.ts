@@ -1,17 +1,15 @@
-import { Tower } from '../entities/Tower';
-import { Enemy } from '../entities/Enemy';
-import { Projectile } from '../entities/Projectile';
+import { BaseTower, TowerFactory } from '../entities/towers';
+import { Enemy } from '../entities/enemies';
 import { ConfigManager } from '../config/ConfigManager';
 
 export class TowerManager {
   private scene: Phaser.Scene;
   private path: Phaser.Curves.Path;
-  private towers: Tower[] = [];
-  private projectiles: Projectile[] = [];
+  private towers: BaseTower[] = [];
   private preview: Phaser.GameObjects.Graphics | null = null;
   private selectedType: string | null = null;
   private selectedCost: number = 0;
-  private selectedTower: Tower | null = null;
+  private selectedTower: BaseTower | null = null;
 
   constructor(scene: Phaser.Scene, path: Phaser.Curves.Path) {
     this.scene = scene;
@@ -79,7 +77,7 @@ export class TowerManager {
       return { success: false, cost: 0 };
     }
 
-    const tower = new Tower(this.scene, x, y, this.selectedType, this.selectedCost);
+    const tower = TowerFactory.createTower(this.scene, x, y, this.selectedType, this.selectedCost);
     this.towers.push(tower);
 
     const cost = this.selectedCost;
@@ -93,19 +91,7 @@ export class TowerManager {
   update(time: number, enemies: Enemy[]): void {
     // Update towers
     this.towers.forEach((tower) => {
-      tower.update(time, enemies, this.projectiles);
-    });
-
-    // Update projectiles
-    this.projectiles = this.projectiles.filter((projectile) => {
-      projectile.update(16); // Approximate delta
-      
-      if (projectile.shouldDestroy()) {
-        projectile.destroy();
-        return false;
-      }
-
-      return true;
+      tower.update(time, enemies);
     });
   }
 
@@ -138,6 +124,10 @@ export class TowerManager {
         return 180;
       case 'frost':
         return 140;
+      case 'splash':
+        return 120;
+      case 'sniper':
+        return 250;
       default:
         return 150;
     }
@@ -161,7 +151,7 @@ export class TowerManager {
     const towerConfig = config.towers[type];
     const cost = towerConfig ? towerConfig.cost : 0;
     
-    const tower = new Tower(this.scene, x, y, type, cost);
+    const tower = TowerFactory.createTower(this.scene, x, y, type, cost);
     if (id) {
       tower.id = id; // Set server-assigned ID
     }

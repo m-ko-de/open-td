@@ -63,30 +63,46 @@ enemySpeed = 50 + (waveNumber * 5)
 goldReward = 10 + (waveNumber * 5)
 ```
 
-### LevelManager (`LevelManager.ts`)
+### MapManager (`MapManager.ts`)
 
-Manages level data, paths, and map configuration.
+Dynamically loads and renders maps from JSON configuration files.
 
 **Responsibilities**:
 
-- Load level definitions
-- Provide path coordinates
-- Define map bounds
-- Manage spawn and end points
-- Placement validation (collision with path)
+- Load map JSON from `public/maps/` directory
+- Create path from waypoints
+- Render background (sky gradient, grass)
+- Place decorations (trees, bushes, water, mountains, etc.)
+- Path collision detection for decorations
+- Convert relative/absolute coordinates
 
-**Level Structure**:
+**Map JSON Structure**:
 
 ```typescript
 {
-  id: 1,
-  name: "Grasslands",
-  path: [{ x: 0, y: 300 }, { x: 800, y: 300 }],
-  mapBounds: { width: 800, height: 600 },
-  spawnPoint: { x: 0, y: 300 },
-  endPoint: { x: 800, y: 300 }
+  name: "Classic Path",
+  description: "A simple winding path",
+  background: {
+    skyHeight: 0.4,
+    skyColorTop: "#87ceeb",
+    skyColorBottom: "#b0e0e6",
+    grassColor: "#3a6b2e"
+  },
+  path: {
+    type: "waypoints",
+    waypoints: [
+      { x: 50, y: 0.6, type: "start" },
+      { x: 300, y: 0.6, type: "line" }
+    ]
+  },
+  decorations: {
+    trees: [{ x: 0.15, y: 0.6, size: 40, color: "#2d5016", safeDistance: 60 }],
+    water: [{ x: 0.05, y: 0.8, width: 120, height: 80, safeDistance: 80 }]
+  }
 }
 ```
+
+**Available Maps**: `classic.json`, `spiral.json`, `zigzag.json`
 
 ### ResearchManager (`ResearchManager.ts`)
 

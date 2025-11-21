@@ -1,5 +1,4 @@
-import { Enemy, EnemyType } from '../entities/Enemy';
-import { BossEnemy } from '../entities/BossEnemy';
+import { Enemy, EnemyType, BossEnemy } from '../entities/enemies';
 import { OptionsScene } from '../scenes/OptionsScene';
 import { ConfigManager } from '../config/ConfigManager';
 

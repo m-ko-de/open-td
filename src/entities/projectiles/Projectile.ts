@@ -1,7 +1,8 @@
-import { Enemy } from './Enemy';
+import { Enemy } from '../enemies/Enemy';
 
 export class Projectile {
   private sprite: Phaser.GameObjects.Graphics;
+  private scene: Phaser.Scene;
   private target: Enemy;
   private damage: number;
   private speed: number = 0.3;
@@ -11,6 +12,8 @@ export class Projectile {
   private isFrost: boolean = false;
   private slowAmount: number = 0;
   private slowDuration: number = 0;
+  private splashRadius: number = 0;
+  private allEnemies: Enemy[] = [];
 
   constructor(
     scene: Phaser.Scene,
@@ -20,8 +23,11 @@ export class Projectile {
     damage: number,
     isFrost: boolean = false,
     slowAmount: number = 0,
-    slowDuration: number = 0
+    slowDuration: number = 0,
+    splashRadius: number = 0,
+    allEnemies: Enemy[] = []
   ) {
+    this.scene = scene;
     this.x = x;
     this.y = y;
     this.target = target;
@@ -29,6 +35,8 @@ export class Projectile {
     this.isFrost = isFrost;
     this.slowAmount = slowAmount;
     this.slowDuration = slowDuration;
+    this.splashRadius = splashRadius;
+    this.allEnemies = allEnemies;
 
     // Create projectile sprite with glow effect
     this.sprite = scene.add.graphics();
@@ -106,11 +114,46 @@ export class Projectile {
     const distance = Phaser.Math.Distance.Between(this.x, this.y, targetX, targetY);
 
     if (distance < 10) {
+      // Apply damage to primary target
       this.target.takeDamage(this.damage);
       if (this.isFrost) {
         this.target.applySlow(this.slowAmount, this.slowDuration);
       }
+      
+      // Apply splash damage if splash radius is set
+      if (this.splashRadius > 0) {
+        this.applySplashDamage(this.x, this.y);
+      }
+      
       this.hasHit = true;
+    }
+  }
+
+  private applySplashDamage(x: number, y: number): void {
+    // Create explosion visual
+    const explosion = this.scene.add.graphics();
+    explosion.fillStyle(0xff8800, 0.6);
+    explosion.fillCircle(x, y, this.splashRadius);
+    explosion.lineStyle(3, 0xff6600, 0.8);
+    explosion.strokeCircle(x, y, this.splashRadius);
+    
+    this.scene.tweens.add({
+      targets: explosion,
+      alpha: 0,
+      scale: 1.3,
+      duration: 400,
+      ease: 'Power2',
+      onComplete: () => explosion.destroy()
+    });
+    
+    // Damage all enemies in splash radius
+    for (const enemy of this.allEnemies) {
+      if (enemy === this.target || enemy.isDead()) continue;
+      
+      const dist = Phaser.Math.Distance.Between(x, y, enemy.x, enemy.y);
+      if (dist <= this.splashRadius) {
+        enemy.takeDamage(this.damage);
+      }
     }
   }
 

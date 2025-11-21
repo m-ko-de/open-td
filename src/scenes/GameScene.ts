@@ -2,7 +2,7 @@ import { OptionsScene } from './OptionsScene';
 import { GameUI } from '../game/GameUI';
 import { WaveManager } from '../game/WaveManager';
 import { TowerManager } from '../game/TowerManager';
-import { LevelManager } from '../game/LevelManager';
+import { MapManager } from '../game/MapManager';
 import { ResearchManager } from '../game/ResearchManager';
 import { ConfigManager } from '../config/ConfigManager';
 import { NotificationManager } from './game/NotificationManager';
@@ -17,7 +17,7 @@ export class GameScene extends Phaser.Scene {
   private ui!: GameUI;
   private waveManager!: WaveManager;
   private towerManager!: TowerManager;
-  private levelManager!: LevelManager;
+  private mapManager!: MapManager;
   private researchManager!: ResearchManager;
   
   // Helper classes
@@ -30,6 +30,7 @@ export class GameScene extends Phaser.Scene {
   
   // Game state
   private gameStarted: boolean = false;
+  private isReady: boolean = false;
   private gold: number = 0;
   private lives: number = 0;
   private isPaused: boolean = false;
@@ -82,16 +83,26 @@ export class GameScene extends Phaser.Scene {
     }
     
     this.gameStarted = false;
+    this.isReady = false;
   }
 
-  create(): void {
-    // Create level with selected type
-    this.levelManager = new LevelManager(this, this.levelType);
-    this.levelManager.create();
+  async create(): Promise<void> {
+    // Load and create map
+    this.mapManager = new MapManager(this, this.levelType);
+    try {
+      await this.mapManager.loadMap();
+      this.mapManager.create();
+    } catch (error) {
+      console.error('Failed to load map:', error);
+      // Fallback to classic map
+      this.mapManager = new MapManager(this, 'classic');
+      await this.mapManager.loadMap();
+      this.mapManager.create();
+    }
 
     // Create managers
-    this.waveManager = new WaveManager(this, this.levelManager.getPath(), this.levelType);
-    this.towerManager = new TowerManager(this, this.levelManager.getPath());
+    this.waveManager = new WaveManager(this, this.mapManager.getPath(), this.levelType);
+    this.towerManager = new TowerManager(this, this.mapManager.getPath());
     this.researchManager = new ResearchManager();
 
     // Initialize helper classes
@@ -185,9 +196,14 @@ export class GameScene extends Phaser.Scene {
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
       this.towerManager.updatePreview(pointer);
     });
+
+    // Mark as ready after all initialization is complete
+    this.isReady = true;
   }
 
   update(time: number, delta: number): void {
+    // Don't update until initialization is complete
+    if (!this.isReady) return;
     if (this.isPaused) return;
 
     // Update upgrade button based on selected tower

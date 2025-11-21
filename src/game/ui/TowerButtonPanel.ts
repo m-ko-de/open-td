@@ -34,6 +34,8 @@ export class TowerButtonPanel {
       { type: 'basic', label: config.towers.basic.name, cost: config.towers.basic.cost },
       { type: 'fast', label: config.towers.fast.name, cost: config.towers.fast.cost },
       { type: 'strong', label: config.towers.strong.name, cost: config.towers.strong.cost },
+      { type: 'splash', label: config.towers.splash.name, cost: config.towers.splash.cost },
+      { type: 'sniper', label: config.towers.sniper.name, cost: config.towers.sniper.cost },
       { type: 'frost', label: config.towers.frost.name, cost: config.towers.frost.cost, requiresResearch: config.towers.frost.requiresResearch, researchId: 'frost_tower' },
       { type: 'fire', label: config.towers.fire.name, cost: config.towers.fire.cost, requiresResearch: config.towers.fire.requiresResearch, researchId: 'fire_tower' },
     ];

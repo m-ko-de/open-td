@@ -63,30 +63,20 @@ enemySpeed = 50 + (waveNumber * 5)
 goldReward = 10 + (waveNumber * 5)
 ```
 
-### LevelManager (`LevelManager.ts`)
+### MapManager (`MapManager.ts`)
 
-Verwaltet Level-Daten, Pfade und Map-Konfiguration.
+Lädt und rendert Karten dynamisch aus JSON-Konfigurationsdateien.
 
 **Verantwortlichkeiten**:
 
-- Level-Definitionen laden
-- Pfad-Koordinaten bereitstellen
-- Map-Bounds definieren
-- Spawn- und End-Punkte verwalten
-- Platzierungs-Validierung (Kollision mit Pfad)
+- Laden von Karten-JSON aus `public/maps/` Verzeichnis
+- Pfad aus Wegpunkten erstellen
+- Hintergrund rendern (Himmel-Gradient, Gras)
+- Dekorationen platzieren (Bäume, Büsche, Wasser, Berge, etc.)
+- Pfad-Kollisionserkennung für Dekorationen
+- Relative/absolute Koordinaten konvertieren
 
-**Level-Struktur**:
-
-```typescript
-{
-  id: 1,
-  name: "Grasslands",
-  path: [{ x: 0, y: 300 }, { x: 800, y: 300 }],
-  mapBounds: { width: 800, height: 600 },
-  spawnPoint: { x: 0, y: 300 },
-  endPoint: { x: 800, y: 300 }
-}
-```
+**Verfügbare Karten**: `classic.json`, `spiral.json`, `zigzag.json`
 
 ### ResearchManager (`ResearchManager.ts`)
 

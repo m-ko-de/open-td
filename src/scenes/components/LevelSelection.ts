@@ -1,10 +1,15 @@
+import { MapRegistry } from '../../game/MapRegistry';
+
 /**
  * LevelSelection - Displays level selection overlay
  */
 export class LevelSelection {
   private elements: Phaser.GameObjects.GameObject[] = [];
+  private mapRegistry: MapRegistry;
 
-  constructor(private scene: Phaser.Scene) {}
+  constructor(private scene: Phaser.Scene) {
+    this.mapRegistry = MapRegistry.getInstance();
+  }
 
   show(width: number, height: number, onLevelSelect: (levelId: string) => void, onBack: () => void): void {
     const centerX = width / 2;
@@ -15,9 +20,14 @@ export class LevelSelection {
     overlay.setOrigin(0);
     overlay.setInteractive();
 
-    // Selection box
-    const boxWidth = 700;
+    // Get all available maps
+    const availableMaps = this.mapRegistry.getAllMaps();
+    
+    // Adjust box size based on number of maps
+    const boxWidth = Math.min(700, 200 + availableMaps.length * 220);
     const boxHeight = 400;
+    
+    // Selection box
     const selectionBox = this.scene.add.rectangle(
       centerX,
       centerY,
@@ -35,27 +45,17 @@ export class LevelSelection {
 
     this.elements = [overlay, selectionBox, title];
 
-    // Level buttons
-    const levels = [
-      { 
-        id: 'classic', 
-        name: 'Klassisch', 
-        description: 'Einfacher Pfad mit Kurven',
-        color: '#0088ff'
-      },
-      { 
-        id: 'spiral', 
-        name: 'Spirale', 
-        description: 'Von außen nach innen',
-        color: '#ff8800'
-      },
-      { 
-        id: 'zigzag', 
-        name: 'Zickzack', 
-        description: 'Auf und ab',
-        color: '#8800ff'
-      },
-    ];
+    // Generate level buttons dynamically from loaded maps
+    const levels = availableMaps.map((map, index) => {
+      // Assign colors based on index
+      const colors = ['#0088ff', '#ff8800', '#8800ff', '#00ff88', '#ff0088', '#88ff00'];
+      return {
+        id: map.id,
+        name: map.config.name,
+        description: map.config.description,
+        color: colors[index % colors.length]
+      };
+    });
 
     const buttonWidth = 180;
     const buttonSpacing = 220;
