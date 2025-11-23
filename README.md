@@ -1,6 +1,7 @@
 # Open TD - Tower Defense Game
 
 [![Build and Test](https://github.com/m-ko-de/open-td/actions/workflows/build.yml/badge.svg)](https://github.com/m-ko-de/open-td/actions/workflows/build.yml)
+[![Coverage](https://github.com/m-ko-de/open-td/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/m-ko-de/open-td/actions/workflows/build.yml)
 
 An open-source Tower Defense game built with Phaser 3 and Capacitor for web and mobile platforms.
 
@@ -19,9 +20,17 @@ An open-source Tower Defense game built with Phaser 3 and Capacitor for web and 
   - Basic Tower: Balanced stats (50 Gold)
   - Fast Tower: High fire rate (75 Gold)
   - Strong Tower: High damage (100 Gold)
+  - Frost Tower: Slows enemies with frost projectiles (90 Gold)
+  - Fire Tower: Deals fire damage over time (110 Gold)
+  - Splash Tower: Area damage attacks (130 Gold)
+  - Sniper Tower: Long range, high damage (150 Gold)
+- **Tower Upgrade System**: Upgrade towers up to level 5 with increasing costs and stats
+- **Tower Selling**: Sell towers for 70% refund of total invested gold
 - **Progressive Difficulty**: Enemies become stronger with each wave
+- **Multiplayer Support**: Play with friends via dedicated game server
 - **Mobile-Ready**: Optimized for touch controls on smartphones and tablets
 - **Cross-Platform**: Runs in browser and as native app on iOS/Android
+- **User Authentication**: Register and login with persistent user accounts
 
 ## 🚀 Quick Start
 
@@ -98,27 +107,36 @@ pnpm cap:open:android
 ## 🎯 How to Play
 
 1. **Place Towers**: Select a tower type from the bottom bar and click on an empty spot
-2. **Earn Gold**: Destroy enemies to earn gold
-3. **Think Strategically**: Place towers where they can shoot enemies for as long as possible
-4. **Survive**: Protect your endpoint - if too many enemies get through, the game is over!
+2. **Earn Gold**: Destroy enemies to earn gold for more towers
+3. **Upgrade Towers**: Click on placed towers to upgrade them (up to level 5) for better stats
+4. **Sell Towers**: Right-click towers or use the sell button to get 70% gold refund
+5. **Think Strategically**: Place towers where they can shoot enemies for as long as possible
+6. **Choose Tower Types**: Each tower type has unique strengths (damage, range, special effects)
+7. **Survive**: Protect your endpoint - if too many enemies get through, the game is over!
 
 ## 🏗️ Project Structure
 
 ```text
 open-td/
 ├── src/
-│   ├── main.ts              # Phaser Game Configuration
-│   ├── scenes/              # Game Scenes
-│   │   ├── PreloaderScene.ts  # Asset Loader
-│   │   ├── MainMenuScene.ts   # Main Menu
-│   │   └── GameScene.ts       # Main Game Scene
-│   └── entities/            # Game Entities
-│       ├── Tower.ts           # Tower Class
-│       ├── Enemy.ts           # Enemy Class
-│       └── Projectile.ts      # Projectile Class
-├── index.html               # HTML Entry Point
-├── capacitor.config.json    # Capacitor Configuration
-├── vite.config.ts           # Vite Build Configuration
+│   ├── auth/              # User authentication system
+│   ├── client/            # Client-side persistence
+│   ├── components/        # Reusable UI components
+│   ├── config/            # Game configuration
+│   ├── entities/          # Game entities
+│   │   ├── towers/        # Tower classes with upgrade system
+│   │   └── enemies/       # Enemy classes
+│   ├── game/              # Game managers and UI
+│   │   ├── ui/            # UI components (buttons, panels)
+│   │   └── managers/      # Game state managers
+│   ├── main.ts            # Phaser Game Configuration
+│   ├── multiplayer/       # Multiplayer synchronization
+│   ├── network/           # Network communication
+│   ├── scenes/            # Game Scenes
+│   └── server/            # Dedicated game server
+├── index.html             # HTML Entry Point
+├── capacitor.config.json  # Capacitor Configuration
+├── vite.config.ts         # Vite Build Configuration
 └── package.json
 ```
 
@@ -149,10 +167,20 @@ This project uses [pnpm](https://pnpm.io/) as package manager:
 
 ### Further Development
 
-The project provides a solid foundation for tower defense development:
+The project provides a solid foundation for tower defense development with advanced features already implemented:
 
-- Add new tower types in `src/entities/Tower.ts`
-- Create new enemy types in `src/entities/Enemy.ts`
+- ✅ **Tower Upgrade System**: Towers can be upgraded up to level 5 with increasing costs and improved stats
+- ✅ **Tower Selling**: Sell towers for 70% refund of total invested gold
+- ✅ **Multiple Tower Types**: 7 different tower types with unique abilities (Basic, Fast, Strong, Frost, Fire, Splash, Sniper)
+- ✅ **Multiplayer Support**: Dedicated game server with Socket.io for real-time multiplayer
+- ✅ **User Authentication**: Complete user registration and login system with persistent accounts
+- ✅ **Mobile Deployment**: Capacitor support for iOS and Android native apps
+- ✅ **Comprehensive Testing**: Unit tests, integration tests, and CI/CD pipeline
+
+**Future Enhancements:**
+
+- Add new tower types in `src/entities/towers/`
+- Create new enemy types in `src/entities/enemies/`
 - Extend gameplay in `src/scenes/GameScene.ts`
 - Add assets (images, sounds) and load them in `PreloaderScene.ts`
 
