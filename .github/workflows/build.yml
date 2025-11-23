@@ -63,6 +63,15 @@ jobs:
         path: coverage/
         retention-days: 7
 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: coverage/**
+        fail_ci_if_error: false
+      #env:
+        # For private repos: set CODECOV_TOKEN in repository secrets
+        #CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     - name: Build project
       run: pnpm run build
 

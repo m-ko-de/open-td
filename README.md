@@ -1,7 +1,7 @@
 # Open TD - Tower Defense Game
 
-[![Build and Test](https://github.com/m-ko-de/open-td/actions/workflows/build.yml/badge.svg)](https://github.com/m-ko-de/open-td/actions/workflows/build.yml)
-[![Coverage](https://github.com/m-ko-de/open-td/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/m-ko-de/open-td/actions/workflows/build.yml)
+[![Build](https://github.com/m-ko-de/open-td/actions/workflows/build.yml/badge.svg)](https://github.com/m-ko-de/open-td/actions/workflows/build.yml)
+[![Coverage](https://img.shields.io/codecov/c/github/m-ko-de/open-td?logo=codecov)](https://app.codecov.io/gh/m-ko-de/open-td)
 
 An open-source Tower Defense game built with Phaser 3 and Capacitor for web and mobile platforms.
 
