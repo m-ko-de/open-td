@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { Capacitor } from '@capacitor/core';
 import { PreloaderScene } from './scenes/PreloaderScene';
+import { LoginScene } from './scenes/LoginScene';
 import { MainMenuScene } from './scenes/MainMenuScene';
 import { GameScene } from './scenes/GameScene';
 import { OptionsScene } from './scenes/OptionsScene';
@@ -25,7 +26,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [PreloaderScene, MainMenuScene, GameScene, OptionsScene, MultiplayerScene],
+  scene: [PreloaderScene, LoginScene, MainMenuScene, GameScene, OptionsScene, MultiplayerScene],
 };
 
 // Initialize game with config loading

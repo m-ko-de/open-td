@@ -331,8 +331,9 @@ describe('Projectile', () => {
         projectile.update(1);
       }
       
-      // Should create explosion graphics
-      expect(mockScene.add.graphics).toHaveBeenCalledTimes(2); // Projectile + explosion
+      // Should create explosion graphics (1 projectile + 1 explosion base + 12 explosion particles + random trail particles)
+      expect(mockScene.add.graphics).toHaveBeenCalled(); 
+      expect(mockScene.add.graphics.mock.calls.length).toBeGreaterThanOrEqual(14); // At least explosion
       expect(mockScene.tweens.add).toHaveBeenCalled();
     });
 

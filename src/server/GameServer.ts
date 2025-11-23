@@ -1,5 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
+import express from 'express';
+import cors from 'cors';
 import { 
   ServerToClientEvents, 
   ClientToServerEvents, 
@@ -10,6 +12,8 @@ import {
 import { PlayerSession } from './PlayerSession';
 import { ServerGameState } from './ServerGameState';
 import { generateWordRoomCode } from './wordLists';
+import { AuthRouter } from './AuthRouter';
+import { StorageRouter } from './StorageRouter';
 
 export class GameServer {
   private io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
@@ -17,14 +21,23 @@ export class GameServer {
   private gameStates: Map<string, ServerGameState>;
   private config: any;
   private httpServer: any;
+  private expressApp: express.Application;
 
   constructor(config: any) {
     this.config = config;
     this.rooms = new Map();
     this.gameStates = new Map();
 
-    // Create HTTP server
-    this.httpServer = createServer();
+    // Create Express app
+    this.expressApp = express();
+    this.expressApp.use(cors());
+    this.expressApp.use(express.json());
+
+    // Setup REST API routes
+    this.setupRestRoutes();
+
+    // Create HTTP server with Express
+    this.httpServer = createServer(this.expressApp);
 
     // Initialize Socket.io
     this.io = new Server(this.httpServer, {
@@ -35,6 +48,27 @@ export class GameServer {
     });
 
     this.setupSocketHandlers();
+  }
+
+  private setupRestRoutes(): void {
+    // Auth routes
+    const authRouter = new AuthRouter();
+    this.expressApp.use('/auth', authRouter.router);
+
+    // Storage routes
+    const storageRouter = new StorageRouter();
+    this.expressApp.use('/storage', storageRouter.router);
+
+    // Health check
+    this.expressApp.get('/health', (_req, res) => {
+      res.json({ 
+        status: 'ok', 
+        rooms: this.rooms.size,
+        uptime: process.uptime() 
+      });
+    });
+
+    console.log('🔐 Auth & Storage API initialized');
   }
 
   public start(): void {

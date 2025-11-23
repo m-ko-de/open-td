@@ -65,7 +65,7 @@ export class FastTower extends BaseTower {
     this.sprite.y = this.y;
   }
 
-  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): void {
-    new Projectile(this.scene, this.x, this.y, target, this.damage, false);
+  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): any {
+    return new Projectile(this.scene, this.x, this.y, target, this.damage, false);
   }
 }

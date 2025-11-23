@@ -4,6 +4,7 @@
 export class TowerActionButtons {
   private upgradeButton: Phaser.GameObjects.Text;
   private sellButton: Phaser.GameObjects.Text;
+  private towerInfoText: Phaser.GameObjects.Text;
   private gold: number;
 
   constructor(
@@ -15,6 +16,22 @@ export class TowerActionButtons {
     this.gold = gold;
     const width = scene.cameras.main.width;
     const height = scene.cameras.main.height;
+
+    // Tower info text
+    this.towerInfoText = scene.add.text(
+      width / 2,
+      height - 220,
+      '',
+      {
+        font: '20px Arial',
+        color: '#ffffff',
+        backgroundColor: '#333333',
+        padding: { x: 20, y: 10 },
+        align: 'center',
+      }
+    );
+    this.towerInfoText.setOrigin(0.5);
+    this.towerInfoText.setVisible(false);
 
     // Upgrade button
     this.upgradeButton = scene.add.text(
@@ -85,8 +102,19 @@ export class TowerActionButtons {
     if (!selectedTower) {
       this.upgradeButton.setVisible(false);
       this.sellButton.setVisible(false);
+      this.towerInfoText.setVisible(false);
       return;
     }
+
+    // Show tower info
+    const towerType = selectedTower.getType();
+    const towerName = this.getTowerDisplayName(towerType);
+    const level = selectedTower.getUpgradeLevel();
+    const damage = Math.round(selectedTower.getDamage());
+    const range = Math.round(selectedTower.getRange());
+    
+    this.towerInfoText.setText(`${towerName} (Level ${level})\nSchaden: ${damage} | Reichweite: ${range}`);
+    this.towerInfoText.setVisible(true);
 
     // Show sell button
     const sellValue = selectedTower.getSellValue();
@@ -100,7 +128,6 @@ export class TowerActionButtons {
     }
 
     const cost = selectedTower.getUpgradeCost();
-    const level = selectedTower.getUpgradeLevel();
     
     this.upgradeButton.setText(`Upgrade Turm\nLevel ${level} → ${level + 1}\nKosten: ${cost}G`);
     this.upgradeButton.setVisible(true);
@@ -115,5 +142,18 @@ export class TowerActionButtons {
 
   getButtons(): Phaser.GameObjects.Text[] {
     return [this.upgradeButton, this.sellButton];
+  }
+
+  private getTowerDisplayName(type: string): string {
+    const names: Record<string, string> = {
+      'basic': 'Basis-Turm',
+      'fast': 'Schnell-Turm',
+      'strong': 'Stark-Turm',
+      'sniper': 'Sniper-Turm',
+      'splash': 'Splash-Turm',
+      'frost': 'Frost-Turm',
+      'fire': 'Feuer-Turm'
+    };
+    return names[type] || type;
   }
 }

@@ -206,13 +206,109 @@ export abstract class BaseEnemy {
     const actualDamage = this.onTakeDamage(damage);
     this.health -= actualDamage;
     this.updateHealthBar();
-
+    
+    // Show floating damage number
+    this.showFloatingDamage(actualDamage);
+    
+    // Flash effect on hit
+    if (this.sprite.setAlpha) {
+      this.sprite.setAlpha(0.5);
+    }
+    if (this.scene.tweens?.add) {
+      this.scene.tweens.add({
+        targets: this.sprite,
+        alpha: 1,
+        duration: 100,
+        ease: 'Power2'
+      });
+    }
+    
     if (this.health <= 0) {
       this.health = 0;
+      this.playDeathAnimation();
       return this.onDeath();
     }
 
     return [];
+  }
+
+  /**
+   * Show floating damage number above enemy
+   */
+  private showFloatingDamage(damage: number): void {
+    if (!this.scene.add.text || !this.scene.tweens?.add) return; // Skip in test environment
+    
+    const damageText = this.scene.add.text(
+      this.sprite.x,
+      this.sprite.y - 20,
+      Math.round(damage).toString(),
+      {
+        fontSize: '16px',
+        color: '#ff4444',
+        fontStyle: 'bold',
+        stroke: '#000000',
+        strokeThickness: 3
+      }
+    );
+    damageText.setOrigin(0.5);
+    if (damageText.setDepth) damageText.setDepth(100);
+    
+    this.scene.tweens.add({
+      targets: damageText,
+      y: damageText.y - 30,
+      alpha: 0,
+      duration: 800,
+      ease: 'Power2',
+      onComplete: () => damageText.destroy()
+    });
+  }
+
+  /**
+   * Play death animation with particles
+   */
+  private playDeathAnimation(): void {
+    if (!this.scene.tweens?.add) return; // Skip in test environment
+    
+    // Get enemy color from sprite
+    const stats = this.calculateStats(this.wave, 1, this.playerCount);
+    
+    // Create death particles burst
+    for (let i = 0; i < 15; i++) {
+      const particle = this.scene.add.graphics();
+      const size = 2 + Math.random() * 4;
+      particle.fillStyle(stats.color, 0.8);
+      particle.fillCircle(0, 0, size);
+      particle.x = this.sprite.x;
+      particle.y = this.sprite.y;
+      if (particle.setDepth) particle.setDepth(95);
+      
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 20 + Math.random() * 40;
+      
+      this.scene.tweens.add({
+        targets: particle,
+        x: particle.x + Math.cos(angle) * speed,
+        y: particle.y + Math.sin(angle) * speed,
+        alpha: 0,
+        scale: 0.2,
+        duration: 400 + Math.random() * 400,
+        ease: 'Power2',
+        onComplete: () => particle.destroy()
+      });
+    }
+    
+    // Flash white before disappearing
+    this.sprite.clear();
+    this.sprite.fillStyle(0xffffff, 0.8);
+    this.sprite.fillCircle(0, 0, stats.size);
+    
+    this.scene.tweens.add({
+      targets: this.sprite,
+      alpha: 0,
+      scale: 1.5,
+      duration: 300,
+      ease: 'Power2'
+    });
   }
 
   isDead(): boolean {

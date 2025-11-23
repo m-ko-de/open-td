@@ -1,4 +1,4 @@
-import { BaseEnemy, EnemyFactory, EnemyType, BossEnemy } from '../entities/enemies';
+import { BaseEnemy, EnemyFactory, BossEnemy } from '../entities/enemies';
 import { OptionsScene } from '../scenes/OptionsScene';
 import { ConfigManager } from '../config/ConfigManager';
 
@@ -51,7 +51,7 @@ export class WaveManager {
       for (let i = 0; i < bossCount; i++) {
         this.scene.time.delayedCall(i * spawnDelay, () => {
           const boss = new BossEnemy(this.scene, this.path, this.wave, this.playerLevel, this.playerCount);
-          this.enemies.push(boss);
+          this.enemies.push(boss as any);
         });
       }
 

@@ -1,6 +1,7 @@
 import { ToggleButton } from './components/ToggleButton';
 import { DifficultySelector } from './components/DifficultySelector';
 import { SettingsManager, GameSettings } from './components/SettingsManager';
+import { SoundManager } from '../components/SoundManager';
 
 export class OptionsScene extends Phaser.Scene {
   private settings: GameSettings;
@@ -11,6 +12,8 @@ export class OptionsScene extends Phaser.Scene {
   }
 
   create(): void {
+    // SoundManager initialisieren
+    const soundManager = SoundManager.getInstance();
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
@@ -46,6 +49,8 @@ export class OptionsScene extends Phaser.Scene {
       (enabled) => {
         this.settings.soundEnabled = enabled;
         SettingsManager.save(this.settings);
+        soundManager.setSoundEnabled(enabled);
+        if (enabled) soundManager.playClick();
       }
     );
 
@@ -63,6 +68,7 @@ export class OptionsScene extends Phaser.Scene {
       (enabled) => {
         this.settings.musicEnabled = enabled;
         SettingsManager.save(this.settings);
+        soundManager.setMusicEnabled(enabled);
       }
     );
 
@@ -139,6 +145,14 @@ export class OptionsScene extends Phaser.Scene {
         delay: index * 30,
       });
     });
+
+    // Musikstatus initial setzen
+    soundManager.init(this, this.settings.soundEnabled, this.settings.musicEnabled);
+    if (this.settings.musicEnabled) {
+      soundManager.playMusic();
+    } else {
+      soundManager.stopMusic();
+    }
   }
 
   public static getSettings(): GameSettings {

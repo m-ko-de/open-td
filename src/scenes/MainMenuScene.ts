@@ -3,13 +3,16 @@ import { TitleDisplay } from './components/TitleDisplay';
 import { MenuButtons } from './components/MenuButtons';
 import { LevelSelection } from './components/LevelSelection';
 import { CreditsOverlay } from './components/CreditsOverlay';
+import { AuthManager } from '../auth/AuthManager';
 
 export class MainMenuScene extends Phaser.Scene {
   private levelSelection?: LevelSelection;
   private creditsOverlay?: CreditsOverlay;
+  private authManager: AuthManager;
 
   constructor() {
     super({ key: 'MainMenuScene' });
+    this.authManager = AuthManager.getInstance();
   }
 
   create(): void {
@@ -73,6 +76,69 @@ export class MainMenuScene extends Phaser.Scene {
       color: '#444444',
     });
     version.setOrigin(1, 1);
+
+    // User info and logout button (top right)
+    this.createUserInfo(width);
+  }
+
+  private createUserInfo(width: number): void {
+    const user = this.authManager.getCurrentUser();
+    
+    if (user) {
+      // User info container
+      const userInfoBg = this.add.graphics();
+      userInfoBg.fillStyle(0x000000, 0.7);
+      userInfoBg.fillRoundedRect(width - 250, 10, 240, 80, 10);
+      userInfoBg.lineStyle(2, 0x00aa00, 0.8);
+      userInfoBg.strokeRoundedRect(width - 250, 10, 240, 80, 10);
+
+      // Username
+      const usernameText = this.add.text(width - 130, 25, user.username, {
+        fontSize: '20px',
+        fontFamily: 'Arial',
+        color: '#00ff00',
+        fontStyle: 'bold',
+      });
+      usernameText.setOrigin(0.5, 0);
+
+      // Level and XP
+      const levelText = this.add.text(width - 130, 50, `Level ${user.level} | ${user.xp} XP`, {
+        fontSize: '14px',
+        color: '#ffffff',
+      });
+      levelText.setOrigin(0.5, 0);
+
+      // Logout button
+      const logoutButton = this.add.text(width - 130, 70, '🚪 Abmelden', {
+        fontSize: '12px',
+        color: '#ff6666',
+      });
+      logoutButton.setOrigin(0.5, 0);
+      logoutButton.setInteractive({ useHandCursor: true });
+
+      logoutButton.on('pointerover', () => {
+        logoutButton.setStyle({ color: '#ff0000' });
+      });
+
+      logoutButton.on('pointerout', () => {
+        logoutButton.setStyle({ color: '#ff6666' });
+      });
+
+      logoutButton.on('pointerdown', () => {
+        this.authManager.logout();
+        this.cameras.main.fadeOut(300);
+        this.cameras.main.once('camerafadeoutcomplete', () => {
+          this.scene.start('LoginScene');
+        });
+      });
+    } else {
+      // Guest mode indicator
+      const guestText = this.add.text(width - 20, 20, 'Gast-Modus', {
+        fontSize: '16px',
+        color: '#666666',
+      });
+      guestText.setOrigin(1, 0);
+    }
   }
 
   private handleSingleplayer(): void {

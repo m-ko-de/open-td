@@ -71,8 +71,8 @@ export class SniperTower extends BaseTower {
     return enemy.getHealth();
   }
 
-  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): void {
-    if (target.isDead()) return;
+  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): any {
+    if (target.isDead()) return null;
     
     // Instant damage with armor penetration
     const finalDamage = this.damage * (1 + this.armorPenetration);
@@ -101,6 +101,8 @@ export class SniperTower extends BaseTower {
         flash.destroy();
       }
     });
+    
+    return null;
   }
 
   upgrade(): number {

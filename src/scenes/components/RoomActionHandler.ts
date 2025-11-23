@@ -1,4 +1,5 @@
 import { NetworkManager } from '../../network/NetworkManager';
+import { PersistenceManager } from '../../client/PersistenceManager';
 
 /**
  * RoomActionHandler - Handles room actions (create, join, leave, ready, start)
@@ -16,7 +17,7 @@ export class RoomActionHandler {
       return null;
     }
 
-    localStorage.setItem('openTD_playerName', playerName);
+    PersistenceManager.getInstance().setLocal('playerName', playerName);
     this.onLoading('Erstelle Raum...');
 
     try {
@@ -38,7 +39,7 @@ export class RoomActionHandler {
       return false;
     }
 
-    localStorage.setItem('openTD_playerName', playerName);
+    PersistenceManager.getInstance().setLocal('playerName', playerName);
     this.onLoading('Trete Raum bei...');
 
     try {

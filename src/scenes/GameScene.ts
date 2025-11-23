@@ -4,6 +4,7 @@ import { WaveManager } from '../game/WaveManager';
 import { TowerManager } from '../game/TowerManager';
 import { MapManager } from '../game/MapManager';
 import { ResearchManager } from '../game/ResearchManager';
+import { ProjectileManager } from '../game/ProjectileManager';
 import { ConfigManager } from '../config/ConfigManager';
 import { NotificationManager } from './game/NotificationManager';
 import { XPRewardHandler } from './game/XPRewardHandler';
@@ -19,6 +20,7 @@ export class GameScene extends Phaser.Scene {
   private towerManager!: TowerManager;
   private mapManager!: MapManager;
   private researchManager!: ResearchManager;
+  private projectileManager!: ProjectileManager;
   
   // Helper classes
   private notifications!: NotificationManager;
@@ -104,6 +106,7 @@ export class GameScene extends Phaser.Scene {
     this.waveManager = new WaveManager(this, this.mapManager.getPath(), this.levelType);
     this.towerManager = new TowerManager(this, this.mapManager.getPath());
     this.researchManager = new ResearchManager();
+    this.projectileManager = new ProjectileManager();
 
     // Initialize helper classes
     this.notifications = new NotificationManager(this);
@@ -218,8 +221,12 @@ export class GameScene extends Phaser.Scene {
       (wave: number) => this.waveHandler.handleWaveCompleted(wave)
     );
 
-    // Update towers
-    this.towerManager.update(time, this.waveManager.getEnemies());
+    // Update towers and collect projectiles
+    const newProjectiles = this.towerManager.update(time, this.waveManager.getEnemies());
+    newProjectiles.forEach(projectile => this.projectileManager.addProjectile(projectile));
+    
+    // Update projectiles
+    this.projectileManager.update(delta);
 
     // Check wave complete
     if (this.waveManager.isWaveComplete() && this.gameStarted) {

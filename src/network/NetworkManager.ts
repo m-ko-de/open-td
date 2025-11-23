@@ -212,6 +212,20 @@ export class NetworkManager {
     }
   }
 
+
+  // Generic storage actions
+  public saveData(key: string, value: any): void {
+    if (this.socket) {
+      this.socket.emit('storage:saveData', { key, value });
+    }
+  }
+
+  public loadData(key: string, callback: (data: any) => void): void {
+    if (this.socket) {
+      this.socket.emit('storage:loadData',  key, callback);
+    }
+  }
+
   // Game actions
   public placeTower(type: string, x: number, y: number): void {
     if (this.socket) {

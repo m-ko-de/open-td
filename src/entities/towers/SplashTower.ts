@@ -54,11 +54,11 @@ export class SplashTower extends BaseTower {
     this.sprite.y = this.y;
   }
 
-  protected fireAtTarget(target: BaseEnemy, allEnemies: BaseEnemy[]): void {
-    if (target.isDead()) return;
+  protected fireAtTarget(target: BaseEnemy, allEnemies: BaseEnemy[]): any {
+    if (target.isDead()) return null;
     
     // Create splash projectile
-    new Projectile(this.scene, this.x, this.y, target, this.damage, false, 0, 0, this.splashRadius, allEnemies);
+    return new Projectile(this.scene, this.x, this.y, target, this.damage, false, 0, 0, this.splashRadius, allEnemies);
   }
 
   upgrade(): number {

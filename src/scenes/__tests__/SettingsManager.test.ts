@@ -1,23 +1,46 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SettingsManager } from '../components/SettingsManager';
-
 // Mock localStorage
 const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  
+  let store: { [key: string]: string } = {};
   return {
     getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => { store[key] = value; },
+    setItem: (key: string, value: string) => { store[key] = value.toString(); },
     removeItem: (key: string) => { delete store[key]; },
     clear: () => { store = {}; },
+    get length() { return Object.keys(store).length; },
+    key: (index: number) => { const keys = Object.keys(store); return keys[index] || null; },
   };
 })();
-
 Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+
+// Mock PersistenceManager
+interface MockPersistence {
+  _settings: { soundEnabled: boolean; musicEnabled: boolean; difficulty: string };
+  saveSettings: any;
+  loadSettings: any;
+}
+
+const mockPersistence: MockPersistence = {
+  _settings: { soundEnabled: true, musicEnabled: true, difficulty: 'normal' },
+  saveSettings: vi.fn(function(settings: { soundEnabled: boolean; musicEnabled: boolean; difficulty: string }) {
+    mockPersistence._settings = { ...settings };
+  }),
+  loadSettings: vi.fn(function(): { soundEnabled: boolean; musicEnabled: boolean; difficulty: string } {
+    return { ...mockPersistence._settings };
+  }),
+};
+
+vi.mock('../../client/PersistenceManager', () => ({
+  PersistenceManager: {
+    getInstance: () => mockPersistence,
+  },
+}));
 
 describe('SettingsManager', () => {
   beforeEach(() => {
-    localStorageMock.clear();
+    mockPersistence.saveSettings.mockClear();
+    mockPersistence.loadSettings.mockClear();
   });
 
   describe('load and save', () => {
@@ -66,7 +89,7 @@ describe('SettingsManager', () => {
 
   describe('error handling', () => {
     it('should return default settings on parse error', () => {
-      localStorageMock.setItem('gameSettings', 'invalid json');
+      localStorage.setItem('gameSettings', 'invalid json');
       const settings = SettingsManager.load();
       
       expect(settings.soundEnabled).toBe(true); // default value

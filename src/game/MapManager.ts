@@ -35,6 +35,7 @@ export class MapManager {
   private mapConfig!: MapConfig;
   private mapName: string;
   private mapRegistry: MapRegistry;
+  private placedDecorations: Array<{ x: number; y: number; radius: number }> = [];
 
   constructor(scene: Phaser.Scene, mapName: string = 'classic') {
     this.scene = scene;
@@ -134,10 +135,36 @@ export class MapManager {
       bg.fillRect(0, i, width, 2);
     }
     
-    // Grass area
+    // Organic grass area with variations
     const grassColor = Phaser.Display.Color.HexStringToColor(config.grassColor);
-    bg.fillStyle(grassColor.color, 1);
-    bg.fillRect(0, skyHeight, width, height - skyHeight);
+    const baseColor = grassColor.color;
+    
+    // Create patches of different grass shades for organic look
+    const patchSize = 40;
+    for (let x = 0; x < width; x += patchSize) {
+      for (let y = skyHeight; y < height; y += patchSize) {
+        // Random variation in color (-10 to +10)
+        const variation = (Math.random() - 0.5) * 20;
+        const variedColor = Phaser.Display.Color.ValueToColor(baseColor);
+        variedColor.darken(variation);
+        
+        bg.fillStyle(variedColor.color, 1);
+        // Irregular patch shapes
+        const w = patchSize + Math.random() * 10;
+        const h = patchSize + Math.random() * 10;
+        bg.fillRect(x, y, w, h);
+      }
+    }
+    
+    // Add small grass details (darker spots for depth)
+    for (let i = 0; i < 80; i++) {
+      const x = Math.random() * width;
+      const y = skyHeight + Math.random() * (height - skyHeight);
+      const size = 3 + Math.random() * 4;
+      
+      bg.fillStyle(0x1a5f1a, 0.2 + Math.random() * 0.2);
+      bg.fillCircle(x, y, size);
+    }
   }
 
   private addTerrainDecorations(width: number, height: number): void {
@@ -148,8 +175,10 @@ export class MapManager {
       decorations.water.forEach(water => {
         const x = water.x * width;
         const y = water.y * height;
-        if (!this.isOnPath(x, y, water.safeDistance)) {
+        const radius = Math.max(water.width, water.height) / 2;
+        if (this.canPlaceDecoration(x, y, radius, water.safeDistance)) {
           this.drawSteampunkWater(x, y, water.width, water.height);
+          this.registerDecoration(x, y, radius);
         }
       });
     }
@@ -160,8 +189,10 @@ export class MapManager {
         const x = mountain.x * width;
         const y = mountain.y * height;
         const color = Phaser.Display.Color.HexStringToColor(mountain.color);
-        if (!this.isOnPath(x, y, mountain.safeDistance)) {
+        const radius = Math.max(mountain.width, mountain.height) / 2;
+        if (this.canPlaceDecoration(x, y, radius, mountain.safeDistance)) {
           this.drawMountain(x, y, mountain.width, mountain.height, color.color);
+          this.registerDecoration(x, y, radius);
         }
       });
     }
@@ -172,8 +203,9 @@ export class MapManager {
         const x = gear.x * width;
         const y = gear.y * height;
         const color = Phaser.Display.Color.HexStringToColor(gear.color);
-        if (!this.isOnPath(x, y, gear.safeDistance)) {
+        if (this.canPlaceDecoration(x, y, gear.radius, gear.safeDistance)) {
           this.drawSteampunkGear(x, y, gear.radius, color.color);
+          this.registerDecoration(x, y, gear.radius);
         }
       });
     }
@@ -183,8 +215,10 @@ export class MapManager {
       decorations.pipes.forEach(pipe => {
         const x = pipe.x * width;
         const y = pipe.y * height;
-        if (!this.isOnPath(x, y, pipe.safeDistance)) {
+        const pipeRadius = 30; // Estimated pipe size
+        if (this.canPlaceDecoration(x, y, pipeRadius, pipe.safeDistance)) {
           this.drawSteampunkPipes(x, y);
+          this.registerDecoration(x, y, pipeRadius);
         }
       });
     }
@@ -199,8 +233,10 @@ export class MapManager {
         const x = tree.x * width;
         const y = tree.y * height;
         const color = Phaser.Display.Color.HexStringToColor(tree.color);
-        if (!this.isOnPath(x, y, tree.safeDistance)) {
+        const radius = tree.size * 0.6; // Tree trunk + crown radius
+        if (this.canPlaceDecoration(x, y, radius, tree.safeDistance)) {
           this.drawComicTree(x, y, tree.size, color.color);
+          this.registerDecoration(x, y, radius);
         }
       });
     }
@@ -211,8 +247,10 @@ export class MapManager {
         const x = bush.x * width;
         const y = bush.y * height;
         const color = Phaser.Display.Color.HexStringToColor(bush.color);
-        if (!this.isOnPath(x, y, bush.safeDistance)) {
+        const radius = bush.size * 0.8; // Bush radius
+        if (this.canPlaceDecoration(x, y, radius, bush.safeDistance)) {
           this.drawBush(x, y, bush.size, color.color);
+          this.registerDecoration(x, y, radius);
         }
       });
     }
@@ -222,8 +260,10 @@ export class MapManager {
       decorations.lamps.forEach(lamp => {
         const x = lamp.x * width;
         const y = lamp.y * height;
-        if (!this.isOnPath(x, y, lamp.safeDistance)) {
+        const lampRadius = 20; // Estimated lamp size
+        if (this.canPlaceDecoration(x, y, lampRadius, lamp.safeDistance)) {
           this.drawSteampunkLamp(x, y);
+          this.registerDecoration(x, y, lampRadius);
         }
       });
     }
@@ -242,38 +282,160 @@ export class MapManager {
     return false;
   }
 
+  private canPlaceDecoration(x: number, y: number, radius: number, safeDistance: number): boolean {
+    // Check if on path
+    if (this.isOnPath(x, y, safeDistance)) {
+      return false;
+    }
+    
+    // Check collision with already placed decorations
+    for (const placed of this.placedDecorations) {
+      const distance = Phaser.Math.Distance.Between(x, y, placed.x, placed.y);
+      const minDistance = radius + placed.radius + 10; // 10px buffer
+      if (distance < minDistance) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  private registerDecoration(x: number, y: number, radius: number): void {
+    this.placedDecorations.push({ x, y, radius });
+  }
+
   private drawPathWithDepth(): void {
     const graphics = this.scene.add.graphics();
     
-    // Shadow/depth layer
-    graphics.lineStyle(48, 0x5a4a3a, 0.6);
-    this.path.draw(graphics, 128);
+    // Get path points for organic edge rendering
+    const pathPoints = this.path.getPoints(200);
     
-    // Main path layer
-    graphics.lineStyle(42, 0x8b7355, 1);
-    this.path.draw(graphics, 128);
-    
-    // Highlight on path
-    graphics.lineStyle(38, 0xa0895f, 1);
-    this.path.draw(graphics, 128);
-    
-    // Comic outline
-    graphics.lineStyle(3, 0x000000, 1);
-    this.path.draw(graphics, 128);
-    
-    // Add path texture details
-    const points = [];
-    for (let t = 0; t <= 1; t += 0.05) {
-      const point = this.path.getPoint(t);
-      points.push(point);
+    // Draw organic path with irregular edges
+    for (let i = 0; i < pathPoints.length - 1; i++) {
+      const p1 = pathPoints[i];
+      const p2 = pathPoints[i + 1];
+      
+      // Calculate perpendicular for path width
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      if (len === 0) continue;
+      
+      const perpX = -dy / len;
+      const perpY = dx / len;
+      
+      // Base width with slight variation
+      const baseWidth = 22;
+      const widthVar = Math.sin(i * 0.3) * 2;
+      const width = baseWidth + widthVar;
+      
+      // Draw path segment with organic edges
+      graphics.fillStyle(0x6b5d4f, 1);
+      graphics.fillTriangle(
+        p1.x - perpX * width, p1.y - perpY * width,
+        p1.x + perpX * width, p1.y + perpY * width,
+        p2.x - perpX * width, p2.y - perpY * width
+      );
+      graphics.fillTriangle(
+        p2.x + perpX * width, p2.y + perpY * width,
+        p2.x - perpX * width, p2.y - perpY * width,
+        p1.x + perpX * width, p1.y + perpY * width
+      );
     }
     
-    // Draw cobblestones/bricks on path
-    graphics.fillStyle(0x6b5d4f, 0.3);
-    for (let i = 0; i < points.length - 1; i++) {
-      if (i % 3 === 0) {
-        const p = points[i];
-        graphics.fillRect(p.x - 8, p.y - 8, 16, 16);
+    // Add darker edge shadows for depth
+    graphics.lineStyle(2, 0x4a3a2a, 0.4);
+    for (let i = 0; i < pathPoints.length - 1; i++) {
+      const p = pathPoints[i];
+      const dx = pathPoints[Math.min(i + 1, pathPoints.length - 1)].x - p.x;
+      const dy = pathPoints[Math.min(i + 1, pathPoints.length - 1)].y - p.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      if (len === 0) continue;
+      
+      const perpX = -dy / len;
+      const perpY = dx / len;
+      const edgeWidth = 24;
+      
+      // Left edge
+      graphics.beginPath();
+      graphics.moveTo(p.x - perpX * edgeWidth, p.y - perpY * edgeWidth);
+      graphics.lineTo(pathPoints[Math.min(i + 1, pathPoints.length - 1)].x - perpX * edgeWidth,
+                      pathPoints[Math.min(i + 1, pathPoints.length - 1)].y - perpY * edgeWidth);
+      graphics.strokePath();
+      
+      // Right edge
+      graphics.beginPath();
+      graphics.moveTo(p.x + perpX * edgeWidth, p.y + perpY * edgeWidth);
+      graphics.lineTo(pathPoints[Math.min(i + 1, pathPoints.length - 1)].x + perpX * edgeWidth,
+                      pathPoints[Math.min(i + 1, pathPoints.length - 1)].y + perpY * edgeWidth);
+      graphics.strokePath();
+    }
+    
+    // Add stones and details on path
+    for (let i = 0; i < pathPoints.length; i += 5) {
+      const p = pathPoints[i];
+      
+      // Random stones on path
+      if (Math.random() > 0.6) {
+        const offsetX = (Math.random() - 0.5) * 30;
+        const offsetY = (Math.random() - 0.5) * 30;
+        const stoneSize = 3 + Math.random() * 4;
+        
+        graphics.fillStyle(0x8a7a6a, 0.5 + Math.random() * 0.3);
+        graphics.fillCircle(p.x + offsetX, p.y + offsetY, stoneSize);
+        
+        // Stone highlight
+        graphics.fillStyle(0xaaaaaa, 0.3);
+        graphics.fillCircle(p.x + offsetX - 1, p.y + offsetY - 1, stoneSize * 0.4);
+      }
+      
+      // Cracks/worn areas
+      if (Math.random() > 0.8) {
+        graphics.lineStyle(1, 0x5a4a3a, 0.3);
+        const crackLength = 5 + Math.random() * 10;
+        const angle = Math.random() * Math.PI * 2;
+        graphics.beginPath();
+        graphics.moveTo(p.x, p.y);
+        graphics.lineTo(p.x + Math.cos(angle) * crackLength, p.y + Math.sin(angle) * crackLength);
+        graphics.strokePath();
+      }
+    }
+    
+    // Add grass tufts along path edges
+    for (let i = 0; i < pathPoints.length; i += 8) {
+      const p = pathPoints[i];
+      const nextIdx = Math.min(i + 1, pathPoints.length - 1);
+      const dx = pathPoints[nextIdx].x - p.x;
+      const dy = pathPoints[nextIdx].y - p.y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      if (len === 0) continue;
+      
+      const perpX = -dy / len;
+      const perpY = dx / len;
+      
+      // Grass on both sides
+      for (const side of [-1, 1]) {
+        const edgeDist = 26 + Math.random() * 8;
+        const grassX = p.x + perpX * edgeDist * side;
+        const grassY = p.y + perpY * edgeDist * side;
+        
+        // Draw grass tuft (3-5 blades)
+        const blades = 3 + Math.floor(Math.random() * 3);
+        for (let b = 0; b < blades; b++) {
+          const bladeAngle = (Math.random() - 0.5) * 0.4;
+          const bladeHeight = 4 + Math.random() * 4;
+          const bladeX = grassX + (Math.random() - 0.5) * 3;
+          const bladeY = grassY + (Math.random() - 0.5) * 3;
+          
+          graphics.lineStyle(1, 0x2d5016, 0.6 + Math.random() * 0.2);
+          graphics.beginPath();
+          graphics.moveTo(bladeX, bladeY);
+          graphics.lineTo(
+            bladeX + Math.sin(bladeAngle) * 2,
+            bladeY - bladeHeight
+          );
+          graphics.strokePath();
+        }
       }
     }
   }

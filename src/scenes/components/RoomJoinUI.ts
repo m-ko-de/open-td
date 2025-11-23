@@ -1,4 +1,5 @@
 import { InputFieldHelper } from './InputFieldHelper';
+import { PersistenceManager } from '../../client/PersistenceManager';
 
 /**
  * RoomJoinUI - Handles room joining interface
@@ -41,8 +42,8 @@ export class RoomJoinUI {
       'Dein Name'
     );
     
-    // Load saved player name
-    const savedName = localStorage.getItem('openTD_playerName');
+    // Load saved player name from PersistenceManager
+    const savedName = PersistenceManager.getInstance().getLocal<string>('playerName');
     if (savedName) {
       this.playerNameInput.value = savedName;
     }

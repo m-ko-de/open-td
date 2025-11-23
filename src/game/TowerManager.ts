@@ -88,11 +88,18 @@ export class TowerManager {
     return { success: true, cost };
   }
 
-  update(time: number, enemies: BaseEnemy[]): void {
-    // Update towers
+  update(time: number, enemies: BaseEnemy[]): any[] {
+    const projectiles: any[] = [];
+    
+    // Update towers and collect projectiles
     this.towers.forEach((tower) => {
-      tower.update(time, enemies);
+      const projectile = tower.update(time, enemies);
+      if (projectile) {
+        projectiles.push(projectile);
+      }
     });
+    
+    return projectiles;
   }
 
   private isValidPosition(x: number, y: number): boolean {

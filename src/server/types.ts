@@ -69,6 +69,8 @@ export interface ServerToClientEvents {
   'game:waveCompleted': (wave: number, bonus: number) => void;
   'game:levelUp': (level: number) => void;
   'game:over': (won: boolean) => void;
+
+  
 }
 
 export interface ClientToServerEvents {
@@ -85,6 +87,9 @@ export interface ClientToServerEvents {
   'game:sellTower': (towerId: string) => void;
   'game:startWave': () => void;
   'game:researchUnlock': (researchType: string) => void;
+
+  'storage:saveData': (data: { key: string; value: any }) => void;
+  'storage:loadData': (key: string, callback: (data: any) => void) => void;
 }
 
 export interface InterServerEvents {

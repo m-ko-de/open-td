@@ -131,8 +131,16 @@ export class PreloaderScene extends Phaser.Scene {
       });
     });
 
-    // Load assets here
-    // Example: this.load.image('tower', 'assets/tower.png');
+    // Tower & Sound assets vorladen
+    this.load.audio('click', 'assets/sounds/click.mp3');
+    this.load.audio('music', 'assets/music/menu.mp3');
+    this.load.audio('tower_basic', 'assets/sounds/tower_basic.mp3');
+    this.load.audio('tower_fast', 'assets/sounds/tower_fast.mp3');
+    this.load.audio('tower_fire', 'assets/sounds/tower_fire.mp3');
+    this.load.audio('tower_frost', 'assets/sounds/tower_frost.mp3');
+    this.load.audio('tower_sniper', 'assets/sounds/tower_sniper.mp3');
+    this.load.audio('tower_splash', 'assets/sounds/tower_splash.mp3');
+    this.load.audio('tower_strong', 'assets/sounds/tower_strong.mp3');
     
     // Handle load complete
     this.load.once('complete', () => {
@@ -173,11 +181,11 @@ export class PreloaderScene extends Phaser.Scene {
           clearInterval(interval);
           this.load.emit('complete');
           
-          // Wait for animations then transition
+          // Wait for animations then transition to login
           this.time.delayedCall(1500, () => {
             this.cameras.main.fadeOut(300);
             this.cameras.main.once('camerafadeoutcomplete', () => {
-              this.scene.start('MainMenuScene');
+              this.scene.start('LoginScene');
             });
           });
         }
@@ -189,7 +197,7 @@ export class PreloaderScene extends Phaser.Scene {
         this.time.delayedCall(1500, () => {
           this.cameras.main.fadeOut(300);
           this.cameras.main.once('camerafadeoutcomplete', () => {
-            this.scene.start('MainMenuScene');
+            this.scene.start('LoginScene');
           });
         });
       });

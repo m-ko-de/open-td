@@ -1,5 +1,6 @@
 import { BaseEnemy } from '../enemies/BaseEnemy';
 import { ConfigManager } from '../../config/ConfigManager';
+import { SoundManager } from '../../components/SoundManager';
 
 /**
  * BaseTower - Abstract base class for all tower types
@@ -35,6 +36,8 @@ export abstract class BaseTower {
   
   // Firing system
   protected lastFired: number = 0;
+  protected currentRotation: number = 0;
+  protected targetRotation: number = 0;
 
   constructor(scene: Phaser.Scene, x: number, y: number, type: string, buildCost: number) {
     this.scene = scene;
@@ -97,8 +100,9 @@ export abstract class BaseTower {
 
   /**
    * Abstract method to fire at target - must be implemented by subclasses
+   * Returns the created projectile so it can be tracked
    */
-  protected abstract fireAtTarget(target: BaseEnemy, allEnemies: BaseEnemy[]): void;
+  protected abstract fireAtTarget(target: BaseEnemy, allEnemies: BaseEnemy[]): any;
 
   /**
    * Find the best target within range
@@ -134,17 +138,82 @@ export abstract class BaseTower {
 
   /**
    * Update tower logic
+   * Returns projectile if one was fired, null otherwise
    */
-  update(time: number, enemies: BaseEnemy[]): void {
+  update(time: number, enemies: BaseEnemy[]): any {
+    // Smooth rotation interpolation
+    if (Math.abs(this.targetRotation - this.currentRotation) > 0.01) {
+      const diff = this.targetRotation - this.currentRotation;
+      this.currentRotation += diff * 0.15;
+      if (this.sprite.setRotation) {
+        this.sprite.setRotation(this.currentRotation);
+      }
+    }
+
     if (time - this.lastFired < this.fireRate) {
-      return;
+      return null;
     }
 
     const target = this.findTarget(enemies);
     
     if (target) {
-      this.fireAtTarget(target, enemies);
+      // Calculate rotation to target
+      this.targetRotation = Math.atan2(target.y - this.y, target.x - this.x) + Math.PI / 2;
+      // Create muzzle flash effect
+      this.createMuzzleFlash();
+      // Turm-Sound abspielen
+      SoundManager.getInstance().playTower(this.towerType);
+      const projectile = this.fireAtTarget(target, enemies);
       this.lastFired = time;
+      return projectile;
+    }
+    return null;
+  }
+
+  /**
+   * Create muzzle flash particle effect when tower fires
+   */
+  protected createMuzzleFlash(): void {
+    if (!this.scene.tweens?.add) return; // Skip in test environment
+    
+    const flash = this.scene.add.graphics();
+    flash.fillStyle(0xffff00, 0.8);
+    flash.fillCircle(0, 0, 8);
+    flash.x = this.x;
+    flash.y = this.y - 15;
+    if (flash.setDepth) flash.setDepth(99);
+    
+    this.scene.tweens.add({
+      targets: flash,
+      alpha: 0,
+      scale: 1.5,
+      duration: 150,
+      ease: 'Power2',
+      onComplete: () => flash.destroy()
+    });
+    
+    // Add particles
+    for (let i = 0; i < 3; i++) {
+      const particle = this.scene.add.graphics();
+      particle.fillStyle(0xff8800, 0.6);
+      particle.fillCircle(0, 0, 3);
+      particle.x = this.x;
+      particle.y = this.y - 15;
+      if (particle.setDepth) particle.setDepth(99);
+      
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 20 + Math.random() * 30;
+      
+      this.scene.tweens.add({
+        targets: particle,
+        x: particle.x + Math.cos(angle) * speed,
+        y: particle.y + Math.sin(angle) * speed,
+        alpha: 0,
+        scale: 0.5,
+        duration: 200 + Math.random() * 200,
+        ease: 'Power2',
+        onComplete: () => particle.destroy()
+      });
     }
   }
 

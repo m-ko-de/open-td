@@ -8,12 +8,14 @@ export class Projectile {
   private speed: number = 0.3;
   private x: number;
   private y: number;
+  private rotation: number = 0;
   private hasHit: boolean = false;
   private isFrost: boolean = false;
   private slowAmount: number = 0;
   private slowDuration: number = 0;
   private splashRadius: number = 0;
   private allEnemies: BaseEnemy[] = [];
+  private trailParticles: Phaser.GameObjects.Graphics[] = [];
 
   constructor(
     scene: Phaser.Scene,
@@ -64,26 +66,37 @@ export class Projectile {
         this.sprite.lineBetween(0, 0, x2, y2);
       }
     } else {
-      // Energy projectile - glowing orb
+      // Energy projectile - directional arrow/bolt
       // Outer glow
-      this.sprite.fillStyle(0xff8800, 0.2);
-      this.sprite.fillCircle(0, 0, 9);
+      this.sprite.fillStyle(0xff8800, 0.3);
+      this.sprite.fillCircle(0, 0, 10);
       
       // Middle glow
-      this.sprite.fillStyle(0xffaa00, 0.5);
+      this.sprite.fillStyle(0xffaa00, 0.6);
       this.sprite.fillCircle(0, 0, 7);
       
-      // Main body
+      // Arrow shape pointing right (will rotate to direction)
       this.sprite.fillStyle(0xffff00, 1);
-      this.sprite.fillCircle(0, 0, 5);
+      if (this.sprite.beginPath) {
+        this.sprite.beginPath();
+        this.sprite.moveTo(8, 0);  // Arrow tip
+        this.sprite.lineTo(-4, -4); // Top back
+        this.sprite.lineTo(-2, 0);  // Middle back
+        this.sprite.lineTo(-4, 4);  // Bottom back
+        this.sprite.closePath();
+        this.sprite.fillPath();
+      } else {
+        // Fallback for test environment
+        this.sprite.fillCircle(0, 0, 5);
+      }
       
       // Bright core
       this.sprite.fillStyle(0xffffff, 0.9);
       this.sprite.fillCircle(0, 0, 3);
       
-      // Spark effect
-      this.sprite.fillStyle(0xffffff, 0.7);
-      this.sprite.fillCircle(-1, -1, 1.5);
+      // Front glow
+      this.sprite.fillStyle(0xffffff, 0.6);
+      this.sprite.fillCircle(4, 0, 2);
     }
     
     this.sprite.x = x;
@@ -101,6 +114,7 @@ export class Projectile {
     const targetY = this.target.y;
 
     const angle = Math.atan2(targetY - this.y, targetX - this.x);
+    this.rotation = angle;
     const velocityX = Math.cos(angle) * this.speed * delta;
     const velocityY = Math.sin(angle) * this.speed * delta;
 
@@ -109,6 +123,43 @@ export class Projectile {
 
     this.sprite.x = this.x;
     this.sprite.y = this.y;
+    if (this.sprite.setRotation) {
+      this.sprite.setRotation(this.rotation);
+    }
+    
+    // Create enhanced trail particles (more frequent, longer lasting)
+    if (Math.random() < 0.6 && this.scene.tweens?.add) {
+      const trail = this.scene.add.graphics();
+      const color = this.isFrost ? 0x00ffff : 0xffaa00;
+      const size = this.isFrost ? 4 : 5;
+      
+      // Create gradient trail effect
+      trail.fillStyle(color, 0.6);
+      trail.fillCircle(0, 0, size);
+      trail.fillStyle(color, 0.3);
+      trail.fillCircle(0, 0, size * 1.5);
+      
+      trail.x = this.x;
+      trail.y = this.y;
+      if (trail.setRotation) trail.setRotation(this.rotation);
+      if (trail.setDepth) trail.setDepth(90);
+      
+      this.trailParticles.push(trail);
+      
+      this.scene.tweens.add({
+        targets: trail,
+        alpha: 0,
+        scaleX: 0.3,
+        scaleY: 0.8,
+        duration: 400,
+        ease: 'Power2',
+        onComplete: () => {
+          const index = this.trailParticles.indexOf(trail);
+          if (index > -1) this.trailParticles.splice(index, 1);
+          trail.destroy();
+        }
+      });
+    }
 
     // Check if hit target
     const distance = Phaser.Math.Distance.Between(this.x, this.y, targetX, targetY);
@@ -130,21 +181,57 @@ export class Projectile {
   }
 
   private applySplashDamage(x: number, y: number): void {
-    // Create explosion visual
-    const explosion = this.scene.add.graphics();
-    explosion.fillStyle(0xff8800, 0.6);
-    explosion.fillCircle(x, y, this.splashRadius);
-    explosion.lineStyle(3, 0xff6600, 0.8);
-    explosion.strokeCircle(x, y, this.splashRadius);
+    // Screen shake on explosion
+    if (this.scene.cameras?.main?.shake) {
+      this.scene.cameras.main.shake(150, 0.003);
+    }
     
-    this.scene.tweens.add({
-      targets: explosion,
-      alpha: 0,
-      scale: 1.3,
-      duration: 400,
-      ease: 'Power2',
-      onComplete: () => explosion.destroy()
-    });
+    // Create explosion visual with multiple layers
+    if (this.scene.tweens?.add) {
+      const explosion = this.scene.add.graphics();
+      explosion.fillStyle(0xff8800, 0.8);
+      explosion.fillCircle(0, 0, this.splashRadius * 0.6);
+      explosion.fillStyle(0xff6600, 0.6);
+      explosion.fillCircle(0, 0, this.splashRadius);
+      explosion.lineStyle(3, 0xffaa00, 0.9);
+      explosion.strokeCircle(0, 0, this.splashRadius);
+      explosion.x = x;
+      explosion.y = y;
+      
+      this.scene.tweens.add({
+        targets: explosion,
+        alpha: 0,
+        scale: 1.5,
+        duration: 400,
+        ease: 'Power2',
+        onComplete: () => explosion.destroy()
+      });
+      
+      // Explosion particles
+      for (let i = 0; i < 12; i++) {
+        const particle = this.scene.add.graphics();
+        const size = 3 + Math.random() * 4;
+        particle.fillStyle(i % 2 === 0 ? 0xff6600 : 0xff8800, 0.8);
+        particle.fillCircle(0, 0, size);
+        particle.x = x;
+        particle.y = y;
+        if (particle.setDepth) particle.setDepth(98);
+        
+        const angle = (i / 12) * Math.PI * 2 + Math.random() * 0.3;
+        const speed = this.splashRadius * (0.8 + Math.random() * 0.6);
+        
+        this.scene.tweens.add({
+          targets: particle,
+          x: x + Math.cos(angle) * speed,
+          y: y + Math.sin(angle) * speed,
+          alpha: 0,
+          scale: 0.3,
+          duration: 300 + Math.random() * 300,
+          ease: 'Power2',
+          onComplete: () => particle.destroy()
+        });
+      }
+    }
     
     // Damage all enemies in splash radius
     for (const enemy of this.allEnemies) {
@@ -163,5 +250,11 @@ export class Projectile {
 
   destroy(): void {
     this.sprite.destroy();
+    
+    // Clean up any remaining trail particles
+    for (const trail of this.trailParticles) {
+      trail.destroy();
+    }
+    this.trailParticles = [];
   }
 }

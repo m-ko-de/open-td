@@ -4,6 +4,18 @@
 export class MenuButtons {
   constructor(private scene: Phaser.Scene) {}
 
+  /**
+   * Lighten a hex color by percentage
+   */
+  private lightenColor(color: string, percent: number): string {
+    const num = parseInt(color.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = Math.min(255, ((num >> 16) & 0xff) + amt);
+    const G = Math.min(255, ((num >> 8) & 0xff) + amt);
+    const B = Math.min(255, (num & 0xff) + amt);
+    return '#' + ((1 << 24) + (R << 16) + (G << 8) + B).toString(16).slice(1);
+  }
+
   createButton(
     x: number,
     y: number,
@@ -20,9 +32,13 @@ export class MenuButtons {
     button.setOrigin(0.5);
     button.setInteractive({ useHandCursor: true });
 
-    // Hover effects
+    // Hover effects with glow
     button.on('pointerover', () => {
       button.setScale(1.1);
+      button.setStyle({ 
+        backgroundColor: this.lightenColor(color, 30),
+        shadow: { blur: 15, color: color, fill: true }
+      });
       this.scene.tweens.add({
         targets: button,
         scale: 1.1,
@@ -32,6 +48,10 @@ export class MenuButtons {
     });
 
     button.on('pointerout', () => {
+      button.setStyle({ 
+        backgroundColor: color,
+        shadow: { blur: 0, color: '#000000', fill: false }
+      });
       this.scene.tweens.add({
         targets: button,
         scale: 1,

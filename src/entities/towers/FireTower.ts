@@ -63,8 +63,8 @@ export class FireTower extends BaseTower {
     this.sprite.y = this.y;
   }
 
-  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): void {
-    if (target.isDead()) return;
+  protected fireAtTarget(target: BaseEnemy, _allEnemies: BaseEnemy[]): any {
+    if (target.isDead()) return null;
     
     // Apply burn effect to target
     this.applyBurn(target);
@@ -81,6 +81,8 @@ export class FireTower extends BaseTower {
       duration: 300,
       onComplete: () => graphics.destroy()
     });
+    
+    return null;
   }
 
   private applyBurn(enemy: BaseEnemy): void {

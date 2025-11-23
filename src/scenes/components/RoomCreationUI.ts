@@ -1,4 +1,5 @@
 import { InputFieldHelper } from './InputFieldHelper';
+import { PersistenceManager } from '../../client/PersistenceManager';
 
 /**
  * RoomCreationUI - Handles room creation interface
@@ -40,8 +41,8 @@ export class RoomCreationUI {
       'Dein Name'
     );
     
-    // Load saved player name from localStorage
-    const savedName = localStorage.getItem('openTD_playerName');
+    // Load saved player name from PersistenceManager
+    const savedName = PersistenceManager.getInstance().getLocal<string>('playerName');
     if (savedName) {
       this.playerNameInput.value = savedName;
     }
