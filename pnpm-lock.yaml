@@ -3961,10 +3961,10 @@ snapshots:
       postcss: 8.5.6
       rollup: 4.53.3
     optionalDependencies:
-      '@types/node': 20.19.25
+      '@types/node': 24.10.1
       fsevents: 2.3.3
 
-  vite@7.2.4(@types/node@20.19.25)(tsx@4.20.6):
+  vite@7.2.4(@types/node@24.10.1)(tsx@4.20.6):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
