@@ -14,6 +14,10 @@ export interface MapConfig {
       y: number;
       type: string;
     }>;
+    // Optional map-specific placement distance (px) that overrides the game's default
+    placementDistance?: number;
+    // Optional path rendering width (px) to provide map-specific path thickness
+    pathWidth?: number;
     [key: string]: any;
   };
   decorations: {
@@ -620,5 +624,15 @@ export class MapManager {
 
   getMapConfig(): MapConfig {
     return this.mapConfig;
+  }
+
+  /**
+   * Get the map-specific placement distance threshold for tower placement.
+   * Returns a default of 45px if not specified in the map config.
+   */
+  getPlacementDistance(): number {
+    const placement = this.mapConfig?.path?.placementDistance;
+    if (typeof placement === 'number') return placement;
+    return 45; // default value
   }
 }

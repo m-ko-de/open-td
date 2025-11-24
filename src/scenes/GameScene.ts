@@ -104,7 +104,7 @@ export class GameScene extends Phaser.Scene {
 
     // Create managers
     this.waveManager = new WaveManager(this, this.mapManager.getPath(), this.levelType);
-    this.towerManager = new TowerManager(this, this.mapManager.getPath());
+    this.towerManager = new TowerManager(this, this.mapManager.getPath(), this.mapManager.getPlacementDistance());
     this.researchManager = new ResearchManager();
     this.projectileManager = new ProjectileManager();
 

@@ -11,9 +11,12 @@ export class TowerManager {
   private selectedCost: number = 0;
   private selectedTower: BaseTower | null = null;
 
-  constructor(scene: Phaser.Scene, path: Phaser.Curves.Path) {
+  private placementDistance: number = 45; // default
+
+  constructor(scene: Phaser.Scene, path: Phaser.Curves.Path, placementDistance: number = 45) {
     this.scene = scene;
     this.path = path;
+    this.placementDistance = placementDistance;
     
     // Enable pointer events for tower selection
     this.scene.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -107,7 +110,7 @@ export class TowerManager {
     const points = this.path.getPoints(100);
     for (const point of points) {
       const distance = Phaser.Math.Distance.Between(x, y, point.x, point.y);
-      if (distance < 45) {
+      if (distance < this.placementDistance) {
         return false;
       }
     }
