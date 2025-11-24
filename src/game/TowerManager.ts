@@ -91,12 +91,12 @@ export class TowerManager {
     return { success: true, cost };
   }
 
-  update(time: number, enemies: BaseEnemy[]): any[] {
+  update(time: number, enemies?: BaseEnemy[]): any[] {
     const projectiles: any[] = [];
     
     // Update towers and collect projectiles
     this.towers.forEach((tower) => {
-      const projectile = tower.update(time, enemies);
+      const projectile = tower.update(time, Array.isArray(enemies) ? enemies : []);
       if (projectile) {
         projectiles.push(projectile);
       }
@@ -170,6 +170,28 @@ export class TowerManager {
       tower.upgrade(); // Server already handled cost
     }
     this.towers.push(tower);
+  }
+
+  /**
+   * Apply a damage multiplier to all towers (for research effects)
+   */
+  applyDamageMultiplierToAll(multiplier: number): void {
+    for (const tower of this.towers) {
+      if ((tower as any).applyDamageMultiplier) {
+        (tower as any).applyDamageMultiplier(multiplier);
+      }
+    }
+  }
+
+  /**
+   * Apply a range multiplier to all towers (for research effects)
+   */
+  applyRangeMultiplierToAll(multiplier: number): void {
+    for (const tower of this.towers) {
+      if ((tower as any).applyRangeMultiplier) {
+        (tower as any).applyRangeMultiplier(multiplier);
+      }
+    }
   }
 
   private handleTowerClick(pointer: Phaser.Input.Pointer): void {

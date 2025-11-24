@@ -107,9 +107,10 @@ export abstract class BaseTower {
   /**
    * Find the best target within range
    */
-  protected findTarget(enemies: BaseEnemy[]): BaseEnemy | null {
+  protected findTarget(enemies?: BaseEnemy[]): BaseEnemy | null {
     let bestTarget: BaseEnemy | null = null;
     let bestValue = -1;
+    if (!Array.isArray(enemies) || enemies.length === 0) return null;
 
     for (const enemy of enemies) {
       if (enemy.isDead()) continue;
@@ -140,7 +141,7 @@ export abstract class BaseTower {
    * Update tower logic
    * Returns projectile if one was fired, null otherwise
    */
-  update(time: number, enemies: BaseEnemy[]): any {
+  update(time: number, enemies?: BaseEnemy[]): any {
     // Smooth rotation interpolation
     if (Math.abs(this.targetRotation - this.currentRotation) > 0.01) {
       const diff = this.targetRotation - this.currentRotation;
@@ -154,7 +155,8 @@ export abstract class BaseTower {
       return null;
     }
 
-    const target = this.findTarget(enemies);
+    const safeEnemies = Array.isArray(enemies) ? enemies : [];
+    const target = this.findTarget(safeEnemies);
     
     if (target) {
       // Calculate rotation to target
@@ -163,7 +165,7 @@ export abstract class BaseTower {
       this.createMuzzleFlash();
       // Turm-Sound abspielen
       SoundManager.getInstance().playTower(this.towerType);
-      const projectile = this.fireAtTarget(target, enemies);
+      const projectile = this.fireAtTarget(target, safeEnemies);
       this.lastFired = time;
       return projectile;
     }
@@ -234,6 +236,21 @@ export abstract class BaseTower {
     this.upgradeLevelText.setText(this.upgradeLevel.toString());
     
     return upgradeCost;
+  }
+
+  /**
+   * Apply a global damage multiplier (e.g., research-based buff)
+   */
+  applyDamageMultiplier(multiplier: number): void {
+    this.baseDamage = Math.round(this.baseDamage * multiplier);
+    this.damage = Math.round(this.damage * multiplier);
+  }
+
+  /**
+   * Apply a global range multiplier (e.g., research-based buff)
+   */
+  applyRangeMultiplier(multiplier: number): void {
+    this.range = Math.round(this.range * multiplier);
   }
 
   /**

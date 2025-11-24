@@ -179,6 +179,16 @@ export class GameScene extends Phaser.Scene {
       () => this.handlePauseToggle(),
       () => this.handleAutoWaveToggle(),
       () => this.handleResearchToggle(),
+      (researchId: string) => {
+        // Apply global research effects that affect existing towers
+        if (researchId === 'tower_damage_1') {
+          // Apply +10% damage
+          this.towerManager.applyDamageMultiplierToAll(1.1);
+        } else if (researchId === 'tower_range_1') {
+          // Apply +10% range
+          this.towerManager.applyRangeMultiplierToAll(1.1);
+        }
+      },
       () => this.handleUpgradeTower(),
       () => this.handleSellTower()
     );

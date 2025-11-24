@@ -38,6 +38,7 @@ export class GameUI {
     onPauseToggle: () => void,
     onAutoWaveToggle: () => void,
     onResearchToggle: () => void,
+    onResearchApplied: (researchId: string) => void,
     onUpgradeTower: () => void,
     onSellTower: () => void
   ): void {
@@ -87,8 +88,13 @@ export class GameUI {
         this.updateGold(this.gold);
       },
       (researchId) => {
+        // Default UI behavior: re-create tower button panel on new tower unlocks
         if (researchId === 'frost_tower' || researchId === 'fire_tower') {
           this.towerButtons.recreate();
+        }
+        // Let game scene react to any research application (e.g., global buffs)
+        if (typeof onResearchApplied === 'function') {
+          onResearchApplied(researchId);
         }
       }
     );
