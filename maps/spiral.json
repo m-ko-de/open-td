@@ -1,0 +1,56 @@
+{
+  "name": "Spiral Path",
+  "description": "A challenging spiral path from outside to center",
+  "background": {
+    "skyHeight": 0.4,
+    "skyColorTop": "#87ceeb",
+    "skyColorBottom": "#b0e0e6",
+    "grassColor": "#3a6b2e"
+  },
+  "path": {
+    "type": "waypoints",
+    "minY": 0.45,
+    "margin": 80,
+    "waypoints": [
+      { "x": 50, "y": 0.45, "type": "start" },
+      { "x": -80, "y": 0.45, "type": "line" },
+      { "x": -80, "y": -80, "type": "line" },
+      { "x": 180, "y": -80, "type": "line" },
+      { "x": 180, "y": 0.55, "type": "line" },
+      { "x": -180, "y": 0.55, "type": "line" },
+      { "x": -180, "y": -180, "type": "line" },
+      { "x": 280, "y": -180, "type": "line" },
+      { "x": 280, "y": 0.65, "type": "line" },
+      { "x": 0.5, "y": 0.65, "type": "end" }
+    ]
+  },
+  "decorations": {
+    "water": [
+      { "x": 0.1, "y": 0.85, "width": 100, "height": 70, "safeDistance": 80 },
+      { "x": 0.85, "y": 0.8, "width": 90, "height": 60, "safeDistance": 80 }
+    ],
+    "mountains": [
+      { "x": 0.08, "y": 0.55, "width": 140, "height": 170, "color": "#8b7d6b", "safeDistance": 80 },
+      { "x": 0.92, "y": 0.58, "width": 130, "height": 160, "color": "#9d8b7a", "safeDistance": 80 }
+    ],
+    "gears": [
+      { "x": 0.08, "y": 0.7, "radius": 28, "color": "#b8860b", "safeDistance": 50 },
+      { "x": 0.92, "y": 0.9, "radius": 32, "color": "#cd7f32", "safeDistance": 50 }
+    ],
+    "pipes": [
+      { "x": 0.93, "y": 0.52, "safeDistance": 50 }
+    ],
+    "trees": [
+      { "x": 0.12, "y": 0.62, "size": 38, "color": "#2d5016", "safeDistance": 60 },
+      { "x": 0.88, "y": 0.57, "size": 36, "color": "#3a6b2e", "safeDistance": 60 }
+    ],
+    "bushes": [
+      { "x": 0.08, "y": 0.75, "size": 24, "color": "#228b22", "safeDistance": 40 },
+      { "x": 0.92, "y": 0.95, "size": 26, "color": "#2e8b57", "safeDistance": 40 }
+    ],
+    "lamps": [
+      { "x": 0.08, "y": 0.5, "safeDistance": 50 },
+      { "x": 0.92, "y": 0.68, "safeDistance": 50 }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Zigzag Path",
+  "description": "A rapid up-and-down zigzag pattern",
+  "background": {
+    "skyHeight": 0.4,
+    "skyColorTop": "#87ceeb",
+    "skyColorBottom": "#b0e0e6",
+    "grassColor": "#3a6b2e"
+  },
+  "path": {
+    "type": "waypoints",
+    "topY": 0.45,
+    "bottomY": -100,
+    "waypoints": [
+      { "x": 50, "y": 0.45, "type": "start" },
+      { "x": 200, "y": 0.45, "type": "line" },
+      { "x": 300, "y": -100, "type": "line" },
+      { "x": 400, "y": 0.45, "type": "line" },
+      { "x": 500, "y": -100, "type": "line" },
+      { "x": 600, "y": 0.45, "type": "line" },
+      { "x": 700, "y": -100, "type": "line" },
+      { "x": 800, "y": 0.45, "type": "line" },
+      { "x": -50, "y": 0.45, "type": "end" }
+    ]
+  },
+  "decorations": {
+    "water": [
+      { "x": 0.06, "y": 0.82, "width": 110, "height": 75, "safeDistance": 80 },
+      { "x": 0.88, "y": 0.77, "width": 95, "height": 65, "safeDistance": 80 }
+    ],
+    "mountains": [
+      { "x": 0.06, "y": 0.56, "width": 145, "height": 175, "color": "#8b7d6b", "safeDistance": 80 },
+      { "x": 0.94, "y": 0.57, "width": 125, "height": 155, "color": "#9d8b7a", "safeDistance": 80 }
+    ],
+    "gears": [
+      { "x": 0.06, "y": 0.68, "radius": 27, "color": "#b8860b", "safeDistance": 50 },
+      { "x": 0.94, "y": 0.88, "radius": 31, "color": "#cd7f32", "safeDistance": 50 }
+    ],
+    "pipes": [
+      { "x": 0.94, "y": 0.53, "safeDistance": 50 }
+    ],
+    "trees": [
+      { "x": 0.13, "y": 0.61, "size": 39, "color": "#2d5016", "safeDistance": 60 },
+      { "x": 0.87, "y": 0.56, "size": 37, "color": "#3a6b2e", "safeDistance": 60 }
+    ],
+    "bushes": [
+      { "x": 0.09, "y": 0.73, "size": 23, "color": "#228b22", "safeDistance": 40 },
+      { "x": 0.06, "y": 0.87, "size": 21, "color": "#2e8b57", "safeDistance": 40 },
+      { "x": 0.91, "y": 0.92, "size": 25, "color": "#228b22", "safeDistance": 40 }
+    ],
+    "lamps": [
+      { "x": 0.09, "y": 0.51, "safeDistance": 50 },
+      { "x": 0.91, "y": 0.69, "safeDistance": 50 }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "Classic Path",
+  "description": "A simple winding path with gentle curves",
+  "background": {
+    "skyHeight": 0.4,
+    "skyColorTop": "#87ceeb",
+    "skyColorBottom": "#b0e0e6",
+    "grassColor": "#3a6b2e"
+  },
+  "path": {
+    "type": "waypoints",
+    "startY": 0.6,
+    "minY": 0.45,
+    "waypoints": [
+      { "x": 50, "y": 0.6, "type": "start" },
+      { "x": 300, "y": 0.6, "type": "line" },
+      { "x": 300, "y": 0.45, "type": "line" },
+      { "x": 600, "y": 0.45, "type": "line" },
+      { "x": 600, "y": 0.75, "type": "line" },
+      { "x": 900, "y": 0.75, "type": "line" },
+      { "x": 900, "y": 0.6, "type": "line" },
+      { "x": -50, "y": 0.6, "type": "end" }
+    ]
+  },
+  "decorations": {
+    "water": [
+      { "x": 0.05, "y": 0.8, "width": 120, "height": 80, "safeDistance": 80 },
+      { "x": 0.9, "y": 0.75, "width": 100, "height": 60, "safeDistance": 80 }
+    ],
+    "mountains": [
+      { "x": 0.05, "y": 0.55, "width": 150, "height": 180, "color": "#8b7d6b", "safeDistance": 80 },
+      { "x": 0.85, "y": 0.58, "width": 120, "height": 150, "color": "#9d8b7a", "safeDistance": 80 },
+      { "x": 0.95, "y": 0.56, "width": 100, "height": 140, "color": "#8b7d6b", "safeDistance": 80 }
+    ],
+    "gears": [
+      { "x": 0.05, "y": 0.65, "radius": 25, "color": "#b8860b", "safeDistance": 50 },
+      { "x": 0.95, "y": 0.85, "radius": 30, "color": "#cd7f32", "safeDistance": 50 }
+    ],
+    "pipes": [
+      { "x": 0.95, "y": 0.55, "safeDistance": 50 }
+    ],
+    "trees": [
+      { "x": 0.15, "y": 0.6, "size": 40, "color": "#2d5016", "safeDistance": 60 },
+      { "x": 0.85, "y": 0.55, "size": 35, "color": "#3a6b2e", "safeDistance": 60 },
+      { "x": 0.9, "y": 0.8, "size": 45, "color": "#2d5016", "safeDistance": 60 }
+    ],
+    "bushes": [
+      { "x": 0.1, "y": 0.7, "size": 25, "color": "#228b22", "safeDistance": 40 },
+      { "x": 0.05, "y": 0.85, "size": 20, "color": "#2e8b57", "safeDistance": 40 },
+      { "x": 0.9, "y": 0.9, "size": 22, "color": "#228b22", "safeDistance": 40 },
+      { "x": 0.95, "y": 0.65, "size": 28, "color": "#2e8b57", "safeDistance": 40 }
+    ],
+    "lamps": [
+      { "x": 0.1, "y": 0.5, "safeDistance": 50 },
+      { "x": 0.9, "y": 0.7, "safeDistance": 50 }
+    ]
+  }
+}
