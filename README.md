@@ -168,6 +168,13 @@ If the application experiences repeated failures it will stop restarting automat
 - `pnpm cap:sync` - Sync Capacitor
 - `pnpm build:mobile` - Build and sync for mobile
 
+### Testing (non-interactive default)
+
+- `pnpm run test` — Run the full test suite once and exit (non-interactive). This is the default command for automated checks and CI.
+- `pnpm run test:watch` — Run the test runner in watch mode for development (interactive).
+- `pnpm run test:ci` — Run tests with minimal output suitable for CI (dot reporter).
+
+
 ### Why pnpm?
 
 This project uses [pnpm](https://pnpm.io/) as package manager:

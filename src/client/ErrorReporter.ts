@@ -53,6 +53,17 @@ export class ErrorReporter {
     let firstAttemptAt: number | null = null;
 
     const tryRestart = () => {
+      // Read persisted settings to check whether auto-restart is enabled
+      try {
+        const settings = this.persistence.loadSettings();
+        const autoRestart = settings?.autoRestartOnError ?? true;
+        if (!autoRestart) {
+          console.warn('Auto-restart disabled in settings; skipping restart.');
+          return;
+        }
+      } catch (e) {
+        // If reading settings fails, assume restart enabled
+      }
       const now = Date.now();
       if (!firstAttemptAt) firstAttemptAt = now;
       // Reset attempt window every 30s

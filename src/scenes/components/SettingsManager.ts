@@ -11,6 +11,7 @@ export interface GameSettings {
   soundEnabled: boolean;
   musicEnabled: boolean;
   difficulty: string;
+  autoRestartOnError?: boolean;
 }
 
 /**
@@ -35,6 +36,7 @@ export class SettingsManager {
     soundEnabled: true,
     musicEnabled: true,
     difficulty: 'normal',
+    autoRestartOnError: true,
   };
 
   static save(settings: GameSettings): void {

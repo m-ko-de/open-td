@@ -3,13 +3,17 @@ import { DifficultySelector } from './components/DifficultySelector';
 import { SettingsManager, GameSettings } from './components/SettingsManager';
 import { SoundManager } from '../client/SoundManager';
 import { ConfigManager } from '@/client/ConfigManager';
+import { AuthManager } from '@/auth/AuthManager';
+import { AdminScene } from './AdminScene';
 
 export class OptionsScene extends Phaser.Scene {
   private settings: GameSettings;
+  private auth: AuthManager;
 
   constructor() {
     super({ key: 'OptionsScene' });
     this.settings = SettingsManager.load();
+    this.auth = AuthManager.getInstance();
   }
 
   create(): void {
@@ -138,6 +142,27 @@ export class OptionsScene extends Phaser.Scene {
       this.scene.stop();
     });
 
+    // Admin button to view error reports (visible only if logged in)
+    const showAdminButton = this.add.text(width / 2, height / 2 + 240, 'Fehlerberichte anzeigen', {
+      font: 'bold 18px Arial',
+      color: '#ffffff',
+      backgroundColor: '#333333',
+      padding: { x: 8, y: 8 },
+    });
+    showAdminButton.setOrigin(0.5);
+    showAdminButton.setInteractive({ useHandCursor: true });
+    showAdminButton.on('pointerdown', () => {
+      if (this.auth.isLoggedIn()) {
+        // Open admin scene
+        this.scene.launch('AdminScene');
+        this.scene.pause();
+      } else {
+        // Not logged in
+        alert('Bitte einloggen, um Fehlerberichte anzuzeigen.');
+      }
+    });
+    
+
     // Fade in animation
     const elements = [
       overlay,
@@ -152,7 +177,7 @@ export class OptionsScene extends Phaser.Scene {
       infoText,
       closeButton,
     ];
-
+    elements.push(showAdminButton);
     elements.forEach((element, index) => {
       element.setAlpha(0);
       this.tweens.add({
@@ -170,6 +195,23 @@ export class OptionsScene extends Phaser.Scene {
     } else {
       soundManager.stopMusic();
     }
+
+    // Auto-restart toggle
+    const restartLabel = this.add.text(width / 2 - 150, height / 2 + 60, 'Auto-Restart bei Fehlern:', {
+      font: '24px Arial',
+      color: '#ffffff',
+    });
+    const restartToggle = new ToggleButton(
+      this,
+      width / 2 + 100,
+      height / 2 + 60,
+      Boolean(this.settings.autoRestartOnError),
+      (enabled) => {
+        this.settings.autoRestartOnError = enabled;
+        SettingsManager.save(this.settings);
+      }
+    );
+    elements.splice(elements.length - 1, 0, restartLabel, restartToggle.getContainer());
   }
 
   public static getSettings(): GameSettings {

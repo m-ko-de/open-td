@@ -14,6 +14,7 @@ import { ServerGameState } from './ServerGameState';
 import { generateWordRoomCode } from './wordLists';
 import { AuthRouter } from './AuthRouter';
 import { StorageRouter } from './StorageRouter';
+import { TelemetryRouter } from './TelemetryRouter';
 
 export class GameServer {
   private io: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
@@ -58,6 +59,9 @@ export class GameServer {
     // Storage routes
     const storageRouter = new StorageRouter();
     this.expressApp.use('/storage', storageRouter.router);
+    // Telemetry routes (per-user)
+    const telemetryRouter = new TelemetryRouter();
+    this.expressApp.use('/telemetry', telemetryRouter.router);
 
     // Health check
     this.expressApp.get('/health', (_req, res) => {

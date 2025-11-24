@@ -6,6 +6,7 @@ import { MainMenuScene } from './scenes/MainMenuScene';
 import { GameScene } from './scenes/GameScene';
 import { OptionsScene } from './scenes/OptionsScene';
 import { MultiplayerScene } from './scenes/MultiplayerScene';
+import { AdminScene } from './scenes/AdminScene';
 import { ConfigManager } from './client/ConfigManager';
 import { errorReporter } from './client/ErrorReporter';
 
@@ -27,7 +28,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [PreloaderScene, LoginScene, MainMenuScene, GameScene, OptionsScene, MultiplayerScene],
+  scene: [PreloaderScene, LoginScene, MainMenuScene, GameScene, OptionsScene, MultiplayerScene, AdminScene],
 };
 
 let game: Phaser.Game | null = null;
