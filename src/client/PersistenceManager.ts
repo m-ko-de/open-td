@@ -22,6 +22,30 @@ export class PersistenceManager {
     this.detectStorageMode();
   }
 
+  // Error reporting helper
+  public async saveErrorReport(report: any, authToken?: string): Promise<void> {
+    try {
+      const existing = this.getLocal<any[]>('errorReports') || [];
+      existing.push(report);
+      this.setLocal('errorReports', existing);
+
+      // Also try send to server storage if available
+      if ((this.storageMode === 'hybrid' || this.storageMode === 'server') && authToken) {
+        await this.saveToServer('errorReports', existing, authToken);
+      }
+    } catch (err) {
+      console.error('❌ Failed to save error report:', err);
+    }
+  }
+
+  public getErrorReports(): any[] {
+    return this.getLocal<any[]>('errorReports') || [];
+  }
+
+  public clearErrorReports(): void {
+    this.removeLocal('errorReports');
+  }
+
   // Use UrlManager to resolve server-relative URLs when needed
   // Import at top to avoid dynamic imports inside methods
   // (kept here for patch clarity — actual import added at file top)

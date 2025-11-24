@@ -147,6 +147,17 @@ open-td/
 - **Language**: TypeScript - Type-Safe JavaScript
 - **Mobile**: [Capacitor](https://capacitorjs.com/) - Cross-platform Native Runtime
 
+## ⚠️ Global Error Handling & Auto-Restart
+
+This project installs a lightweight global error handler in the browser that:
+
+- Captures any uncaught errors and unhandled promise rejections
+- Persists a short error report locally (and tries to upload to the server if you're logged-in)
+- Attempts to restart the game automatically (up to 3 times within 30s to avoid loops)
+
+If the application experiences repeated failures it will stop restarting automatically and show a small overlay explaining the problem. You can disable or adjust behavior by editing `src/client/ErrorReporter.ts` and the restart logic in `src/main.ts`.
+
+
 ## 📝 Development
 
 ### PNPM Scripts
