@@ -1,4 +1,4 @@
-# Open TD - Tower Defense Game
+﻿# Open TD - Tower Defense Game
 
 [![Build](https://github.com/m-ko-de/open-td/actions/workflows/build.yml/badge.svg)](https://github.com/m-ko-de/open-td/actions/workflows/build.yml)
 [![Coverage](https://img.shields.io/codecov/c/github/m-ko-de/open-td?logo=codecov)](https://app.codecov.io/gh/m-ko-de/open-td)
@@ -42,23 +42,23 @@ An open-source Tower Defense game built with Phaser 3 and Capacitor for web and 
 
 ### Installation
 
-1. Install pnpm (if not already installed):
+#### 1. Install pnpm (if not already installed)
 
-      ```bash
-      npm install -g pnpm
-      ```
+```bash
+npm install -g pnpm
+```
 
-2. Clone repository and install dependencies:
+#### 2. Clone repository and install dependencies
 
-      ```bash
-      pnpm install
-      ```
+```bash
+pnpm install
+```
 
-3. Start development server:
+#### 3. Start development server
 
-      ```bash
-      pnpm dev
-      ```
+```bash
+pnpm dev
+```
 
 The game will automatically open in your browser at `http://localhost:3000`.
 
@@ -118,26 +118,26 @@ pnpm cap:open:android
 
 ```text
 open-td/
-├── src/
-│   ├── auth/              # User authentication system
-│   ├── client/            # Client-side persistence
-│   ├── components/        # Reusable UI components
-│   ├── config/            # Game configuration
-│   ├── entities/          # Game entities
-│   │   ├── towers/        # Tower classes with upgrade system
-│   │   └── enemies/       # Enemy classes
-│   ├── game/              # Game managers and UI
-│   │   ├── ui/            # UI components (buttons, panels)
-│   │   └── managers/      # Game state managers
-│   ├── main.ts            # Phaser Game Configuration
-│   ├── multiplayer/       # Multiplayer synchronization
-│   ├── network/           # Network communication
-│   ├── scenes/            # Game Scenes
-│   └── server/            # Dedicated game server
-├── index.html             # HTML Entry Point
-├── capacitor.config.json  # Capacitor Configuration
-├── vite.config.ts         # Vite Build Configuration
-└── package.json
+ src/
+    auth/              # User authentication system
+    client/            # Client-side persistence
+    components/        # Reusable UI components
+    config/            # Game configuration
+    entities/          # Game entities
+       towers/        # Tower classes with upgrade system
+       enemies/       # Enemy classes
+    game/              # Game managers and UI
+       ui/            # UI components (buttons, panels)
+       managers/      # Game state managers
+    main.ts            # Phaser Game Configuration
+    multiplayer/       # Multiplayer synchronization
+    network/           # Network communication
+    scenes/            # Game Scenes
+    server/            # Dedicated game server
+ index.html             # HTML Entry Point
+ capacitor.config.json  # Capacitor Configuration
+ vite.config.ts         # Vite Build Configuration
+ package.json
 ```
 
 ## 🛠️ Technology Stack
@@ -194,12 +194,14 @@ Contributions are welcome! Feel free to create issues or submit pull requests.
 
 ## Credits
 
-Music in menu:
+### Music in menu
+
 Written by Kevin MacLeod. Neutral and nice. This music is available for commercial and non-commercial purposes.
 
-Sound effects:
-Splash Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=96223">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=96223">Pixabay</a>
-Basic Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6471">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6471">Pixabay</a>
-Sniper Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=5989">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=5989">Pixabay</a>
-Fire Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=95177">freesound_community</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=95177">Pixabay</a>
-Click Sound Effect by <a href="https://pixabay.com/users/universfield-28281460/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=351398">Universfield</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=351398">Pixabay</a>
+### Sound effects
+
+- Splash Sound Effect by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=96223) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=96223)
+- Basic Sound Effect by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6471) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6471)
+- Sniper Sound Effect by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=5989) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=5989)
+- Fire Sound Effect by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=95177) from [Pixabay](https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=95177)
+- Click Sound Effect by [Universfield](https://pixabay.com/users/universfield-28281460/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=351398) from [Pixabay](https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=351398)
