@@ -1,6 +1,6 @@
 import { BaseEnemy, EnemyFactory, BossEnemy } from '../entities/enemies';
 import { OptionsScene } from '../scenes/OptionsScene';
-import { ConfigManager } from '../config/ConfigManager';
+import { ConfigManager } from '../client/ConfigManager';
 
 export class WaveManager {
   private scene: Phaser.Scene;

@@ -5,7 +5,7 @@ import { TowerManager } from '../game/TowerManager';
 import { MapManager } from '../game/MapManager';
 import { ResearchManager } from '../game/ResearchManager';
 import { ProjectileManager } from '../game/ProjectileManager';
-import { ConfigManager } from '../config/ConfigManager';
+import { ConfigManager } from '../client/ConfigManager';
 import { NotificationManager } from './game/NotificationManager';
 import { XPRewardHandler } from './game/XPRewardHandler';
 import { WaveEventHandler } from './game/WaveEventHandler';

@@ -1,6 +1,6 @@
 import { BaseTower } from './BaseTower';
 import { BaseEnemy } from '../enemies/BaseEnemy';
-import { ConfigManager } from '../../config/ConfigManager';
+import { ConfigManager } from '../../client/ConfigManager';
 
 /**
  * SniperTower - Long range, high damage with armor penetration

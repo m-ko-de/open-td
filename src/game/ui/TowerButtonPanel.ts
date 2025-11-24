@@ -1,4 +1,4 @@
-import { ConfigManager } from '../../config/ConfigManager';
+import { ConfigManager } from '../../client/ConfigManager';
 import { ResearchManager } from '../ResearchManager';
 
 /**

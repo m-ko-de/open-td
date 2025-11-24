@@ -1,6 +1,6 @@
 import { BaseEnemy } from '../enemies/BaseEnemy';
-import { ConfigManager } from '../../config/ConfigManager';
-import { SoundManager } from '../../components/SoundManager';
+import { ConfigManager } from '../../client/ConfigManager';
+import { SoundManager } from '../../client/SoundManager';
 
 /**
  * BaseTower - Abstract base class for all tower types

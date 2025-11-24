@@ -1,7 +1,7 @@
 import { ToggleButton } from './components/ToggleButton';
 import { DifficultySelector } from './components/DifficultySelector';
 import { SettingsManager, GameSettings } from './components/SettingsManager';
-import { SoundManager } from '../components/SoundManager';
+import { SoundManager } from '../client/SoundManager';
 
 export class OptionsScene extends Phaser.Scene {
   private settings: GameSettings;

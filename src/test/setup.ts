@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 // Mock ConfigManager globally
-vi.mock('../config/ConfigManager', () => ({
+vi.mock('../client/ConfigManager', () => ({
   ConfigManager: {
     getInstance: () => ({
       getConfig: () => ({

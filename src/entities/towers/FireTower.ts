@@ -1,7 +1,7 @@
 import { BaseTower } from './BaseTower';
 import { BaseEnemy } from '../enemies/BaseEnemy';
 import { BurnEffect } from '../effects/BurnEffect';
-import { ConfigManager } from '../../config/ConfigManager';
+import { ConfigManager } from '../../client/ConfigManager';
 
 /**
  * FireTower - Applies burning damage over time to enemies

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { ConfigManager } from '../config/ConfigManager';
+import { ConfigManager } from '../client/ConfigManager';
 import { NetworkManager } from '../network/NetworkManager';
 import { RoomLobbyUI } from './components/RoomLobbyUI';
 import { RoomCreationUI } from './components/RoomCreationUI';

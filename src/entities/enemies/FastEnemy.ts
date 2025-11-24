@@ -1,5 +1,5 @@
 import { BaseEnemy } from './BaseEnemy';
-import { ConfigManager } from '../../config/ConfigManager';
+import { ConfigManager } from '../../client/ConfigManager';
 
 export class FastEnemy extends BaseEnemy {
   protected getEnemyConfig(): any {

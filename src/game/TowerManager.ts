@@ -1,6 +1,6 @@
 import { BaseTower, TowerFactory } from '../entities/towers';
 import { BaseEnemy } from '../entities/enemies';
-import { ConfigManager } from '../config/ConfigManager';
+import { ConfigManager } from '../client/ConfigManager';
 
 export class TowerManager {
   private scene: Phaser.Scene;

@@ -57,79 +57,44 @@ export class NetworkManager {
 
   private setupSocketListeners(): void {
     if (!this.socket) return;
-
     // Room events
-    this.socket.on('room:created', (roomCode) => {
+    this.onSocket('room:created', (roomCode: string) => {
       this.currentRoom = roomCode;
       this.trigger('room:created', roomCode);
     });
 
-    this.socket.on('room:joined', (data) => {
+    this.onSocket('room:joined', (data: { code: string; isHost: boolean }) => {
       this.currentRoom = data.code;
       this.isHost = data.isHost;
       this.trigger('room:joined', data);
     });
 
-    this.socket.on('room:playerJoined', (player) => {
-      this.trigger('room:playerJoined', player);
+    ['room:playerJoined', 'room:playerLeft', 'room:playerReady'].forEach((evt) => {
+      this.onSocket(evt, (payload: any) => this.trigger(evt, payload));
     });
 
-    this.socket.on('room:playerLeft', (playerId) => {
-      this.trigger('room:playerLeft', playerId);
-    });
+    this.onSocket('room:error', (message: string) => this.trigger('room:error', message));
 
-    this.socket.on('room:playerReady', (data) => {
-      this.trigger('room:playerReady', data);
-    });
+    // Game events: map many events to the internal trigger
+    this.onSocket('game:started', () => this.trigger('game:started'));
+    this.onSocket('game:stateUpdate', (state: any) => this.trigger('game:stateUpdate', state));
+    this.onSocket('game:towerPlaced', (tower: any) => this.trigger('game:towerPlaced', tower));
+    this.onSocket('game:towerUpgraded', (towerId: string, level: number) => this.trigger('game:towerUpgraded', { towerId, level }));
+    this.onSocket('game:towerSold', (towerId: string, refund: number) => this.trigger('game:towerSold', { towerId, refund }));
+    this.onSocket('game:enemySpawned', (enemy: any) => this.trigger('game:enemySpawned', enemy));
+    this.onSocket('game:enemyDied', (enemyId: string, gold: number, xp: number) => this.trigger('game:enemyDied', { enemyId, gold, xp }));
+    this.onSocket('game:waveStarted', (wave: any) => this.trigger('game:waveStarted', wave));
+    this.onSocket('game:waveCompleted', (wave: any, bonus: any) => this.trigger('game:waveCompleted', { wave, bonus }));
+    this.onSocket('game:levelUp', (level: number) => this.trigger('game:levelUp', level));
+    this.onSocket('game:over', (won: boolean) => this.trigger('game:over', won));
+  }
 
-    this.socket.on('room:error', (message) => {
-      this.trigger('room:error', message);
-    });
-
-    // Game events
-    this.socket.on('game:started', () => {
-      this.trigger('game:started');
-    });
-
-    this.socket.on('game:stateUpdate', (state) => {
-      this.trigger('game:stateUpdate', state);
-    });
-
-    this.socket.on('game:towerPlaced', (tower) => {
-      this.trigger('game:towerPlaced', tower);
-    });
-
-    this.socket.on('game:towerUpgraded', (towerId, level) => {
-      this.trigger('game:towerUpgraded', { towerId, level });
-    });
-
-    this.socket.on('game:towerSold', (towerId, refund) => {
-      this.trigger('game:towerSold', { towerId, refund });
-    });
-
-    this.socket.on('game:enemySpawned', (enemy) => {
-      this.trigger('game:enemySpawned', enemy);
-    });
-
-    this.socket.on('game:enemyDied', (enemyId, gold, xp) => {
-      this.trigger('game:enemyDied', { enemyId, gold, xp });
-    });
-
-    this.socket.on('game:waveStarted', (wave) => {
-      this.trigger('game:waveStarted', wave);
-    });
-
-    this.socket.on('game:waveCompleted', (wave, bonus) => {
-      this.trigger('game:waveCompleted', { wave, bonus });
-    });
-
-    this.socket.on('game:levelUp', (level) => {
-      this.trigger('game:levelUp', level);
-    });
-
-    this.socket.on('game:over', (won) => {
-      this.trigger('game:over', won);
-    });
+  /**
+   * Shorthand for registering socket listeners with a null-check.
+   */
+  private onSocket(event: string, handler: (...args: any[]) => void): void {
+    if (!this.socket) return;
+    this.socket.on(event as any, (...args: any[]) => handler(...args));
   }
 
   // Event system

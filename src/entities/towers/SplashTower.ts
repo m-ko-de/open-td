@@ -1,7 +1,7 @@
 import { BaseTower } from './BaseTower';
 import { BaseEnemy } from '../enemies/BaseEnemy';
 import { Projectile } from '../projectiles/Projectile';
-import { ConfigManager } from '../../config/ConfigManager';
+import { ConfigManager } from '../../client/ConfigManager';
 
 /**
  * SplashTower - Deals area damage to multiple enemies

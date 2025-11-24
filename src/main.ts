@@ -6,7 +6,7 @@ import { MainMenuScene } from './scenes/MainMenuScene';
 import { GameScene } from './scenes/GameScene';
 import { OptionsScene } from './scenes/OptionsScene';
 import { MultiplayerScene } from './scenes/MultiplayerScene';
-import { ConfigManager } from './config/ConfigManager';
+import { ConfigManager } from './client/ConfigManager';
 
 // Game configuration
 const config: Phaser.Types.Core.GameConfig = {

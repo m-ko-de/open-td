@@ -1,5 +1,5 @@
 import { Enemy } from './Enemy';
-import { ConfigManager } from '../../config/ConfigManager';
+import { ConfigManager } from '../../client/ConfigManager';
 
 export class BossEnemy extends Enemy {
   constructor(scene: Phaser.Scene, path: Phaser.Curves.Path, wave: number, playerLevel: number = 1, playerCount: number = 1) {
