@@ -1,4 +1,8 @@
 export interface GameConfig {
+  audio?: {
+    enabled?: boolean; // whether sound effects are enabled (default true)
+    musicEnabled?: boolean; // whether background music is enabled (default true)
+  };
   game: {
     title: string;
     version: string;
@@ -203,5 +207,26 @@ export class ConfigManager {
 
   isLoaded(): boolean {
     return this.loaded;
+  }
+
+  // Audio helpers
+  isSoundEnabled(): boolean {
+    return !!(this.config && this.config.audio && this.config.audio.enabled !== false);
+  }
+
+  isMusicEnabled(): boolean {
+    return !!(this.config && this.config.audio && this.config.audio.musicEnabled !== false);
+  }
+
+  setSoundEnabled(enabled: boolean): void {
+    if (!this.config) return;
+    if (!this.config.audio) this.config.audio = {} as any;
+    this.config.audio!.enabled = !!enabled;
+  }
+
+  setMusicEnabled(enabled: boolean): void {
+    if (!this.config) return;
+    if (!this.config.audio) this.config.audio = {} as any;
+    this.config.audio!.musicEnabled = !!enabled;
   }
 }

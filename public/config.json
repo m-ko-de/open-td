@@ -6,6 +6,10 @@
     "startLives": 20,
     "autoWaveDelay": 5000
   },
+  "audio": {
+    "enabled": false,
+    "musicEnabled": false
+  },
   "multiplayer": {
     "enabled": true,
     "serverPort": 3001,

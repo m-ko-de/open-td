@@ -1,4 +1,5 @@
 import { MapRegistry } from '../game/MapRegistry';
+import { ConfigManager } from '../client/ConfigManager';
 
 export class PreloaderScene extends Phaser.Scene {
   private particles!: Phaser.GameObjects.Graphics[];
@@ -131,16 +132,20 @@ export class PreloaderScene extends Phaser.Scene {
       });
     });
 
-    // Tower & Sound assets vorladen
-    this.load.audio('click', 'assets/sounds/click.mp3');
-    this.load.audio('music', 'assets/music/menu.mp3');
-    this.load.audio('tower_basic', 'assets/sounds/tower_basic.mp3');
-    this.load.audio('tower_fast', 'assets/sounds/tower_fast.mp3');
-    this.load.audio('tower_fire', 'assets/sounds/tower_fire.mp3');
-    this.load.audio('tower_frost', 'assets/sounds/tower_frost.mp3');
-    this.load.audio('tower_sniper', 'assets/sounds/tower_sniper.mp3');
-    this.load.audio('tower_splash', 'assets/sounds/tower_splash.mp3');
-    this.load.audio('tower_strong', 'assets/sounds/tower_strong.mp3');
+    // Tower & Sound assets vorladen (skip if global sound disabled via config)
+    const cfg = ConfigManager.getInstance();
+    const shouldLoadAudio = !cfg.isLoaded() ? false : cfg.isSoundEnabled();
+    if (shouldLoadAudio) {
+      this.load.audio('click', 'assets/sounds/click.mp3');
+      this.load.audio('music', 'assets/music/menu.mp3');
+      this.load.audio('tower_basic', 'assets/sounds/tower_basic.mp3');
+      this.load.audio('tower_fast', 'assets/sounds/tower_fast.mp3');
+      this.load.audio('tower_fire', 'assets/sounds/tower_fire.mp3');
+      this.load.audio('tower_frost', 'assets/sounds/tower_frost.mp3');
+      this.load.audio('tower_sniper', 'assets/sounds/tower_sniper.mp3');
+      this.load.audio('tower_splash', 'assets/sounds/tower_splash.mp3');
+      this.load.audio('tower_strong', 'assets/sounds/tower_strong.mp3');
+    }
     
     // Handle load complete
     this.load.once('complete', () => {

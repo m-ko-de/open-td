@@ -1,11 +1,12 @@
 import { resolveUrl } from './UrlManager';
+import { ConfigManager } from './ConfigManager';
 
 export class SoundManager {
   private static instance: SoundManager;
   private scene: Phaser.Scene | null = null;
   private music: Phaser.Sound.BaseSound | null = null;
-  private soundEnabled = true;
-  private musicEnabled = true;
+  private soundEnabled = false;
+  private musicEnabled = false;
 
   private constructor() {}
 
@@ -16,15 +17,22 @@ export class SoundManager {
     return SoundManager.instance;
   }
 
-  public init(scene: Phaser.Scene, soundEnabled: boolean, musicEnabled: boolean) {
+  public init(scene: Phaser.Scene, soundEnabled: boolean | undefined, musicEnabled: boolean | undefined) {
     this.scene = scene;
-    this.soundEnabled = soundEnabled;
-    this.musicEnabled = musicEnabled;
+    // Use ConfigManager override if available, otherwise honor supplied defaults
+    const cfg = ConfigManager.getInstance();
+    this.soundEnabled = cfg.isLoaded() ? cfg.isSoundEnabled() : (soundEnabled ?? false);
+    this.musicEnabled = cfg.isLoaded() ? cfg.isMusicEnabled() : (musicEnabled ?? false);
     this.loadAssets();
   }
 
   private loadAssets() {
     if (!this.scene) return;
+    const cfg = ConfigManager.getInstance();
+    // If global sound is disabled, avoid loading any audio files
+    if (cfg.isLoaded() && !cfg.isSoundEnabled()) {
+      return;
+    }
     // Nur einmal laden
     const sounds = [
       ['click', 'assets/sounds/click.mp3'],
@@ -49,7 +57,8 @@ export class SoundManager {
   }
 
   public playTower(type: string) {
-    if (!this.soundEnabled || !this.scene || !this.scene.sound) return;
+    const cfg = ConfigManager.getInstance();
+    if ((!this.soundEnabled || !this.scene || !this.scene.sound) || (cfg.isLoaded() && !cfg.isSoundEnabled())) return;
     const soundMap: Record<string, string> = {
       basic: 'tower_basic',
       fast: 'tower_fast',
@@ -64,13 +73,15 @@ export class SoundManager {
   }
 
   public playClick() {
-    if (this.soundEnabled && this.scene && this.scene.sound) {
+    const cfg2 = ConfigManager.getInstance();
+    if ((this.soundEnabled && this.scene && this.scene.sound) && (!cfg2.isLoaded() || cfg2.isSoundEnabled())) {
       this.scene.sound.play('click', { volume: 0.5 });
     }
   }
 
   public playMusic() {
-    if (this.musicEnabled && this.scene && this.scene.sound) {
+    const cfg3 = ConfigManager.getInstance();
+    if ((this.musicEnabled && this.scene && this.scene.sound) && (!cfg3.isLoaded() || cfg3.isMusicEnabled())) {
       if (!this.music || !this.music.isPlaying) {
         this.music = this.scene.sound.add('music', { loop: true, volume: 0.3 });
         this.music.play();
