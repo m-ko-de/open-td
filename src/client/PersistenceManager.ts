@@ -20,6 +20,10 @@ export class PersistenceManager {
     this.detectStorageMode();
   }
 
+  // Use UrlManager to resolve server-relative URLs when needed
+  // Import at top to avoid dynamic imports inside methods
+  // (kept here for patch clarity — actual import added at file top)
+
   public static getInstance(): PersistenceManager {
     if (!PersistenceManager.instance) {
       PersistenceManager.instance = new PersistenceManager();
@@ -102,7 +106,14 @@ export class PersistenceManager {
     }
 
     try {
-      const response = await fetch(`${this.serverUrl}/storage/save`, {
+      // Resolve endpoint correctly for relative serverUrl values
+      // `resolveUrl` will return absolute URLs for absolute inputs and
+      // resolve relative inputs against the app base.
+      // Import here to avoid circular / top-level ordering issues.
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { resolveUrl } = require('../client/UrlManager');
+      const endpoint = resolveUrl(`${this.serverUrl.replace(/\/$/, '')}/storage/save`);
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +139,11 @@ export class PersistenceManager {
     }
 
     try {
-      const response = await fetch(`${this.serverUrl}/storage/load?key=${key}`, {
+      // Resolve server endpoint
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { resolveUrl } = require('../client/UrlManager');
+      const endpoint = resolveUrl(`${this.serverUrl.replace(/\/$/, '')}/storage/load?key=${encodeURIComponent(key)}`);
+      const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${authToken}`,
@@ -207,7 +222,11 @@ export class PersistenceManager {
     this.clearLocal();  
     if (this.storageMode === 'hybrid' || this.storageMode === 'server') {
       if (authToken) {
-        await fetch(`${this.serverUrl}/storage/clear`, {
+        // resolve clear endpoint
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { resolveUrl } = require('../client/UrlManager');
+        const clearEndpoint = resolveUrl(`${this.serverUrl!.replace(/\/$/, '')}/storage/clear`);
+        await fetch(clearEndpoint, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${authToken}`,

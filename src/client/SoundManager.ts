@@ -1,3 +1,5 @@
+import { resolveUrl } from './UrlManager';
+
 export class SoundManager {
   private static instance: SoundManager;
   private scene: Phaser.Scene | null = null;
@@ -35,9 +37,12 @@ export class SoundManager {
       ['tower_splash', 'assets/sounds/tower_splash.mp3'],
       ['tower_strong', 'assets/sounds/tower_strong.mp3'],
     ];
+
+    // Use centralized URL resolution helper (imported at top)
+
     for (const [key, path] of sounds) {
       if (!this.scene.cache.audio.has(key)) {
-        this.scene.load.audio(key, path);
+        this.scene.load.audio(key, resolveUrl(path));
       }
     }
     this.scene.load.start();
