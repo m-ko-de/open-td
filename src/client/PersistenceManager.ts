@@ -10,6 +10,8 @@ export interface GameProgress {
   lastPlayed: string;
 }
 
+import { resolveUrl } from './UrlManager';
+
 export class PersistenceManager {
   private static instance: PersistenceManager;
   private storageMode: StorageMode = 'hybrid';
@@ -110,8 +112,6 @@ export class PersistenceManager {
       // `resolveUrl` will return absolute URLs for absolute inputs and
       // resolve relative inputs against the app base.
       // Import here to avoid circular / top-level ordering issues.
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { resolveUrl } = require('../client/UrlManager');
       const endpoint = resolveUrl(`${this.serverUrl.replace(/\/$/, '')}/storage/save`);
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -140,8 +140,6 @@ export class PersistenceManager {
 
     try {
       // Resolve server endpoint
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { resolveUrl } = require('../client/UrlManager');
       const endpoint = resolveUrl(`${this.serverUrl.replace(/\/$/, '')}/storage/load?key=${encodeURIComponent(key)}`);
       const response = await fetch(endpoint, {
         method: 'GET',
@@ -223,8 +221,6 @@ export class PersistenceManager {
     if (this.storageMode === 'hybrid' || this.storageMode === 'server') {
       if (authToken) {
         // resolve clear endpoint
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const { resolveUrl } = require('../client/UrlManager');
         const clearEndpoint = resolveUrl(`${this.serverUrl!.replace(/\/$/, '')}/storage/clear`);
         await fetch(clearEndpoint, {
           method: 'POST',

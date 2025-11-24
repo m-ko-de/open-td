@@ -42,6 +42,13 @@ export class ToggleButton {
     this.container.on('pointerdown', () => this.handleToggle());
   }
 
+  public setEnabled(enabled: boolean): void {
+    this.enabled = enabled;
+    this.bg.setFillStyle(this.enabled ? 0x00aa00 : 0x666666);
+    this.toggleCircle.x = this.enabled ? 20 : -20;
+    this.label.setText(this.enabled ? 'AN' : 'AUS');
+  }
+
   private handleToggle(): void {
     this.enabled = !this.enabled;
 

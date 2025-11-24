@@ -7,6 +7,7 @@ export class SoundManager {
   private music: Phaser.Sound.BaseSound | null = null;
   private soundEnabled = false;
   private musicEnabled = false;
+  private assetsLoaded = false;
 
   private constructor() {}
 
@@ -23,15 +24,18 @@ export class SoundManager {
     const cfg = ConfigManager.getInstance();
     this.soundEnabled = cfg.isLoaded() ? cfg.isSoundEnabled() : (soundEnabled ?? false);
     this.musicEnabled = cfg.isLoaded() ? cfg.isMusicEnabled() : (musicEnabled ?? false);
-    this.loadAssets();
+    this.checkAndloadAssets();
   }
 
-  private loadAssets() {
-    if (!this.scene) return;
+  private checkAndloadAssets(): boolean {
+    if (!this.scene || this.assetsLoaded) return false;
     const cfg = ConfigManager.getInstance();
     // If global sound is disabled, avoid loading any audio files
     if (cfg.isLoaded() && !cfg.isSoundEnabled()) {
-      return;
+      return false;
+    }
+    if(!this.soundEnabled) {
+      return false;
     }
     // Nur einmal laden
     const sounds = [
@@ -54,9 +58,12 @@ export class SoundManager {
       }
     }
     this.scene.load.start();
+    this.assetsLoaded = true;
+    return true;
   }
 
   public playTower(type: string) {
+    if(!this.checkAndloadAssets()) return;
     const cfg = ConfigManager.getInstance();
     if ((!this.soundEnabled || !this.scene || !this.scene.sound) || (cfg.isLoaded() && !cfg.isSoundEnabled())) return;
     const soundMap: Record<string, string> = {
@@ -73,6 +80,7 @@ export class SoundManager {
   }
 
   public playClick() {
+    if(!this.checkAndloadAssets()) return;
     const cfg2 = ConfigManager.getInstance();
     if ((this.soundEnabled && this.scene && this.scene.sound) && (!cfg2.isLoaded() || cfg2.isSoundEnabled())) {
       this.scene.sound.play('click', { volume: 0.5 });
@@ -80,6 +88,7 @@ export class SoundManager {
   }
 
   public playMusic() {
+    if(!this.checkAndloadAssets()) return;
     const cfg3 = ConfigManager.getInstance();
     if ((this.musicEnabled && this.scene && this.scene.sound) && (!cfg3.isLoaded() || cfg3.isMusicEnabled())) {
       if (!this.music || !this.music.isPlaying) {
@@ -96,15 +105,26 @@ export class SoundManager {
   }
 
   public setSoundEnabled(enabled: boolean) {
+    const cfg = ConfigManager.getInstance();
+    // If global config has sound disabled, disallow enabling at runtime
+    if (enabled && cfg.isLoaded() && !cfg.isSoundEnabled()) {
+      return false;
+    }
     this.soundEnabled = enabled;
+    return true;
   }
 
   public setMusicEnabled(enabled: boolean) {
+    const cfg = ConfigManager.getInstance();
+    if (enabled && cfg.isLoaded() && !cfg.isMusicEnabled()) {
+      return false;
+    }
     this.musicEnabled = enabled;
     if (enabled) {
       this.playMusic();
     } else {
       this.stopMusic();
     }
+    return true;
   }
 }

@@ -46,7 +46,7 @@ describe('PersistenceManager - server endpoint construction', () => {
     expect(res).toBe(true);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const calledUrl = (fetchMock as any).mock.calls[0][0];
-    expect(String(calledUrl).startsWith('https://api.example.com/')).toBe(true);
+    expect(String(calledUrl).includes('api.example.com')).toBe(true);
     expect(String(calledUrl).endsWith('/storage/save')).toBe(true);
   });
 

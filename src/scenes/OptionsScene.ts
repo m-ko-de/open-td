@@ -2,6 +2,7 @@ import { ToggleButton } from './components/ToggleButton';
 import { DifficultySelector } from './components/DifficultySelector';
 import { SettingsManager, GameSettings } from './components/SettingsManager';
 import { SoundManager } from '../client/SoundManager';
+import { ConfigManager } from '@/client/ConfigManager';
 
 export class OptionsScene extends Phaser.Scene {
   private settings: GameSettings;
@@ -41,16 +42,26 @@ export class OptionsScene extends Phaser.Scene {
       color: '#ffffff',
     });
     
+    const cfg = ConfigManager.getInstance();
+    const effectiveSoundDefault = cfg.isLoaded() ? cfg.isSoundEnabled() : this.settings.soundEnabled;
     const soundToggle = new ToggleButton(
       this,
       width / 2 + 100,
       height / 2 - 100,
-      this.settings.soundEnabled,
+      effectiveSoundDefault,
       (enabled) => {
+        // Persist user preference (UI/Settings), but the SoundManager may refuse to enable if config blocks it
         this.settings.soundEnabled = enabled;
         SettingsManager.save(this.settings);
-        soundManager.setSoundEnabled(enabled);
-        if (enabled) soundManager.playClick();
+        const ok = soundManager.setSoundEnabled(enabled);
+        if (!ok) {
+          // Revert toggle visually if global config prevents enabling
+          soundToggle.setEnabled(false);
+          this.settings.soundEnabled = false;
+          SettingsManager.save(this.settings);
+        } else if (enabled) {
+          soundManager.playClick();
+        }
       }
     );
 
@@ -60,15 +71,21 @@ export class OptionsScene extends Phaser.Scene {
       color: '#ffffff',
     });
     
+    const effectiveMusicDefault = cfg.isLoaded() ? cfg.isMusicEnabled() : this.settings.musicEnabled;
     const musicToggle = new ToggleButton(
       this,
       width / 2 + 100,
       height / 2 - 30,
-      this.settings.musicEnabled,
+      effectiveMusicDefault,
       (enabled) => {
         this.settings.musicEnabled = enabled;
         SettingsManager.save(this.settings);
-        soundManager.setMusicEnabled(enabled);
+        const ok = soundManager.setMusicEnabled(enabled);
+        if (!ok) {
+          musicToggle.setEnabled(false);
+          this.settings.musicEnabled = false;
+          SettingsManager.save(this.settings);
+        }
       }
     );
 
