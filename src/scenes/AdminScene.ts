@@ -9,7 +9,6 @@ export class AdminScene extends Phaser.Scene {
 
   create(): void {
     const width = this.cameras.main.width;
-    const height = this.cameras.main.height;
 
     const title = this.add.text(width / 2, 40, 'Fehlerberichte', { font: 'bold 32px Arial', color: '#ffffff' });
     title.setOrigin(0.5);
@@ -49,13 +48,12 @@ export class AdminScene extends Phaser.Scene {
       }
 
       let y = startY;
-      const pad = 24;
-      reports.slice().reverse().forEach((r: any, idx: number) => {
+      for (const r of reports.slice().reverse()) {
         const message = r.message || (r.extra && r.extra.message) || 'no message';
         const time = r.receivedAt || r.timestamp || '';
         const t = this.add.text(40, y, `${time} — ${message}`, { font: '14px Arial', color: '#ffffff', wordWrap: { width: this.cameras.main.width - 80 } });
         y += t.getBounds().height + 8;
-      });
+      }
     } catch (e) {
       console.error('Failed to fetch reports', e);
       this.add.text(this.cameras.main.width / 2, startY, 'Fehler beim Laden', { color: '#ff6666' }).setOrigin(0.5);

@@ -212,6 +212,15 @@ export class GameScene extends Phaser.Scene {
 
     // Mark as ready after all initialization is complete
     this.isReady = true;
+
+    // Ensure UI is destroyed when scene shuts down to avoid DOM leaks
+    this.events.on('shutdown', () => {
+      try {
+        this.ui?.destroy();
+      } catch (e) {
+        // ignore
+      }
+    });
   }
 
   update(time: number, delta: number): void {

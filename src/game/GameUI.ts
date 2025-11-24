@@ -5,6 +5,7 @@ import { ControlButtons } from './ui/ControlButtons';
 import { TowerActionButtons } from './ui/TowerActionButtons';
 import { ResearchButton } from './ui/ResearchButton';
 import { ResearchOverlay } from './ui/ResearchOverlay';
+import { InGameMenu } from './ui/InGameMenu';
 
 /**
  * Main UI coordinator that delegates to specialized UI modules
@@ -23,6 +24,7 @@ export class GameUI {
   private towerActionButtons!: TowerActionButtons;
   private researchButton!: ResearchButton;
   private researchOverlay!: ResearchOverlay;
+  private inGameMenu?: InGameMenu;
 
   constructor(scene: Phaser.Scene, startGold: number, startLives: number, researchManager: ResearchManager) {
     this.scene = scene;
@@ -98,6 +100,10 @@ export class GameUI {
         }
       }
     );
+
+    // In-game menu / burger button
+    this.inGameMenu = new InGameMenu(this.scene, 'https://github.com/m-ko-de/open-td');
+    this.inGameMenu.create();
   }
 
   updateGold(amount: number): void {
@@ -144,6 +150,8 @@ export class GameUI {
       ...this.controlButtons.getButtons(),
       ...this.towerActionButtons.getButtons(),
       this.researchButton.getButton()
+      // Note: burger button is returned as a Rectangle in getButton above; include it as well to prevent clicks through
+      , (this.inGameMenu ? (this.inGameMenu.getButton() as any) : (null as any))
     ];
   }
 
@@ -185,5 +193,23 @@ export class GameUI {
 
   hideRoomCode(): void {
     this.statsDisplay.hideRoomCode();
+  }
+
+  public destroy(): void {
+    try {
+      this.inGameMenu?.destroy();
+    } catch (e) {
+      // ignore
+    }
+    try {
+      this.statsDisplay = null as any;
+      this.towerButtons = null as any;
+      this.controlButtons = null as any;
+      this.towerActionButtons = null as any;
+      this.researchButton = null as any;
+      this.researchOverlay = null as any;
+    } catch (e) {
+      // ignore
+    }
   }
 }

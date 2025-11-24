@@ -4,7 +4,6 @@ import { SettingsManager, GameSettings } from './components/SettingsManager';
 import { SoundManager } from '../client/SoundManager';
 import { ConfigManager } from '@/client/ConfigManager';
 import { AuthManager } from '@/auth/AuthManager';
-import { AdminScene } from './AdminScene';
 
 export class OptionsScene extends Phaser.Scene {
   private settings: GameSettings;

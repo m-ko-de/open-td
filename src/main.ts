@@ -129,6 +129,16 @@ async function restartGame() {
   }
 }
 
+// Expose restart helper on window for UI / debug tooling
+try {
+  if (typeof window !== 'undefined') {
+    // Assign typed function; declaration in src/client/global.d.ts
+    window.restartGame = restartGame;
+  }
+} catch (e) {
+  // ignore
+}
+
 // Wait for Capacitor to be ready on mobile
 if (Capacitor.isNativePlatform()) {
   document.addEventListener('deviceready', () => {

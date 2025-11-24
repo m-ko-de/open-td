@@ -157,7 +157,6 @@ This project installs a lightweight global error handler in the browser that:
 
 If the application experiences repeated failures it will stop restarting automatically and show a small overlay explaining the problem. You can disable or adjust behavior by editing `src/client/ErrorReporter.ts` and the restart logic in `src/main.ts`.
 
-
 ## 📝 Development
 
 ### PNPM Scripts
@@ -173,7 +172,6 @@ If the application experiences repeated failures it will stop restarting automat
 - `pnpm run test` — Run the full test suite once and exit (non-interactive). This is the default command for automated checks and CI.
 - `pnpm run test:watch` — Run the test runner in watch mode for development (interactive).
 - `pnpm run test:ci` — Run tests with minimal output suitable for CI (dot reporter).
-
 
 ### Why pnpm?
 
