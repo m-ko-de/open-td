@@ -28,11 +28,16 @@ export class ToggleButton {
     // Label
     this.label = scene.add.text(0, 0, initialState ? 'AN' : 'AUS', {
       font: 'bold 16px Arial',
-      color: '#000000',
+      color: '#ffffff',
     });
     this.label.setOrigin(0.5);
 
     this.container.add([this.bg, this.toggleCircle, this.label]);
+    // ensure height interactive area and depth
+    this.container.setDepth(200);
+    this.bg.setDepth(200);
+    this.toggleCircle.setDepth(201);
+    this.label.setDepth(202);
     this.container.setSize(80, 36);
     this.container.setInteractive(
       new Phaser.Geom.Rectangle(-40, -18, 80, 36),

@@ -14,6 +14,12 @@
   "menu.multiplayer": "Multijugador",
   "menu.options": "Opciones",
   "menu.credits": "Créditos",
+  "options.tab.audio": "Audio",
+  "options.tab.gameplay": "Gameplay",
+  "options.section.audio": "Audio",
+  "options.section.gameplay": "Gameplay",
+  "options.tab.audio": "Audio",
+  "options.tab.gameplay": "Gameplay",
 
   "options.title": "Opciones",
   "options.sound": "Sonido:",
