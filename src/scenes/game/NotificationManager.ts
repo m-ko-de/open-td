@@ -1,6 +1,8 @@
 /**
  * NotificationManager - Manages game notifications (level up, tower actions, etc.)
  */
+import { t } from '@/client/i18n';
+
 export class NotificationManager {
   constructor(private scene: Phaser.Scene) {}
 
@@ -11,7 +13,7 @@ export class NotificationManager {
     const notification = this.scene.add.container(width / 2, height / 3);
 
     const bg = this.scene.add.rectangle(0, 0, 300, 100, 0x000000, 0.8);
-    const text = this.scene.add.text(0, -20, 'Level Up!', {
+    const text = this.scene.add.text(0, -20, t('notification.level_up'), {
       font: 'bold 32px Arial',
       color: '#ffff00',
     }).setOrigin(0.5);
@@ -40,7 +42,7 @@ export class NotificationManager {
     const notification = this.scene.add.container(width / 2, height / 2);
 
     const bg = this.scene.add.rectangle(0, 0, 250, 80, 0x000000, 0.8);
-    const text = this.scene.add.text(0, 0, 'Turm Verbessert!', {
+    const text = this.scene.add.text(0, 0, t('notification.tower_upgraded'), {
       font: 'bold 28px Arial',
       color: '#ff9900',
     }).setOrigin(0.5);
@@ -65,11 +67,11 @@ export class NotificationManager {
     const notification = this.scene.add.container(width / 2, height / 2);
 
     const bg = this.scene.add.rectangle(0, 0, 280, 100, 0x000000, 0.8);
-    const text = this.scene.add.text(0, -15, 'Turm Verkauft!', {
+    const text = this.scene.add.text(0, -15, t('notification.tower_sold'), {
       font: 'bold 28px Arial',
       color: '#cc0000',
     }).setOrigin(0.5);
-    const refundText = this.scene.add.text(0, 20, `+${refund} Gold`, {
+    const refundText = this.scene.add.text(0, 20, t('notification.gold_gain', { amount: refund }), {
       font: '22px Arial',
       color: '#ffff00',
     }).setOrigin(0.5);
@@ -100,7 +102,7 @@ export class NotificationManager {
       font: 'bold 40px Arial',
     }).setOrigin(0.5);
     
-    const text = this.scene.add.text(0, 10, 'Neue Forschung verfügbar!', {
+    const text = this.scene.add.text(0, 10, t('notification.research_unlocked'), {
       font: 'bold 24px Arial',
       color: '#ff00ff',
     }).setOrigin(0.5);

@@ -14,12 +14,12 @@ export class RoomCreationUI {
     createBoxY: number,
     onCreate: (playerName: string) => void
   ): HTMLInputElement {
-    // Create Room Box
+    // Create Room Box (slightly taller)
     const createBox = this.scene.add.graphics();
     createBox.fillStyle(0x2c3e50, 1);
-    createBox.fillRoundedRect(centerX - 250, createBoxY, 500, 200, 10);
+    createBox.fillRoundedRect(centerX - 250, createBoxY, 500, 240, 10);
     createBox.lineStyle(2, 0x34495e, 1);
-    createBox.strokeRoundedRect(centerX - 250, createBoxY, 500, 200, 10);
+    createBox.strokeRoundedRect(centerX - 250, createBoxY, 500, 240, 10);
 
     this.scene.add.text(centerX, createBoxY + 25, '🎮 Neuen Raum Erstellen', {
       fontSize: '26px',
@@ -35,7 +35,7 @@ export class RoomCreationUI {
     // Input field centered below label
     this.playerNameInput = InputFieldHelper.create(
       centerX - 120,
-      createBoxY + 140,
+      createBoxY + 120,
       440,
       45,
       'Dein Name'
@@ -47,7 +47,7 @@ export class RoomCreationUI {
       this.playerNameInput.value = savedName;
     }
 
-    const createButton = this.scene.add.text(centerX, createBoxY + 160, 'Raum Erstellen', {
+    const createButton = this.scene.add.text(centerX, createBoxY + 180, 'Raum Erstellen', {
       fontSize: '22px',
       color: '#ffffff',
       backgroundColor: '#27ae60',

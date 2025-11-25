@@ -1,4 +1,5 @@
 import { AuthManager } from '../auth/AuthManager';
+import { t } from '@/client/i18n';
 import { BackgroundEffects } from './components/BackgroundEffects';
 
 export class LoginScene extends Phaser.Scene {
@@ -64,7 +65,7 @@ export class LoginScene extends Phaser.Scene {
     formBg.strokeRoundedRect(centerX - 200, startY - 40, 400, 380, 15);
 
     // Mode title
-    const modeTitle = this.add.text(centerX, startY, 'ANMELDEN', {
+    const modeTitle = this.add.text(centerX, startY, t('auth.login'), {
       fontSize: '32px',
       fontFamily: 'Arial',
       color: '#00ff00',
@@ -72,7 +73,7 @@ export class LoginScene extends Phaser.Scene {
     modeTitle.setOrigin(0.5);
 
     // Username label
-    this.add.text(centerX - 150, startY + 60, 'Benutzername:', {
+    this.add.text(centerX - 150, startY + 60, t('auth.username'), {
       fontSize: '18px',
       color: '#ffffff',
     });
@@ -81,7 +82,7 @@ export class LoginScene extends Phaser.Scene {
     const usernameInput = this.createInput(centerX - 150, startY + 90, 300, 'username');
 
     // Password label
-    this.add.text(centerX - 150, startY + 140, 'Passwort:', {
+    this.add.text(centerX - 150, startY + 140, t('auth.password'), {
       fontSize: '18px',
       color: '#ffffff',
     });
@@ -90,7 +91,7 @@ export class LoginScene extends Phaser.Scene {
     const passwordInput = this.createInput(centerX - 150, startY + 170, 300, 'password');
 
     // Email label (only for registration)
-    const emailLabel = this.add.text(centerX - 150, startY + 220, 'E-Mail (optional):', {
+    const emailLabel = this.add.text(centerX - 150, startY + 220, t('auth.email_optional'), {
       fontSize: '18px',
       color: '#ffffff',
     });
@@ -101,7 +102,7 @@ export class LoginScene extends Phaser.Scene {
     emailInput.style.display = 'none';
 
     // Submit button
-    const submitButton = this.add.text(centerX, startY + 290, 'ANMELDEN', {
+    const submitButton = this.add.text(centerX, startY + 290, t('auth.login'), {
       fontSize: '24px',
       fontFamily: 'Arial',
       color: '#ffffff',
@@ -125,7 +126,7 @@ export class LoginScene extends Phaser.Scene {
       const email = emailInput.value.trim();
 
       if (!username || !password) {
-        this.showMessage('Bitte alle Felder ausfüllen!', '#ff0000');
+        this.showMessage(t('auth.fill_fields'), '#ff0000');
         return;
       }
 
@@ -134,7 +135,7 @@ export class LoginScene extends Phaser.Scene {
       if (this.isRegistering) {
         const result = await this.authManager.register(username, password, email || undefined);
         if (result.success) {
-          this.showMessage('Registrierung erfolgreich!', '#00ff00');
+          this.showMessage(t('auth.register_success'), '#00ff00');
           this.time.delayedCall(1000, () => {
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -142,13 +143,13 @@ export class LoginScene extends Phaser.Scene {
             });
           });
         } else {
-          this.showMessage(result.message || 'Registrierung fehlgeschlagen', '#ff0000');
+          this.showMessage(result.message || t('auth.register_failed'), '#ff0000');
           submitButton.setInteractive();
         }
       } else {
         const result = await this.authManager.login(username, password);
         if (result.success) {
-          this.showMessage('Anmeldung erfolgreich!', '#00ff00');
+          this.showMessage(t('auth.login_success'), '#00ff00');
           this.time.delayedCall(1000, () => {
             this.cameras.main.fadeOut(500);
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -156,14 +157,14 @@ export class LoginScene extends Phaser.Scene {
             });
           });
         } else {
-          this.showMessage(result.message || 'Anmeldung fehlgeschlagen', '#ff0000');
+          this.showMessage(result.message || t('auth.login_failed'), '#ff0000');
           submitButton.setInteractive();
         }
       }
     });
 
     // Toggle button
-    const toggleButton = this.add.text(centerX, startY + 270, 'Noch kein Account? Registrieren', {
+    const toggleButton = this.add.text(centerX, startY + 270, t('auth.no_account_register'), {
       fontSize: '16px',
       color: '#aaaaaa',
     });
@@ -182,22 +183,22 @@ export class LoginScene extends Phaser.Scene {
       this.isRegistering = !this.isRegistering;
       
       if (this.isRegistering) {
-        modeTitle.setText('REGISTRIEREN');
-        submitButton.setText('REGISTRIEREN');
-        toggleButton.setText('Bereits registriert? Anmelden');
+        modeTitle.setText(t('auth.register'));
+        submitButton.setText(t('auth.register'));
+        toggleButton.setText(t('auth.already_registered'));
         emailLabel.setVisible(true);
         emailInput.style.display = 'block';
       } else {
-        modeTitle.setText('ANMELDEN');
-        submitButton.setText('ANMELDEN');
-        toggleButton.setText('Noch kein Account? Registrieren');
+        modeTitle.setText(t('auth.login'));
+        submitButton.setText(t('auth.login'));
+        toggleButton.setText(t('auth.no_account_register'));
         emailLabel.setVisible(false);
         emailInput.style.display = 'none';
       }
     });
 
     // Skip login button (for testing)
-    const skipButton = this.add.text(width - 20, height - 20, 'Als Gast fortfahren →', {
+    const skipButton = this.add.text(width - 20, height - 20, t('auth.guest_skip'), {
       fontSize: '14px',
       color: '#666666',
     });
@@ -223,7 +224,7 @@ export class LoginScene extends Phaser.Scene {
   private createInput(x: number, y: number, width: number, type: string): HTMLInputElement {
     const input = document.createElement('input');
     input.type = type === 'password' ? 'password' : type === 'email' ? 'email' : 'text';
-    input.placeholder = type === 'username' ? 'Benutzername' : type === 'password' ? 'Passwort' : 'E-Mail';
+    input.placeholder = type === 'username' ? t('auth.username') : type === 'password' ? t('auth.password') : t('auth.email_optional');
     input.style.position = 'absolute';
     input.style.width = width + 'px';
     input.style.height = '35px';

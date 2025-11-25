@@ -18,9 +18,9 @@ export class RoomJoinUI {
     // Join Room Box
     const joinBox = this.scene.add.graphics();
     joinBox.fillStyle(0x2c3e50, 1);
-    joinBox.fillRoundedRect(centerX - 250, joinBoxY, 500, 240, 10);
+    joinBox.fillRoundedRect(centerX - 250, joinBoxY, 500, 300, 10);
     joinBox.lineStyle(2, 0x34495e, 1);
-    joinBox.strokeRoundedRect(centerX - 250, joinBoxY, 500, 240, 10);
+    joinBox.strokeRoundedRect(centerX - 250, joinBoxY, 500, 300, 10);
 
     this.scene.add.text(centerX, joinBoxY + 25, '🚪 Raum Beitreten', {
       fontSize: '26px',
@@ -36,7 +36,7 @@ export class RoomJoinUI {
     // Player name input
     this.playerNameInput = InputFieldHelper.create(
       centerX - 120,
-      joinBoxY + 160,
+      joinBoxY + 120,
       440,
       45,
       'Dein Name'
@@ -56,13 +56,13 @@ export class RoomJoinUI {
     // Room code input
     this.roomCodeInput = InputFieldHelper.create(
       centerX - 110,
-      joinBoxY + 260,
+      joinBoxY + 180,
       440,
       45,
       'Raum-Code eingeben'
     );
 
-    const joinButton = this.scene.add.text(centerX, joinBoxY + 200, 'Beitreten', {
+    const joinButton = this.scene.add.text(centerX, joinBoxY + 220, 'Beitreten', {
       fontSize: '22px',
       color: '#ffffff',
       backgroundColor: '#3498db',

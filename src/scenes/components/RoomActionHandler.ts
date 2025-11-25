@@ -1,5 +1,6 @@
 import { NetworkManager } from '../../network/NetworkManager';
 import { PersistenceManager } from '../../client/PersistenceManager';
+import { t } from '@/client/i18n';
 
 /**
  * RoomActionHandler - Handles room actions (create, join, leave, ready, start)
@@ -18,14 +19,14 @@ export class RoomActionHandler {
     }
 
     PersistenceManager.getInstance().setLocal('playerName', playerName);
-    this.onLoading('Erstelle Raum...');
+    this.onLoading(t('room.create_loading'));
 
     try {
       const roomCode = await this.networkManager.createRoom(playerName);
-      this.onSuccess(`Raum erstellt: ${roomCode}`);
+      this.onSuccess(t('room.created', { code: roomCode }));
       return roomCode;
     } catch (error: any) {
-      this.onError(`Fehler: ${error.message}`);
+      this.onError(t('room.error_prefix') + error.message);
       return null;
     }
   }
@@ -40,14 +41,14 @@ export class RoomActionHandler {
     }
 
     PersistenceManager.getInstance().setLocal('playerName', playerName);
-    this.onLoading('Trete Raum bei...');
+    this.onLoading(t('room.join_loading'));
 
     try {
       await this.networkManager.joinRoom(roomCode, playerName);
-      this.onSuccess(`Raum beigetreten: ${roomCode}`);
+      this.onSuccess(t('room.joined', { code: roomCode }));
       return true;
     } catch (error: any) {
-      this.onError(`Fehler: ${error.message}`);
+      this.onError(t('room.error_prefix') + error.message);
       return false;
     }
   }
@@ -78,11 +79,11 @@ export class RoomActionHandler {
     console.log('All ready?', allReady);
     
     if (!allReady) {
-      return { canStart: false, message: 'Nicht alle Spieler sind bereit!' };
+      return { canStart: false, message: t('room.players_not_ready') };
     }
 
     if (players.size < 1) {
-      return { canStart: false, message: 'Mindestens 1 Spieler benötigt!' };
+      return { canStart: false, message: t('room.players_min') };
     }
 
     return { canStart: true };
@@ -90,12 +91,12 @@ export class RoomActionHandler {
 
   private validatePlayerName(playerName: string): boolean {
     if (!playerName) {
-      this.onError('Bitte gib einen Namen ein!');
+      this.onError(t('room.enter_name'));
       return false;
     }
 
     if (playerName.length < 2 || playerName.length > 20) {
-      this.onError('Name muss 2-20 Zeichen lang sein!');
+      this.onError(t('room.name_length_error'));
       return false;
     }
 
@@ -104,12 +105,12 @@ export class RoomActionHandler {
 
   private validateRoomCode(roomCode: string): boolean {
     if (!roomCode) {
-      this.onError('Bitte gib einen Raum-Code ein!');
+      this.onError(t('room.enter_code'));
       return false;
     }
 
     if (!/^[a-z]{2,4}-[a-z]{2,4}$/.test(roomCode)) {
-      this.onError('Raum-Code Format: wort-wort (z.B. bear-lamp)');
+      this.onError(t('room.code_format_error'));
       return false;
     }
 

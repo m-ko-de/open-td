@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ConfigManager } from '../client/ConfigManager';
+import { t } from '@/client/i18n';
 import { NetworkManager } from '../network/NetworkManager';
 import { RoomLobbyUI } from './components/RoomLobbyUI';
 import { RoomCreationUI } from './components/RoomCreationUI';
@@ -42,7 +43,7 @@ export class MultiplayerScene extends Phaser.Scene {
     const centerX = this.cameras.main.centerX;
 
     // Title
-    this.add.text(centerX, 50, 'Multiplayer Lobby', {
+    this.add.text(centerX, 50, t('multiplayer.title'), {
       fontSize: '48px',
       color: '#ffffff',
       fontStyle: 'bold'
@@ -60,7 +61,7 @@ export class MultiplayerScene extends Phaser.Scene {
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
-    const connectingText = this.add.text(centerX, centerY, 'Verbinde mit Server...', {
+    const connectingText = this.add.text(centerX, centerY, t('multiplayer.connecting'), {
       fontSize: '24px',
       color: '#ffff00'
     }).setOrigin(0.5);
@@ -73,11 +74,11 @@ export class MultiplayerScene extends Phaser.Scene {
       connectingText.destroy();
       this.showLobbyUI();
     } catch (error) {
-      connectingText.setText('❌ Server nicht erreichbar!\n\nStarte Server mit: pnpm server');
+      connectingText.setText(t('multiplayer.server_unreachable'));
       connectingText.setColor('#ff0000');
       
       // Back button
-      const backButton = this.add.text(centerX, centerY + 100, '< Zurück zum Menü', {
+      const backButton = this.add.text(centerX, centerY + 100, '< ' + t('options.back'), {
         fontSize: '24px',
         color: '#ffffff',
         backgroundColor: '#333333',
@@ -119,7 +120,7 @@ export class MultiplayerScene extends Phaser.Scene {
     );
 
     // Back button at top left
-    const backButton = this.add.text(30, 30, '◀ Zurück', {
+    const backButton = this.add.text(30, 30, '◀ ' + t('options.back'), {
       fontSize: '20px',
       color: '#ffffff',
       backgroundColor: '#333333',
@@ -144,7 +145,7 @@ export class MultiplayerScene extends Phaser.Scene {
     });
 
     // Separator
-    this.add.text(centerX, 380, 'oder', {
+    this.add.text(centerX, 380, t('multiplayer.or'), {
       fontSize: '18px',
       color: '#7f8c8d',
       fontStyle: 'italic'
@@ -228,7 +229,7 @@ export class MultiplayerScene extends Phaser.Scene {
       (player) => {
         this.players.set(player.id, player);
         this.updatePlayerList();
-        this.showStatus(`${player.name} ist beigetreten!`, '#2ecc71');
+        this.showStatus(t('multiplayer.player_joined', { name: player.name }), '#2ecc71');
       },
       (playerId, isReady, name) => {
         const player = this.players.get(playerId);
@@ -241,10 +242,10 @@ export class MultiplayerScene extends Phaser.Scene {
       (playerId, playerName) => {
         this.players.delete(playerId);
         this.updatePlayerList();
-        this.showStatus(`${playerName} hat den Raum verlassen.`, '#e74c3c');
+          this.showStatus(t('multiplayer.player_left', { name: playerName }), '#e74c3c');
       },
       (_roomCode) => {
-        this.showStatus('Spiel startet...', '#2ecc71');
+        this.showStatus(t('multiplayer.starting'), '#2ecc71');
         this.time.delayedCall(1000, () => {
           this.cleanupComponents();
           this.scene.start('GameScene', { 
@@ -254,10 +255,10 @@ export class MultiplayerScene extends Phaser.Scene {
         });
       },
       (message) => {
-        this.showStatus(`Fehler: ${message}`, '#e74c3c');
+        this.showStatus(t('multiplayer.error_prefix') + message, '#e74c3c');
       },
       () => {
-        this.showStatus('Verbindung zum Server verloren!', '#e74c3c');
+        this.showStatus(t('multiplayer.connection_lost'), '#e74c3c');
         this.time.delayedCall(3000, () => {
           this.cleanupComponents();
           this.scene.start('MainMenuScene');

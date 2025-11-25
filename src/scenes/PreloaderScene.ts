@@ -1,5 +1,6 @@
 import { MapRegistry } from '../game/MapRegistry';
 import { ConfigManager } from '../client/ConfigManager';
+import { t } from '@/client/i18n';
 
 export class PreloaderScene extends Phaser.Scene {
   private particles!: Phaser.GameObjects.Graphics[];
@@ -85,7 +86,7 @@ export class PreloaderScene extends Phaser.Scene {
     const progressBar = this.add.graphics();
 
     // Loading text
-    const loadingText = this.add.text(width / 2, height / 2 + 20, 'Lädt...', {
+    const loadingText = this.add.text(width / 2, height / 2 + 20, t('preloader.loading'), {
       font: '20px Arial',
       color: '#00ff00',
     });
@@ -93,11 +94,12 @@ export class PreloaderScene extends Phaser.Scene {
     
     // Animate loading text dots
     let dotCount = 0;
+    const baseLoadingText = t('preloader.loading');
     this.time.addEvent({
       delay: 500,
       callback: () => {
         dotCount = (dotCount + 1) % 4;
-        loadingText.setText('Lädt' + '.'.repeat(dotCount));
+        loadingText.setText(baseLoadingText + '.'.repeat(dotCount));
       },
       loop: true,
     });

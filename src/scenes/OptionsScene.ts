@@ -4,6 +4,7 @@ import { SettingsManager, GameSettings } from './components/SettingsManager';
 import { SoundManager } from '../client/SoundManager';
 import { ConfigManager } from '@/client/ConfigManager';
 import { AuthManager } from '@/auth/AuthManager';
+import { t, getAvailableLanguages, setLanguage, getLanguage } from '@/client/i18n';
 
 export class OptionsScene extends Phaser.Scene {
   private settings: GameSettings;
@@ -33,14 +34,14 @@ export class OptionsScene extends Phaser.Scene {
     box.setStrokeStyle(4, 0x00ff00);
 
     // Title
-    const title = this.add.text(width / 2, height / 2 - 200, 'Optionen', {
+    const title = this.add.text(width / 2, height / 2 - 200, t('options.title'), {
       font: 'bold 48px Arial',
       color: '#00ff00',
     });
     title.setOrigin(0.5);
 
     // Sound toggle
-    const soundLabel = this.add.text(width / 2 - 150, height / 2 - 100, 'Sound:', {
+    const soundLabel = this.add.text(width / 2 - 150, height / 2 - 100, t('options.sound'), {
       font: '24px Arial',
       color: '#ffffff',
     });
@@ -69,7 +70,7 @@ export class OptionsScene extends Phaser.Scene {
     );
 
     // Music toggle
-    const musicLabel = this.add.text(width / 2 - 150, height / 2 - 30, 'Musik:', {
+    const musicLabel = this.add.text(width / 2 - 150, height / 2 - 30, t('options.music'), {
       font: '24px Arial',
       color: '#ffffff',
     });
@@ -119,7 +120,7 @@ export class OptionsScene extends Phaser.Scene {
     infoText.setOrigin(0.5);
 
     // Close button
-    const closeButton = this.add.text(width / 2, height / 2 + 200, 'Zurück', {
+    const closeButton = this.add.text(width / 2, height / 2 + 200, t('options.back'), {
       font: 'bold 24px Arial',
       color: '#ffffff',
       backgroundColor: '#00aa00',
@@ -142,7 +143,7 @@ export class OptionsScene extends Phaser.Scene {
     });
 
     // Admin button to view error reports (visible only if logged in)
-    const showAdminButton = this.add.text(width / 2, height / 2 + 240, 'Fehlerberichte anzeigen', {
+    const showAdminButton = this.add.text(width / 2, height / 2 + 240, t('options.show_reports'), {
       font: 'bold 18px Arial',
       color: '#ffffff',
       backgroundColor: '#333333',
@@ -157,7 +158,7 @@ export class OptionsScene extends Phaser.Scene {
         this.scene.pause();
       } else {
         // Not logged in
-        alert('Bitte einloggen, um Fehlerberichte anzuzeigen.');
+          alert(t('options.must_login_to_view_reports'));
       }
     });
     
@@ -196,7 +197,7 @@ export class OptionsScene extends Phaser.Scene {
     }
 
     // Auto-restart toggle
-    const restartLabel = this.add.text(width / 2 - 150, height / 2 + 60, 'Auto-Restart bei Fehlern:', {
+    const restartLabel = this.add.text(width / 2 - 150, height / 2 + 60, t('options.auto_restart'), {
       font: '24px Arial',
       color: '#ffffff',
     });
@@ -211,6 +212,25 @@ export class OptionsScene extends Phaser.Scene {
       }
     );
     elements.splice(elements.length - 1, 0, restartLabel, restartToggle.getContainer());
+
+    // Language selector + label
+    const languages = getAvailableLanguages();
+    const langLabel = this.add.text(width / 2 - 150, height / 2 + 120, t('options.language'), { font: '24px Arial', color: '#ffffff' });
+    const langButtons: Phaser.GameObjects.Text[] = [];
+    const startX = width / 2 + 80;
+    let i = 0;
+    for (const l of languages) {
+      const txt = this.add.text(startX + i * 90, height / 2 + 120, l.label, { font: '18px Arial', color: getLanguage() === l.code ? '#00ff00' : '#ffffff' });
+      txt.setInteractive({ useHandCursor: true });
+      txt.on('pointerdown', () => {
+        setLanguage(l.code as any);
+        // Update UI labels in-scene: a quick approach is to reload the scene
+        this.scene.restart();
+      });
+      langButtons.push(txt);
+      i += 1;
+    }
+    elements.push(langLabel, ...langButtons);
   }
 
   public static getSettings(): GameSettings {

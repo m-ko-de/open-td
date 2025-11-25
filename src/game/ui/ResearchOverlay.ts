@@ -1,4 +1,5 @@
 import { ResearchManager } from '../ResearchManager';
+import { t } from '@/client/i18n';
 
 /**
  * Manages the research overlay UI
@@ -61,7 +62,7 @@ export class ResearchOverlay {
     this.container.add(panel);
 
     // Title
-    const title = this.scene.add.text(width / 2, height / 2 - panelHeight / 2 + 40, 'Forschung', {
+    const title = this.scene.add.text(width / 2, height / 2 - panelHeight / 2 + 40, t('research.title'), {
       font: 'bold 32px Arial',
       color: '#ffffff',
     });
@@ -95,7 +96,7 @@ export class ResearchOverlay {
       this.container!.add(desc);
 
       // Cost
-      const cost = this.scene.add.text(width / 2 - 250, y + 30, `Kosten: ${research.goldCost} Gold | ${research.xpRequired} XP`, {
+      const cost = this.scene.add.text(width / 2 - 250, y + 30, t('research.cost_fmt', { gold: research.goldCost, xp: research.xpRequired }), {
         font: '14px Arial',
         color: '#aaaaaa',
       });
@@ -103,7 +104,7 @@ export class ResearchOverlay {
 
       // Research button
       const canResearch = this.researchManager.canResearch(research.id, this.gold);
-      const btnText = this.scene.add.text(width / 2 + 180, y, 'Erforschen', {
+      const btnText = this.scene.add.text(width / 2 + 180, y, t('research.research_button'), {
         font: 'bold 18px Arial',
         color: '#ffffff',
         backgroundColor: canResearch ? '#00aa00' : '#666666',
@@ -133,14 +134,14 @@ export class ResearchOverlay {
 
     // No researches available message
     if (availableResearches.length === 0) {
-      const noResearch = this.scene.add.text(width / 2, height / 2, 'Keine Forschungen verfügbar', {
+      const noResearch = this.scene.add.text(width / 2, height / 2, t('research.no_research'), {
         font: '20px Arial',
         color: '#888888',
       });
       noResearch.setOrigin(0.5);
       this.container!.add(noResearch);
 
-      const hint = this.scene.add.text(width / 2, height / 2 + 40, 'Sammle mehr XP, um neue Forschungen freizuschalten!', {
+      const hint = this.scene.add.text(width / 2, height / 2 + 40, t('research.hint'), {
         font: '16px Arial',
         color: '#666666',
       });
@@ -149,7 +150,7 @@ export class ResearchOverlay {
     }
 
     // Close button
-    const closeBtn = this.scene.add.text(width / 2, height / 2 + panelHeight / 2 - 40, 'Schließen', {
+    const closeBtn = this.scene.add.text(width / 2, height / 2 + panelHeight / 2 - 40, t('menu.close'), {
       font: 'bold 20px Arial',
       color: '#ffffff',
       backgroundColor: '#ff0000',

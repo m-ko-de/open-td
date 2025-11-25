@@ -77,7 +77,16 @@ function showRestartOverlay() {
       el.style.zIndex = '99999';
       el.style.fontSize = '18px';
       el.style.padding = '20px';
-      el.textContent = 'An error occurred. Restarting the game automatically...';
+      // Use localized message if available
+      try {
+        // Import lazily so we don't add a module cycle in the entry file
+        // `t` won't be available at build-time for mobile without DOM; guard it
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const i18n = require('./client/i18n');
+        el.textContent = typeof i18n?.t === 'function' ? i18n.t('main.restart_overlay_message') : 'An error occurred. Restarting the game automatically...';
+      } catch (e) {
+        el.textContent = 'An error occurred. Restarting the game automatically...';
+      }
       document.body.appendChild(el);
     }
   } catch (e) {

@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
+import { t, setLanguage, getAvailableLanguages, getLanguage } from '@/client/i18n';
 
 /**
  * Simple in-game menu overlay with a burger button.
@@ -46,7 +47,7 @@ export class InGameMenu {
     this.burgerGraphics.fillRect(0, 8, 24, 3);
     this.burgerGraphics.fillRect(0, 16, 24, 3);
 
-    this.buttonText = this.scene.add.text(btnLeft - 8, centerY, 'Menü', { font: '12px Arial', color: '#ffffff' });
+    this.buttonText = this.scene.add.text(btnLeft - 8, centerY, t('menu.burger'), { font: '12px Arial', color: '#ffffff' });
     this.buttonText.setOrigin(1, 0.5);
 
     this.container = this.scene.add.container(0, 0, [this.buttonBg, this.burgerGraphics!, this.buttonText]);
@@ -131,7 +132,7 @@ export class InGameMenu {
 
       // Close button
       const closeBtn = document.createElement('button');
-      closeBtn.textContent = 'Schließen';
+      closeBtn.textContent = t('menu.close');
       closeBtn.style.position = 'fixed';
       closeBtn.style.right = '18px';
       closeBtn.style.top = '18px';
@@ -141,7 +142,7 @@ export class InGameMenu {
 
       // Source code button
       const sourceBtn = document.createElement('button');
-      sourceBtn.textContent = 'Quellcode';
+      sourceBtn.textContent = t('menu.source');
       sourceBtn.style.position = 'fixed';
       sourceBtn.style.right = '120px';
       sourceBtn.style.top = '18px';
@@ -151,7 +152,31 @@ export class InGameMenu {
 
       // Restart button
       const restartBtn = document.createElement('button');
-      restartBtn.textContent = 'Neustarten';
+      restartBtn.textContent = t('menu.restart');
+            // Language selector
+            const langSelect = document.createElement('select');
+            langSelect.style.position = 'fixed';
+            langSelect.style.right = '360px';
+            langSelect.style.top = '18px';
+            langSelect.style.padding = '6px 8px';
+            langSelect.style.cursor = 'pointer';
+            const languages = getAvailableLanguages();
+            languages.forEach((l) => {
+              const opt = document.createElement('option');
+              opt.value = l.code;
+              opt.textContent = l.label;
+              langSelect.appendChild(opt);
+            });
+            langSelect.value = getLanguage();
+            langSelect.onchange = () => {
+              const val = langSelect.value as any;
+              setLanguage(val);
+              // Update labels
+              closeBtn.textContent = t('menu.close');
+              sourceBtn.textContent = t('menu.source');
+              restartBtn.textContent = t('menu.restart');
+              if (this.buttonText) this.buttonText.setText(t('menu.burger'));
+            };
       restartBtn.style.position = 'fixed';
       restartBtn.style.right = '240px';
       restartBtn.style.top = '18px';
@@ -184,6 +209,7 @@ export class InGameMenu {
       el.appendChild(closeBtn);
       el.appendChild(sourceBtn);
       el.appendChild(restartBtn);
+      el.appendChild(langSelect);
       el.appendChild(content);
       root.appendChild(el);
       this.overlayEl = el;
@@ -202,10 +228,10 @@ export class InGameMenu {
             content.textContent = text;
           }
         } else {
-          content.textContent = 'Could not load README content.';
+          content.textContent = t('menu.readme_load_failed');
         }
       } catch (e) {
-        content.textContent = 'Error fetching README: ' + String(e);
+        content.textContent = t('menu.readme_fetch_error', { error: String(e) });
       }
     }
     // Pause the game when overlay is visible
@@ -246,11 +272,11 @@ export class InGameMenu {
     box.style.textAlign = 'center';
 
     const txt = document.createElement('div');
-    txt.textContent = 'Neustarten? Alle nicht gespeicherten Daten gehen verloren.';
+    txt.textContent = t('menu.restart_confirm_msg');
     txt.style.marginBottom = '12px';
 
     const btnConfirm = document.createElement('button');
-    btnConfirm.textContent = 'Ja';
+    btnConfirm.textContent = t('menu.yes');
     btnConfirm.style.marginRight = '8px';
     btnConfirm.style.padding = '8px 12px';
     btnConfirm.onclick = () => {
@@ -269,7 +295,7 @@ export class InGameMenu {
     };
 
     const btnCancel = document.createElement('button');
-    btnCancel.textContent = 'Abbrechen';
+    btnCancel.textContent = t('menu.cancel');
     btnCancel.style.padding = '8px 12px';
     btnCancel.onclick = () => this.removeConfirm();
 

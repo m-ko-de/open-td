@@ -1,6 +1,8 @@
 /**
  * Manages tower upgrade and sell buttons
  */
+import { t } from '@/client/i18n';
+
 export class TowerActionButtons {
   private upgradeButton: Phaser.GameObjects.Text;
   private sellButton: Phaser.GameObjects.Text;
@@ -37,7 +39,7 @@ export class TowerActionButtons {
     this.upgradeButton = scene.add.text(
       width / 2,
       height - 160,
-      'Upgrade-Turm\n(Wähle einen Turm)',
+      t('tower.upgrade'),
       {
         font: '18px Arial',
         color: '#ffffff',
@@ -67,7 +69,7 @@ export class TowerActionButtons {
     this.sellButton = scene.add.text(
       width / 2 + 150,
       height - 160,
-      'Verkaufen\n(90% zurück)',
+      t('tower.sell_refund', { value: '0', pct: '90%' }),
       {
         font: '18px Arial',
         color: '#ffffff',
@@ -113,12 +115,12 @@ export class TowerActionButtons {
     const damage = Math.round(selectedTower.getDamage());
     const range = Math.round(selectedTower.getRange());
     
-    this.towerInfoText.setText(`${towerName} (Level ${level})\nSchaden: ${damage} | Reichweite: ${range}`);
+    this.towerInfoText.setText(t('tower.info', { name: towerName, level, damage, range }));
     this.towerInfoText.setVisible(true);
 
     // Show sell button
     const sellValue = selectedTower.getSellValue();
-    this.sellButton.setText(`Verkaufen\n${sellValue}G\n(90% zurück)`);
+    this.sellButton.setText(t('tower.sell_refund', { value: `${sellValue}G`, pct: '90%' }));
     this.sellButton.setVisible(true);
 
     // Show upgrade button if tower can be upgraded
@@ -129,7 +131,7 @@ export class TowerActionButtons {
 
     const cost = selectedTower.getUpgradeCost();
     
-    this.upgradeButton.setText(`Upgrade Turm\nLevel ${level} → ${level + 1}\nKosten: ${cost}G`);
+    this.upgradeButton.setText(t('tower.upgrade_cost', { level, nextLevel: level + 1, cost: `${cost}` }));
     this.upgradeButton.setVisible(true);
 
     // Update color based on affordability
@@ -146,13 +148,13 @@ export class TowerActionButtons {
 
   private getTowerDisplayName(type: string): string {
     const names: Record<string, string> = {
-      'basic': 'Basis-Turm',
-      'fast': 'Schnell-Turm',
-      'strong': 'Stark-Turm',
-      'sniper': 'Sniper-Turm',
-      'splash': 'Splash-Turm',
-      'frost': 'Frost-Turm',
-      'fire': 'Feuer-Turm'
+      'basic': t('tower.name.basic'),
+      'fast': t('tower.name.fast'),
+      'strong': t('tower.name.strong'),
+      'sniper': t('tower.name.sniper'),
+      'splash': t('tower.name.splash'),
+      'frost': t('tower.name.frost'),
+      'fire': t('tower.name.fire')
     };
     return names[type] || type;
   }

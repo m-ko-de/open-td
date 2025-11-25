@@ -31,6 +31,8 @@ An open-source Tower Defense game built with Phaser 3 and Capacitor for web and 
 - **Mobile-Ready**: Optimized for touch controls on smartphones and tablets
 - **Cross-Platform**: Runs in browser and as native app on iOS/Android
 - **User Authentication**: Register and login with persistent user accounts
+- **Multi-language**: Built-in support for English, German, French and Spanish with preference stored in your account (or saved to settings locally). Switchable through the in-game menu or Options screen.
+   - Translation files are stored under `src/client/locales/*.json` (one file per language); add new keys there and update labels using `t('key')` in the code.
 
 ## 🚀 Quick Start
 

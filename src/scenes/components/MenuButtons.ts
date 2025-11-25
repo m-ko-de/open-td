@@ -1,6 +1,8 @@
 /**
  * MenuButtons - Creates and manages menu navigation buttons
  */
+import { t } from '@/client/i18n';
+
 export class MenuButtons {
   constructor(private scene: Phaser.Scene) {}
 
@@ -86,7 +88,7 @@ export class MenuButtons {
     const startButton = this.createButton(
       centerX,
       startY,
-      'Einzelspieler',
+      t('menu.singleplayer'),
       '#00aa00',
       callbacks.onSingleplayer
     );
@@ -94,7 +96,7 @@ export class MenuButtons {
     const multiplayerButton = this.createButton(
       centerX,
       startY + buttonSpacing,
-      'Mehrspieler',
+      t('menu.multiplayer'),
       '#e67e22',
       callbacks.onMultiplayer
     );
@@ -102,7 +104,7 @@ export class MenuButtons {
     const optionsButton = this.createButton(
       centerX,
       startY + buttonSpacing * 2,
-      'Optionen',
+      t('menu.options'),
       '#0066cc',
       callbacks.onOptions
     );
@@ -110,7 +112,7 @@ export class MenuButtons {
     const creditsButton = this.createButton(
       centerX,
       startY + buttonSpacing * 3,
-      'Credits',
+      t('menu.credits'),
       '#666666',
       callbacks.onCredits
     );

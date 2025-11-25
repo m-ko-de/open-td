@@ -1,4 +1,5 @@
 import { MapRegistry } from '../../game/MapRegistry';
+import { t } from '@/client/i18n';
 
 /**
  * LevelSelection - Displays level selection overlay
@@ -37,7 +38,7 @@ export class LevelSelection {
     );
     selectionBox.setStrokeStyle(3, 0x00ff00);
 
-    const title = this.scene.add.text(centerX, centerY - 150, 'Wähle eine Karte', {
+    const title = this.scene.add.text(centerX, centerY - 150, t('level.select_map'), {
       font: 'bold 32px Arial',
       color: '#00ff00',
     });
@@ -116,7 +117,7 @@ export class LevelSelection {
     });
 
     // Back button
-    const backButton = this.scene.add.text(centerX, centerY + 140, 'Zurück', {
+    const backButton = this.scene.add.text(centerX, centerY + 140, t('options.back'), {
       font: 'bold 20px Arial',
       color: '#ffffff',
       backgroundColor: '#666666',

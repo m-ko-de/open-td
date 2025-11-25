@@ -1,6 +1,8 @@
 /**
  * CreditsOverlay - Displays credits information
  */
+import { t } from '@/client/i18n';
+
 export class CreditsOverlay {
   private elements: Phaser.GameObjects.GameObject[] = [];
 
@@ -19,7 +21,7 @@ export class CreditsOverlay {
     const creditsBox = this.scene.add.rectangle(centerX, centerY, 500, 300, 0x1a1a2e);
     creditsBox.setStrokeStyle(3, 0x00ff00);
 
-    const creditsTitle = this.scene.add.text(centerX, centerY - 100, 'Credits', {
+    const creditsTitle = this.scene.add.text(centerX, centerY - 100, t('credits.title'), {
       font: 'bold 32px Arial',
       color: '#00ff00',
     });
@@ -37,7 +39,7 @@ export class CreditsOverlay {
     );
     creditsText.setOrigin(0.5);
 
-    const closeButton = this.scene.add.text(centerX, centerY + 110, 'Schließen', {
+    const closeButton = this.scene.add.text(centerX, centerY + 110, t('credits.close'), {
       font: 'bold 20px Arial',
       color: '#ffffff',
       backgroundColor: '#00aa00',

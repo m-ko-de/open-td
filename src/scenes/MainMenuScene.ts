@@ -4,6 +4,7 @@ import { MenuButtons } from './components/MenuButtons';
 import { LevelSelection } from './components/LevelSelection';
 import { CreditsOverlay } from './components/CreditsOverlay';
 import { AuthManager } from '../auth/AuthManager';
+import { t } from '@/client/i18n';
 
 export class MainMenuScene extends Phaser.Scene {
   private levelSelection?: LevelSelection;
@@ -52,10 +53,10 @@ export class MainMenuScene extends Phaser.Scene {
     menuButtons.animateButtonsEntrance(buttons, 800);
 
     // Instructions with fade in
-    const instructions = this.add.text(
+      const instructions = this.add.text(
       width / 2,
       height - 80,
-      '🎮 Platziere strategisch Türme und verteidige deine Basis!',
+          t('main.instructions'),
       {
         font: '18px Arial',
         color: '#888888',
@@ -71,7 +72,7 @@ export class MainMenuScene extends Phaser.Scene {
     });
 
     // Version info
-    const version = this.add.text(width - 10, height - 10, 'v1.0.0', {
+      const version = this.add.text(width - 10, height - 10, 'v1.0.0', {
       font: '14px Arial',
       color: '#444444',
     });
@@ -109,7 +110,7 @@ export class MainMenuScene extends Phaser.Scene {
       levelText.setOrigin(0.5, 0);
 
       // Logout button
-      const logoutButton = this.add.text(width - 130, 70, '🚪 Abmelden', {
+      const logoutButton = this.add.text(width - 130, 70, '🚪 ' + t('main.logout'), {
         fontSize: '12px',
         color: '#ff6666',
       });
