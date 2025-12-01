@@ -34,7 +34,7 @@
   "license": "MIT",
   "dependencies": {
       "dompurify": "^3.0.1",
-      "marked": "^5.0.0",
+      "marked": "^17.0.1",
     "@capacitor/android": "^5.5.1",
     "@capacitor/cli": "^7.4.4",
     "@capacitor/core": "^5.5.1",
